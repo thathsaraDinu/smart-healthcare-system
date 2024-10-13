@@ -59,7 +59,8 @@ export const getProfile = async (id) => {
       email: user.email,
       role: user.role,
       gender: user.gender,
-      mobile: user.mobile
+      mobile: user.mobile,
+      profileImg: user.profileImg
     };
   } catch (error) {
     throw {

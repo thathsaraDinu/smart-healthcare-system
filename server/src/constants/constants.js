@@ -24,5 +24,6 @@ export const LOGGER_CONFIG = {
 export const USER_ROLES = {
   USER: 'user',
   DOCTOR: 'doctor',
+  MEDICAL_STAFF: 'medical_staff',
   ADMIN: 'admin'
 };

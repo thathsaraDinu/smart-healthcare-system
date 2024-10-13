@@ -21,6 +21,7 @@ import {
   MdArrowForwardIos,
 } from 'react-icons/md';
 import { useLocation } from 'react-router-dom';
+import defaultAvatar from '@/assets/avatar/default.png';
 
 const ProfileLayout = () => {
   const logOut = useAuthStore((state) => state.logOut);
@@ -87,14 +88,18 @@ const ProfileLayout = () => {
       {profile && (
         <aside
           id="default-sidebar"
-          className="hidden sm:block left-0 z-40 w-80 min-h-screen"
+          className="hidden sm:block left-0 z-40 w-80 min-h-screen border-r border-gray-200 bg-white"
           aria-label="Sidebar"
         >
           <div className="h-full px-0 py-4 overflow-y-auto">
             {/* Profile Image */}
             <div className="flex items-center justify-center mt-6 mb-4">
               <img
-                src="https://images.pexels.com/photos/6940512/pexels-photo-6940512.jpeg?auto=compress&cs=tinysrgb&w=600"
+                src={
+                  profile.profileImg !== 'default'
+                    ? profile.profileImg
+                    : defaultAvatar
+                }
                 alt="avatar"
                 className="w-24 h-24 rounded-full"
               />

@@ -35,6 +35,9 @@ const Profile = lazy(() => import('@/pages/user/profile'));
 const MedicalHistory = lazy(
   () => import('@/pages/user/profile/medical-history'),
 );
+const Treatments = lazy(
+  () => import('@/pages/user/profile/treatments'),
+);
 
 // layout
 const Layout = lazy(() => import('@/layout'));
@@ -108,6 +111,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <MedicalHistory />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'treatments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <Treatments />
               </Suspense>
             ),
           },
