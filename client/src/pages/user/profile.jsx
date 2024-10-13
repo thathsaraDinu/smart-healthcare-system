@@ -1,24 +1,37 @@
 import { useQuery } from '@tanstack/react-query';
 import { getProfileData } from '@/api/user.api';
+import { LoadingSpinner } from '@/components/ui/spinner';
 
 const Profile = () => {
   // Get the user's profile data
-  const profile = useQuery({
+  const {
+    data: profile,
+    isLoading: isLoadingProfile,
+    isError: isProfileError,
+    error: profileError,
+  } = useQuery({
     queryKey: ['profile'],
     queryFn: getProfileData,
   });
 
-  if (profile.isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (profile.isError) {
-    return <div>Error: {profile.error.message}</div>;
-  }
-
-  return (  
+  return (
     <div>
-      <h1>Profile</h1>
+      {isLoadingProfile && (
+        <div className="flex items-center justify-center">
+          <LoadingSpinner className="w-36 h-36 my-10" />
+        </div>
+      )}
+      {isProfileError && (
+        <div className="text-red-500">
+          <p>Error: {profileError.message}</p>
+        </div>
+      )}
+      {profile && (
+        <div>
+          <h2>{profile.name}</h2>
+          <p>{profile.email}</p>
+        </div>
+      )}
     </div>
   );
 };

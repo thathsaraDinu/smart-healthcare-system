@@ -12,10 +12,6 @@ export const MENU_ITEMS = {
       title: 'About Us',
       url: '/about',
     },
-    {
-      title: 'Contact',
-      url: '/contact',
-    },
   ],
   USER: [
     {

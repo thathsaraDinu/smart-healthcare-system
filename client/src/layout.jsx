@@ -38,7 +38,11 @@ const Layout = () => {
   }, [profile, profileSuccess, setProfile]);
 
   if (profileLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner className="w-32 h-32" />
+      </div>
+    );
   }
 
   if (profileError) {
@@ -51,7 +55,7 @@ const Layout = () => {
       {!isLoggedIn || role === USER_ROLES.USER ? (
         <div>
           <Navbar />
-          <div className="flex-grow min-h-[calc(100vh-137px)]">
+          <div className="flex-grow min-h-[calc(100vh-357px)]">
             <Outlet />
           </div>
           <Footer />

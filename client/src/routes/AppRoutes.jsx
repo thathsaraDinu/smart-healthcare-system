@@ -14,7 +14,7 @@ const LoadingSpinner = lazy(() =>
 );
 
 const PageLoader = () => (
-  <div className="flex items-center justify-center h-screen">
+  <div className="flex items-center justify-center min-h-screen">
     <LoadingSpinner className="w-32 h-32" />
   </div>
 );
