@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import UserSchema from '../models/user.model.js';
-import { JWT_CONFIG, USER_ROLES } from '../constants/constants.js';
+import { JWT_CONFIG } from '../constants/constants.js';
 
 // Login user (Create and return access token and refresh token)
 const userLogin = async ({ email, password }) => {
