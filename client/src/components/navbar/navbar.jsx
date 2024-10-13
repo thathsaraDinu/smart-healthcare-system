@@ -13,25 +13,9 @@ import {
   SheetTrigger,
   SheetContent,
 } from '@/components/ui/sheet';
-import Logo from '@/assets/logo/logo.png';
-import AvatarIcon from '@/components/navbar/avatar';
+import AvatarIcon from '@/components/navbar/auth-button';
 import { useAuthStore } from '@/store/auth-store';
-
-// Menu Items for all users (public)
-const MenuItemsAll = [
-  {
-    title: 'Home',
-    url: '/',
-  },
-];
-
-// Menu Items for authenticated users (role: user)
-const MenuItemsUser = [
-  {
-    title: 'Home',
-    url: '/',
-  },
-];
+import { MENU_ITEMS } from '@/constants';
 
 export default function Navbar() {
   // Check if user is authenticated
@@ -41,24 +25,26 @@ export default function Navbar() {
   const role = useAuthStore((state) => state.role);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white dark:border-gray-800 dark:bg-gray-950">
+    <header className="sticky top-0 z-50 w-full border-b bg-white">
       <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
         <Link to="/" className="flex items-center gap-2">
-          <img
-            src={Logo}
-            alt="Logo"
-            className="h-10 w-10 rounded-md"
-          />
-          <span className="sr-only">ShopiFlow</span>
+          <div className="flex items-center gap-2">
+            <div className="text-blue-500 text-2xl font-extrabold">
+              Health
+            </div>
+            <div className="text-blue-900 text-2xl font-extrabold">
+              Care
+            </div>
+          </div>
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
           {/* Menu Items map */}
           {!isAuthenticated &&
-            MenuItemsAll.map((item, index) => (
+            MENU_ITEMS.ALL.map((item, index) => (
               <Link
                 key={index}
                 to={item.url}
-                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                className="text-blue-500 hover:text-blue-900"
               >
                 {item.title}
               </Link>
@@ -66,11 +52,11 @@ export default function Navbar() {
 
           {isAuthenticated &&
             role === 'user' &&
-            MenuItemsUser.map((item, index) => (
+            MENU_ITEMS.USER.map((item, index) => (
               <Link
                 key={index}
                 to={item.url}
-                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                className="text-blue-500 hover:text-blue-900"
               >
                 {item.title}
               </Link>
@@ -78,19 +64,19 @@ export default function Navbar() {
         </nav>
         <div className="flex items-center gap-4">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild className="hidden">
               <Button
                 variant="ghost"
                 size="icon"
                 className="rounded-full"
               >
-                <FiSearch className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                <FiSearch className="h-5 w-5 text-gray-500" />
                 <span className="sr-only">Search</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[300px] p-4">
               <div className="relative">
-                <FiSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <FiSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
                   type="search"
                   placeholder="Search..."
@@ -108,7 +94,7 @@ export default function Navbar() {
                 size="icon"
                 className="rounded-full md:hidden"
               >
-                <MdMenu className="h-5 w-5 text-gray-800 dark:text-gray-400" />
+                <MdMenu className="h-5 w-5 text-gray-800" />
                 <span className="sr-only">
                   Toggle navigation menu
                 </span>
@@ -117,21 +103,21 @@ export default function Navbar() {
             <SheetContent side="left" className="md:hidden">
               <div className="grid gap-4 p-4">
                 {/* Menu Items map */}
-                {MenuItemsAll.map((item, index) => (
+                {MENU_ITEMS.ALL.map((item, index) => (
                   <Link
                     key={index}
                     to={item.url}
-                    className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    className="text-sm font-medium text-gray-500 hover:text-gray-900"
                   >
                     {item.title}
                   </Link>
                 ))}
                 {isAuthenticated &&
-                  MenuItemsAll.map((item, index) => (
+                  MENU_ITEMS.USER.map((item, index) => (
                     <Link
                       key={index}
                       to={item.url}
-                      className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                      className="text-sm font-medium text-gray-500 hover:text-gray-900"
                     >
                       {item.title}
                     </Link>
