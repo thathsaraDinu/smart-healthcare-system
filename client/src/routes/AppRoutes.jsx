@@ -80,7 +80,7 @@ const router = createBrowserRouter([
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
               element={<Profile />}
-              roles={[USER_ROLES.ADMIN, USER_ROLES.USER]}
+              roles={[USER_ROLES.DOCTOR, USER_ROLES.USER]}
             />
           </Suspense>
         ),

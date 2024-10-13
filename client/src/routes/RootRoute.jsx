@@ -22,9 +22,9 @@ const RootRoute = () => {
 
   return isAuthenticated && role === USER_ROLES.USER ? (
     <Home />
-  ) : isAuthenticated && role === USER_ROLES.ADMIN ? (
+  ) : isAuthenticated && role === USER_ROLES.DOCTOR ? (
     <Dashboard />
-  ) : isAuthenticated && role === USER_ROLES.SUPER_ADMIN ? (
+  ) : isAuthenticated && role === USER_ROLES.ADMIN ? (
     <SuperDashboard />
   ) : (
     <Home />

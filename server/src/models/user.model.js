@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import { USER_ROLES } from '../constants/constants.js';
 
 export const UserSchema = new Schema(
   {
@@ -20,7 +21,7 @@ export const UserSchema = new Schema(
     role: {
       type: String,
       default: 'user',
-      enum: ['super_admin', 'admin', 'user'],
+      enum: Object.values(USER_ROLES),
       required: [true, 'User Role is required'],
       unique: false
     },

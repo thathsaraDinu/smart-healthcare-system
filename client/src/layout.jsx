@@ -56,9 +56,9 @@ const Layout = () => {
           </div>
           <Footer />
         </div>
-      ) : // Admin Layout
-      (isLoggedIn && role === USER_ROLES.ADMIN) ||
-        role === USER_ROLES.SUPER_ADMIN ? (
+      ) : // Admin or Doctor Layout
+      (isLoggedIn && role === USER_ROLES.DOCTOR) ||
+        role === USER_ROLES.ADMIN ? (
         <div className="flex h-screen w-screen overflow-hidden">
           <Sidebar />
           <div className="flex min-h-screen flex-1 flex-col overflow-y-auto">

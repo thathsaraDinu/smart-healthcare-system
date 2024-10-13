@@ -40,6 +40,6 @@ export const MENU_ITEMS = {
 // User roles enums
 export const USER_ROLES = {
   USER: 'user',
+  DOCTOR: 'doctor',
   ADMIN: 'admin',
-  SUPER_ADMIN: 'super_admin',
 };

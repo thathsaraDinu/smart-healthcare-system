@@ -1,5 +1,4 @@
 import { rateLimit } from 'express-rate-limit';
-import { httpLogger } from '../middleware/logger.js';
 
 const loginLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
