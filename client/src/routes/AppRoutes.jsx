@@ -29,10 +29,18 @@ const Register = lazy(
   () => import('@/pages/user/register'),
 );
 const Login = lazy(() => import('@/pages/user/login'));
+
+// Profile Pages
 const Profile = lazy(() => import('@/pages/user/profile'));
+const MedicalHistory = lazy(
+  () => import('@/pages/user/profile/medical-history'),
+);
 
 // layout
 const Layout = lazy(() => import('@/layout'));
+const ProfileLayout = lazy(
+  () => import('@/pages/user/profile-layout'),
+);
 
 const router = createBrowserRouter([
   {
@@ -74,16 +82,36 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+
+      // Profile Layout
       {
-        path: 'profile',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
-              element={<Profile />}
-              roles={[USER_ROLES.DOCTOR, USER_ROLES.USER]}
+              element={<ProfileLayout />}
+              roles={[USER_ROLES.USER]}
             />
           </Suspense>
         ),
+        path: 'profile',
+        children: [
+          {
+            path: '',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <Profile />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'history',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <MedicalHistory />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },

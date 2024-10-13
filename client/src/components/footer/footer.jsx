@@ -10,7 +10,7 @@ export default function Footer() {
     <footer className="bg-white">
       <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
-          <div className="mb-6 md:mb-0 max-w-[calc(100vw/2)]">
+          <div className="mb-6 md:mb-0 md:max-w-[calc(100vw/2)]">
             <Link
               to="/"
               className="flex items-center gap-2"
