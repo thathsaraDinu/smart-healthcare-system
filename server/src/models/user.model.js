@@ -13,6 +13,12 @@ export const UserSchema = new Schema(
       required: [true, 'Last Name is required'],
       unique: false
     },
+    profileImg: {
+      type: String,
+      default: 'default',
+      unique: false,
+      required: false
+    },
     email: {
       type: String,
       required: [true, 'Email is required'],
