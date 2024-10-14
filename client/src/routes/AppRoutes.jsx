@@ -31,6 +31,10 @@ const Register = lazy(
 const Login = lazy(() => import('@/pages/user/login'));
 const Profile = lazy(() => import('@/pages/user/profile'));
 
+const Appointment = lazy(
+  () => import('@/pages/appointments/appointments'),
+);
+
 // layout
 const Layout = lazy(() => import('@/layout'));
 
@@ -47,6 +51,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <RootRoute />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/appointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <Appointment />
           </Suspense>
         ),
       },
