@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Combobox } from '@/components/ui/combobox';
 import DoctorCard from './doctorCard';
+import { DatePicker } from '@/components/ui/date-picker';
 
 const doctors = [
   { value: '1', label: '1' },
@@ -12,6 +13,12 @@ const Appointment = () => {
   const [hospital, setHospital] = useState('');
   const [doctor, setDoctor] = useState('');
   const [specialization, setSpecialization] = useState('');
+  const [date, setDate] = useState('');
+
+  const onSearch = async (e) => {
+    e.preventDefault();
+    console.log({ hospital, doctor, specialization, date });
+  };
 
   return (
     <>
@@ -33,7 +40,10 @@ const Appointment = () => {
               But things on a small scale.
             </p>
           </div>
-          <form className="mx-10 min-w-[400px]">
+          <form
+            onSubmit={onSearch}
+            className="mx-10 min-w-[400px]"
+          >
             <h3></h3>
             <div className="mt-4">
               <p className="text-sm font-light mb-1">
@@ -70,6 +80,12 @@ const Appointment = () => {
                 value={specialization}
                 setValue={setSpecialization}
               />
+            </div>
+            <div className="mt-4">
+              <p className="text-sm font-light mb-1">
+                Date
+              </p>
+              <DatePicker date={date} setDate={setDate} />
             </div>
             <button
               type="submit"
