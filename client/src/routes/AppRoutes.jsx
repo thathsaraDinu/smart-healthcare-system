@@ -7,6 +7,7 @@ import {
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
 import MyAppointments from '@/pages/appointments/myAppointments';
+import AppointmentForm from '@/pages/appointments/appointmentForm';
 
 const LoadingSpinner = lazy(() =>
   import('@/components/ui/spinner').then((module) => ({
@@ -79,6 +80,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <MyAppointments />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/appointmentform',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <AppointmentForm />
           </Suspense>
         ),
       },
