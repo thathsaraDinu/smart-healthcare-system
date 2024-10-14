@@ -39,6 +39,12 @@ const Appointment = () => {
               <br />
               But things on a small scale.
             </p>
+            <button
+              type="submit"
+              className="mt-[50px] h-9 text-blue-500 border border-blue-500 hover:text-white hover:bg-blue-500 w-[300px] rounded-lg hover:bg-blue-600 transition-all"
+            >
+              View Available Doctors
+            </button>
           </div>
           <form
             onSubmit={onSearch}
@@ -98,7 +104,7 @@ const Appointment = () => {
       </section>
       <section className="container my-10">
         <div className="px-[120px]">
-          <h2 className="font-bold text-2xl text-blue-500 mb-5">
+          <h2 className="font-bold text-2xl mb-5">
             Available Doctors
           </h2>
           <div className="grid grid-cols-4 gap-4">

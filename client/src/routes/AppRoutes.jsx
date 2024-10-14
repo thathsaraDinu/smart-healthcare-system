@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
+import MyAppointments from '@/pages/appointments/myAppointments';
 
 const LoadingSpinner = lazy(() =>
   import('@/components/ui/spinner').then((module) => ({
@@ -34,6 +35,9 @@ const Profile = lazy(() => import('@/pages/user/profile'));
 const Appointment = lazy(
   () => import('@/pages/appointments/appointments'),
 );
+const ChannelingDetails = lazy(
+  () => import('@/pages/appointments/channelingDetails'),
+);
 
 // layout
 const Layout = lazy(() => import('@/layout'));
@@ -59,6 +63,22 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <Appointment />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/channel',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ChannelingDetails />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/myappointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <MyAppointments />
           </Suspense>
         ),
       },
