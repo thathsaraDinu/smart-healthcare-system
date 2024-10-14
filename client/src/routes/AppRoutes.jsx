@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
+import { Overview } from '@/pages/dashboard/overview';
 
 const LoadingSpinner = lazy(() =>
   import('@/components/ui/spinner').then((module) => ({
@@ -80,6 +81,17 @@ const router = createBrowserRouter([
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
               element={<Login />}
+              roles={[]}
+            />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'overview',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<Overview />}
               roles={[]}
             />
           </Suspense>
