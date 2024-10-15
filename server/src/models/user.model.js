@@ -3,14 +3,9 @@ import { USER_ROLES } from '../constants/constants.js';
 
 export const UserSchema = new Schema(
   {
-    firstName: {
+    fullName: {
       type: String,
-      required: [true, 'First Name is required'],
-      unique: false
-    },
-    lastName: {
-      type: String,
-      required: [true, 'Last Name is required'],
+      required: [true, 'Full Name is required'],
       unique: false
     },
     profileImg: {
@@ -45,6 +40,13 @@ export const UserSchema = new Schema(
       type: String,
       required: [true, 'Password is required'],
       unique: false
+    },
+    status: {
+      type: String,
+      default: function () {
+        return this.role === 'user' ? 'active' : 'inactive';
+      },
+      required: false
     }
   },
   {

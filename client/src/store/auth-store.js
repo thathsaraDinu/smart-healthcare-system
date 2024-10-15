@@ -28,7 +28,7 @@ export const useAuthStore = create(
       profile: (data) => {
         set({
           role: data.role,
-          fullName: data.firstName + ' ' + data.lastName,
+          fullName: data.fullName,
           id: data.id,
         });
       },
