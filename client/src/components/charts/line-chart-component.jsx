@@ -43,7 +43,6 @@ const LineChartComponent = ({ title, data }) => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <Tooltip />
-          
           <Line
             type="monotone"
             dataKey="product1"

@@ -16,15 +16,21 @@ const data1 = [
  
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = [
+  '#0D47A1',
+  '#1976D2',
+  '#42A5F5',
+  '#90CAF9',
+  '#E3F2FD',
+];
 
 const PieChartComponent = ({ data, title }) => {
   const [pieSelected, setPieSelected] = useState(100);
 
   return (
     <>
-      <div className="px-2 flex w-full items-center justify-evenly bg-transparent">
-        <h2 className="text-sm w-auto line-clamp-2 lg:line-clamp-none">
+      <div className="px-3 flex w-full items-center justify-evenly bg-transparent">
+        <h2 className="text-sm w-auto line-clamp-1 md:line-clamp-2 lg:line-clamp-none">
           {title}
         </h2>
         <select
@@ -69,7 +75,7 @@ const PieChartComponent = ({ data, title }) => {
                 fill={COLORS[index % COLORS.length]}
               />
             ))}
-          </Pie>
+          </Pie><div className=''></div>
           <Tooltip />
         </PieChart>
       </ResponsiveContainer>
