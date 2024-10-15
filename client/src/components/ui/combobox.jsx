@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   CaretSortIcon,
   CheckIcon,
+  Cross2Icon, // Import the icon for the clear button
 } from '@radix-ui/react-icons';
 
 import { cn } from '@/lib/utils';
@@ -22,12 +23,17 @@ import {
 
 export function Combobox({
   data,
-  width,
   placeholder,
   value,
   setValue,
 }) {
   const [open, setOpen] = React.useState(false);
+
+  // Function to clear the input value
+  const clearValue = () => {
+    setValue(''); // Clear the selected value
+    setOpen(false); // Close the dropdown
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -84,6 +90,14 @@ export function Combobox({
             </CommandGroup>
           </CommandList>
         </Command>
+        {/* Clear Button */}
+        <div className="flex justify-end p-2">
+          <Button variant="outline" onClick={clearValue}>
+            <Cross2Icon className="mr-2 h-4 w-4" />{' '}
+            {/* Clear icon */}
+            Clear
+          </Button>
+        </div>
       </PopoverContent>
     </Popover>
   );

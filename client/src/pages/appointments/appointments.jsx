@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Combobox } from '@/components/ui/combobox';
 import DoctorCard from './doctorCard';
 import { DatePicker } from '@/components/ui/date-picker';
+import useDoctors from '@/hooks/useDoctors';
 
 const doctors = [
   { value: '1', label: '1' },
@@ -10,14 +11,80 @@ const doctors = [
 ];
 
 const Appointment = () => {
+  const { data } = useDoctors();
+  const [filteredDoctors, setFilteredDoctors] =
+    useState(data);
+
   const [hospital, setHospital] = useState('');
   const [doctor, setDoctor] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [date, setDate] = useState('');
 
+  useEffect(() => {
+    if (data) {
+      setFilteredDoctors(data);
+    }
+  }, [data]);
+
+  const doctorNames =
+    data?.map((item) => ({
+      value: `${item.user.firstName} ${item.user.lastName}`,
+      label: `${item.user.firstName} ${item.user.lastName}`,
+    })) || [];
+
+  const hospitalNames =
+    data?.flatMap((item) =>
+      item.hospitalDetails.map((hospital) => ({
+        value: hospital.hospital,
+        label: hospital.hospital,
+      })),
+    ) || [];
+
+  const specializations =
+    data?.map((item) => ({
+      value: item.specialization,
+      label: item.specialization,
+    })) || [];
+
   const onSearch = async (e) => {
     e.preventDefault();
-    console.log({ hospital, doctor, specialization, date });
+
+    const results = data.filter((item) => {
+      const hospitalMatch = hospital
+        ? item.hospitalDetails.some((h) =>
+            h.hospital
+              .toLowerCase()
+              .includes(hospital.toLowerCase()),
+          )
+        : true;
+      const doctorMatch = doctor
+        ? `${item.user.firstName} ${item.user.lastName}`
+            .toLowerCase()
+            .includes(doctor.toLowerCase())
+        : true;
+      const specializationMatch = specialization
+        ? item.specialization
+            .toLowerCase()
+            .includes(specialization.toLowerCase())
+        : true;
+
+      const dateMatch = date
+        ? item.hospitalDetails.some((h) =>
+            h.arrivalTimes.some((a) =>
+              a.time.includes(date),
+            ),
+          )
+        : true;
+
+      return (
+        hospitalMatch &&
+        doctorMatch &&
+        specializationMatch &&
+        dateMatch
+      );
+    });
+
+    setFilteredDoctors(results);
   };
 
   return (
@@ -46,60 +113,62 @@ const Appointment = () => {
               View Available Doctors
             </button>
           </div>
-          <form
-            onSubmit={onSearch}
-            className="mx-10 min-w-[400px]"
-          >
-            <h3></h3>
-            <div className="mt-4">
-              <p className="text-sm font-light mb-1">
-                Doctor name
-              </p>
-              <Combobox
-                data={doctors}
-                width="400px"
-                placeholder="Doctor"
-                value={doctor}
-                setValue={setDoctor}
-              />
-            </div>
-            <div className="mt-4">
-              <p className="text-sm font-light mb-1">
-                Hospital
-              </p>
-              <Combobox
-                data={doctors}
-                width="400px"
-                placeholder="Hospital"
-                value={hospital}
-                setValue={setHospital}
-              />
-            </div>
-            <div className="mt-4">
-              <p className="text-sm font-light mb-1">
-                Specialization
-              </p>
-              <Combobox
-                data={doctors}
-                width="400px"
-                placeholder="Specilization"
-                value={specialization}
-                setValue={setSpecialization}
-              />
-            </div>
-            <div className="mt-4">
-              <p className="text-sm font-light mb-1">
-                Date
-              </p>
-              <DatePicker date={date} setDate={setDate} />
-            </div>
-            <button
-              type="submit"
-              className="mt-5 h-9 text-white bg-blue-500 w-full rounded-lg hover:bg-blue-600 transition-all"
+          {data && (
+            <form
+              onSubmit={onSearch}
+              className="mx-10 min-w-[400px]"
             >
-              Search
-            </button>
-          </form>
+              <h3></h3>
+              <div className="mt-4">
+                <p className="text-sm font-light mb-1">
+                  Doctor name
+                </p>
+                <Combobox
+                  data={doctorNames}
+                  width="400px"
+                  placeholder="Doctor"
+                  value={doctor}
+                  setValue={setDoctor}
+                />
+              </div>
+              <div className="mt-4">
+                <p className="text-sm font-light mb-1">
+                  Hospital
+                </p>
+                <Combobox
+                  data={hospitalNames}
+                  width="400px"
+                  placeholder="Hospital"
+                  value={hospital}
+                  setValue={setHospital}
+                />
+              </div>
+              <div className="mt-4">
+                <p className="text-sm font-light mb-1">
+                  Specialization
+                </p>
+                <Combobox
+                  data={specializations}
+                  width="400px"
+                  placeholder="Specilization"
+                  value={specialization}
+                  setValue={setSpecialization}
+                />
+              </div>
+              <div className="mt-4">
+                <p className="text-sm font-light mb-1">
+                  Date
+                </p>
+                <DatePicker date={date} setDate={setDate} />
+              </div>
+              <button
+                type="submit"
+                className="mt-5 h-9 text-white bg-blue-500 w-full rounded-lg hover:bg-blue-600 transition-all"
+              >
+                Search
+              </button>
+            </form>
+          )}
         </div>
       </section>
       <section className="container my-10">
@@ -108,16 +177,18 @@ const Appointment = () => {
             Available Doctors
           </h2>
           <div className="grid grid-cols-4 gap-4">
-            <DoctorCard
-              text="Here are the biggest enterprise technology
-          acquisitions of 2021 so far, in reverse
-          chronological order."
-            />
-            <DoctorCard />
-            <DoctorCard />
-            <DoctorCard />
-            <DoctorCard />
-            <DoctorCard />
+            {filteredDoctors &&
+            filteredDoctors.length > 0 ? (
+              filteredDoctors.map((item) => (
+                <DoctorCard key={item._id} data={item} />
+              ))
+            ) : (
+              <>
+                <div className="font-semibold mt-10">
+                  No Doctors Availabe
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
