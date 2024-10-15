@@ -7,8 +7,6 @@ import {
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
 import { Overview } from '@/pages/dashboard/overview';
-import Treatments from '@/pages/user/profile/treatments';
-import MedicalHistory from '@/pages/user/profile/medical-history';
 import Appointments from '@/pages/appointments/appointments';
 import ChannelingDetails from '@/pages/appointments/channelingDetails';
 import MyAppointments from '@/pages/appointments/myAppointments';
@@ -39,6 +37,12 @@ const Login = lazy(() => import('@/pages/user/login'));
 
 // Profile Pages
 const Profile = lazy(() => import('@/pages/user/profile'));
+const MedicalHistory = lazy(
+  () => import('@/pages/user/profile/medical-history'),
+);
+const Treatments = lazy(
+  () => import('@/pages/user/profile/treatments'),
+);
 
 // layout
 const Layout = lazy(() => import('@/layout'));
