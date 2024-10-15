@@ -1,5 +1,5 @@
 import React from 'react';
-import avatar from '@/assets/avatar/avatar.png';
+import avatar from '@/assets/avatar/default.png';
 import { Link } from 'react-router-dom';
 
 const DoctorCard = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import avatar from '@/assets/avatar/avatar.png';
+import avatar from '@/assets/avatar/default.png';
 import ChannelDetailsCard from './channelDetailsCard';
 
 const ChannelingDetails = () => {

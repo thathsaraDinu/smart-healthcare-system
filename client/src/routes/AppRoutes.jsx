@@ -7,6 +7,10 @@ import {
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
 import { Overview } from '@/pages/dashboard/overview';
+import Treatments from '@/pages/user/profile/treatments';
+import MedicalHistory from '@/pages/user/profile/medical-history';
+import Appointments from '@/pages/appointments/appointments';
+import ChannelingDetails from '@/pages/appointments/channelingDetails';
 import MyAppointments from '@/pages/appointments/myAppointments';
 import AppointmentForm from '@/pages/appointments/appointmentForm';
 
@@ -62,7 +66,7 @@ const router = createBrowserRouter([
         path: '/appointments',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <Appointment />
+            <Appointments />
           </Suspense>
         ),
       },
