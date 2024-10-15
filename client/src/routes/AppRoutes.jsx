@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
+import { Overview } from '@/pages/dashboard/overview';
 import MyAppointments from '@/pages/appointments/myAppointments';
 import AppointmentForm from '@/pages/appointments/appointmentForm';
 
@@ -16,7 +17,7 @@ const LoadingSpinner = lazy(() =>
 );
 
 const PageLoader = () => (
-  <div className="flex items-center justify-center h-screen">
+  <div className="flex items-center justify-center min-h-screen">
     <LoadingSpinner className="w-32 h-32" />
   </div>
 );
@@ -31,17 +32,15 @@ const Register = lazy(
   () => import('@/pages/user/register'),
 );
 const Login = lazy(() => import('@/pages/user/login'));
-const Profile = lazy(() => import('@/pages/user/profile'));
 
-const Appointment = lazy(
-  () => import('@/pages/appointments/appointments'),
-);
-const ChannelingDetails = lazy(
-  () => import('@/pages/appointments/channelingDetails'),
-);
+// Profile Pages
+const Profile = lazy(() => import('@/pages/user/profile'));
 
 // layout
 const Layout = lazy(() => import('@/layout'));
+const ProfileLayout = lazy(
+  () => import('@/pages/user/profile-layout'),
+);
 
 const router = createBrowserRouter([
   {
@@ -116,15 +115,54 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'profile',
+        path: 'overview',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
-              element={<Profile />}
-              roles={[USER_ROLES.ADMIN, USER_ROLES.USER]}
+              element={<Overview />}
+              roles={[]}
             />
           </Suspense>
         ),
+      },
+
+      // Profile Layout
+      {
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<ProfileLayout />}
+              roles={[USER_ROLES.USER]}
+            />
+          </Suspense>
+        ),
+        path: 'profile',
+        children: [
+          {
+            path: '',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <Profile />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'history',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <MedicalHistory />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'treatments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <Treatments />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },

@@ -21,7 +21,7 @@ const sideBarItems = [
     icon: <MdSpaceDashboard />,
     submenu: [],
     to: '/',
-    roles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
+    roles: [USER_ROLES.DOCTOR, USER_ROLES.ADMIN],
   },
 ];
 

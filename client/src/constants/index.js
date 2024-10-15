@@ -16,10 +16,6 @@ export const MENU_ITEMS = {
       title: 'About Us',
       url: '/about',
     },
-    {
-      title: 'Contact',
-      url: '/contact',
-    },
   ],
   USER: [
     {
@@ -44,6 +40,7 @@ export const MENU_ITEMS = {
 // User roles enums
 export const USER_ROLES = {
   USER: 'user',
+  DOCTOR: 'doctor',
+  MEDICAL_STAFF: 'medical_staff',
   ADMIN: 'admin',
-  SUPER_ADMIN: 'super_admin',
 };

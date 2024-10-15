@@ -23,6 +23,7 @@ export const LOGGER_CONFIG = {
 // Role configuration constants
 export const USER_ROLES = {
   USER: 'user',
-  ADMIN: 'admin',
-  SUPER_ADMIN: 'super_admin'
+  DOCTOR: 'doctor',
+  MEDICAL_STAFF: 'medical_staff',
+  ADMIN: 'admin'
 };

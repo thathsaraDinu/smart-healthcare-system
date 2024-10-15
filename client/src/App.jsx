@@ -14,7 +14,7 @@ function App() {
         <AppRoutes />
         <ReactQueryDevtools
           initialIsOpen={false}
-          position="left"
+          position="right"
           buttonPosition="bottom-left"
         />
       </QueryClientProvider>
