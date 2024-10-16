@@ -1,29 +1,43 @@
 import { z } from 'zod';
+import { MARITAL_STATUS, GENDER } from '@/constants';
 
 // Zod validation schema
 export const userRegisterSchema = z
   .object({
-    fullName: z.string().min(1, 'Name required'),
-    dob: z.string().min(1, 'Date of birth required'),
-    maritalStatus: z.enum([
-      'single',
-      'married',
-      'divorced',
-      'widowed',
-    ]),
-    gender: z.enum(['male', 'female']),
+    fullName: z.string().min(1, 'Name is required'),
+    dob: z.string().min(1, 'Date of birth is required'),
+    maritalStatus: z
+      .string()
+      .refine(
+        (val) =>
+          Object.values(MARITAL_STATUS).includes(val),
+        {
+          message: 'Marital status is required',
+        },
+      ),
+    gender: z
+      .string()
+      .refine(
+        (val) => Object.values(GENDER).includes(val),
+        {
+          message: 'Gender Required',
+        },
+      ),
     mobile: z
       .string()
+      .min(1, 'Mobile number is required')
       .regex(/^\d{10}$/, 'Invalid mobile number'),
     email: z.string().email('Invalid email address'),
-    physicianName: z
-      .string()
-      .min(1, 'Physician name required'),
+    physicianName: z.string().optional(),
     physicianMobile: z
       .string()
-      .regex(/^\d{10}$/, 'Invalid mobile number'),
+      .optional()
+      .refine((value) => !value || /^\d{10}$/.test(value), {
+        message: 'Invalid mobile number',
+      }),
     emergencyContact: z
       .string()
+      .min(1, 'Emergency contact is required')
       .regex(/^\d{10}$/, 'Invalid mobile number'),
     password: z
       .string()

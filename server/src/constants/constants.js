@@ -27,3 +27,24 @@ export const USER_ROLES = {
   MEDICAL_STAFF: 'medical_staff',
   ADMIN: 'admin'
 };
+
+// Gender enums
+export const GENDER = {
+  MALE: 'male',
+  FEMALE: 'female'
+};
+
+// Marital Status enums
+export const MARITAL_STATUS = {
+  SINGLE: 'single',
+  MARRIED: 'married',
+  DIVORCED: 'divorced',
+  WIDOWED: 'widowed'
+};
+
+// Account Status enums
+export const ACCOUNT_STATUS = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  SUSPENDED: 'suspended'
+};
