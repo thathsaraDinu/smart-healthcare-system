@@ -9,6 +9,10 @@ export const MENU_ITEMS = {
       url: '/',
     },
     {
+      title: 'Appointments',
+      url: '/appointments',
+    },
+    {
       title: 'About Us',
       url: '/about',
     },

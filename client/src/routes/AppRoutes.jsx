@@ -6,6 +6,11 @@ import {
 } from 'react-router-dom';
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
+import { Overview } from '@/pages/dashboard/overview';
+import Appointments from '@/pages/appointments/appointments';
+import ChannelingDetails from '@/pages/appointments/channelingDetails';
+import MyAppointments from '@/pages/appointments/myAppointments';
+import AppointmentForm from '@/pages/appointments/appointmentForm';
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
     <LoadingSpinner className="w-32 h-32" />
@@ -65,6 +70,38 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <RootRoute />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/appointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <Appointments />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/channel',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ChannelingDetails />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/myappointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <MyAppointments />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/appointmentform',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <AppointmentForm />
           </Suspense>
         ),
       },
