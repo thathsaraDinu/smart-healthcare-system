@@ -9,7 +9,9 @@ const useDoctors = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await instance.get('/api/doctor');
+      const response = await instance.get(
+        '/api/user/doctors',
+      );
 
       setData(response.data);
     } catch (error) {

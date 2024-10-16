@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import UserSchema from '../models/user.model.js';
+import UserSchema from '../models/user-models/user.model.js';
 import { JWT_CONFIG } from '../constants/constants.js';
 
 // Login user (Create and return access token and refresh token)

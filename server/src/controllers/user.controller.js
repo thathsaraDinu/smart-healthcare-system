@@ -1,4 +1,5 @@
-import { getProfile, getUsers, register } from '../services/user.service.js';
+import { USER_ROLES } from '../constants/constants.js';
+import { getDoctors, getProfile, getUsers, register } from '../services/user.service.js';
 
 const UserController = {
   // Register a new user
@@ -36,6 +37,18 @@ const UserController = {
       const users = await getUsers(role);
 
       return res.status(200).json(users);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  // Get all doctors
+  // Anyone can access
+  getDoctors: async (req, res) => {
+    try {
+      const doctors = await getDoctors();
+
+      return res.status(200).json(doctors);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
