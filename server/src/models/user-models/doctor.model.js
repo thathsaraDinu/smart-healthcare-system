@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { USER_ROLES } from '../constants/constants.js';
+import { USER_ROLES } from '../../constants/constants.js';
 
 const DoctorSchema = new Schema({
   specialization: {

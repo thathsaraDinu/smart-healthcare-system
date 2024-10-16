@@ -10,6 +10,7 @@ const router = Router();
 // Public routes
 // router.post('/', validateRequest('createUser'), UserController.register);
 router.post('/', UserController.register);
+router.get('/doctors', UserController.getDoctors);
 
 // User only routes
 router.get(

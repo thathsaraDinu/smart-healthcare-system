@@ -1,6 +1,6 @@
-import UserSchema from '../models/user.model.js';
+import UserSchema from '../models/user-models/user.model.js';
 import Patient from '../models/user-models/patient.model.js';
-import Doctor from '../models/doctor.model.js';
+import Doctor from '../models/user-models/doctor.model.js';
 import bcrypt from 'bcrypt';
 import { USER_ROLES } from '../constants/constants.js';
 
@@ -136,6 +136,21 @@ export const getUsers = async (role) => {
       email: user.email,
       role: user.role
     }));
+  } catch (error) {
+    throw {
+      status: 500,
+      message: error.message
+    };
+  }
+};
+
+// Get all doctors
+export const getDoctors = async () => {
+  try {
+    // Find all users with the role of a doctor and remove the password field
+    const doctors = await Doctor.find().select('-password');
+
+    return doctors;
   } catch (error) {
     throw {
       status: 500,
