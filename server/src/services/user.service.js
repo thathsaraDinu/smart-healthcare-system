@@ -1,4 +1,5 @@
 import UserSchema from '../models/user.model.js';
+import Patient from '../models/user-models/patient.model.js';
 import bcrypt from 'bcrypt';
 
 // Register a new user
@@ -20,7 +21,7 @@ export const register = async (data) => {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     // Create a new user object
-    const user = new UserSchema({
+    const user = new Patient({
       ...data,
       password: hashedPassword
     });

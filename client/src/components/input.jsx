@@ -176,7 +176,7 @@ export const InputField = ({
           {label && type === 'radio' ? (
             <FormLabel
               className={labelStyle}
-              htmlFor={false}
+              htmlFor={undefined}
               id={name}
               name={name}
             >
