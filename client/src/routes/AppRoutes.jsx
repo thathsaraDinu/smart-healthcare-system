@@ -6,15 +6,11 @@ import {
 } from 'react-router-dom';
 import RootRoute from '@/routes/RootRoute';
 import { USER_ROLES } from '@/constants';
-import { Overview } from '@/pages/dashboard/overview';
-import Appointments from '@/pages/appointments/appointments';
-import ChannelingDetails from '@/pages/appointments/channelingDetails';
-import MyAppointments from '@/pages/appointments/myAppointments';
-import AppointmentForm from '@/pages/appointments/appointmentForm';
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <LoadingSpinner className="w-32 h-32" />
-  </div>
+
+const LoadingSpinner = lazy(() =>
+  import('@/components/ui/spinner').then((module) => ({
+    default: module.LoadingSpinner,
+  })),
 );
 
 //admin pages
@@ -23,12 +19,6 @@ const Overview = lazy(
 );
 const AllAppointments = lazy(
   () => import('@/pages/dashboard/all-appointments'),
-);
-
-const LoadingSpinner = lazy(() =>
-  import('@/components/ui/spinner').then((module) => ({
-    default: module.LoadingSpinner,
-  })),
 );
 
 // Private Route
@@ -51,10 +41,30 @@ const Treatments = lazy(
   () => import('@/pages/user/profile/treatments'),
 );
 
+// Appointments Pages
+const Appointments = lazy(
+  () => import('@/pages/appointments/appointments'),
+);
+const MyAppointments = lazy(
+  () => import('@/pages/appointments/myAppointments'),
+);
+const ChannelingDetails = lazy(
+  () => import('@/pages/appointments/channelingDetails'),
+);
+const AppointmentForm = lazy(
+  () => import('@/pages/appointments/appointmentForm'),
+);
+
 // layout
 const Layout = lazy(() => import('@/layout'));
 const ProfileLayout = lazy(
   () => import('@/pages/user/profile-layout'),
+);
+
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <LoadingSpinner className="w-32 h-32" />
+  </div>
 );
 
 const router = createBrowserRouter([
