@@ -54,8 +54,7 @@ export const getProfile = async (id) => {
     // Return only the necessary user details
     return {
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role,
       gender: user.gender,
@@ -89,8 +88,7 @@ export const getUserByEmail = async (email) => {
     // Return only the necessary user details
     return {
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role
     };
@@ -113,8 +111,7 @@ export const getUsers = async (role) => {
     // Return only the necessary user details
     return users.map((user) => ({
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role
     }));
@@ -152,8 +149,7 @@ export const updateUserRole = async (id, role) => {
     // Return only the necessary user details
     return {
       id: updatedUser._id,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
+      fullName: updatedUser.fullName,
       email: updatedUser.email,
       role: updatedUser.role
     };
@@ -182,8 +178,7 @@ export const deleteUser = async (id) => {
     // Return only the necessary user details
     return {
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role
     };

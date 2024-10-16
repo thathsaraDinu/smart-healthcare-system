@@ -11,17 +11,24 @@ import Appointments from '@/pages/appointments/appointments';
 import ChannelingDetails from '@/pages/appointments/channelingDetails';
 import MyAppointments from '@/pages/appointments/myAppointments';
 import AppointmentForm from '@/pages/appointments/appointmentForm';
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <LoadingSpinner className="w-32 h-32" />
+  </div>
+);
+
+//admin pages
+const Overview = lazy(
+  () => import('@/pages/dashboard/overview'),
+);
+const AllAppointments = lazy(
+  () => import('@/pages/dashboard/all-appointments'),
+);
 
 const LoadingSpinner = lazy(() =>
   import('@/components/ui/spinner').then((module) => ({
     default: module.LoadingSpinner,
   })),
-);
-
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <LoadingSpinner className="w-32 h-32" />
-  </div>
 );
 
 // Private Route
@@ -122,18 +129,29 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      // admin Layout
       {
         path: 'overview',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
               element={<Overview />}
-              roles={[]}
+              roles={[USER_ROLES.ADMIN]}
             />
           </Suspense>
         ),
       },
-
+      {
+        path: 'all-appointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<AllAppointments />}
+              roles={[USER_ROLES.ADMIN]}
+            />
+          </Suspense>
+        ),
+      },
       // Profile Layout
       {
         element: (

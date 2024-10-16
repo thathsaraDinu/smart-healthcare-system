@@ -15,7 +15,7 @@ import InputField from '../form-field';
 const BarChartComponent = ({ data, title }) => {
   return (
     <>
-      <div className="flex w-full items-center justify-evenly">
+      <div className="px-3 flex w-full items-center justify-evenly">
         <h2 className="text-sm">{title}</h2>
         <select className="py-1 px-2 text-xs rounded-md">
           <option className="py-2">Select range</option>
