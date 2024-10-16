@@ -8,7 +8,8 @@ const router = Router();
 
 // All routes are prefixed with /api/users
 // Public routes
-router.post('/', validateRequest('createUser'), UserController.register);
+// router.post('/', validateRequest('createUser'), UserController.register);
+router.post('/', UserController.register);
 
 // User only routes
 router.get(
