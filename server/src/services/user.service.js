@@ -1,6 +1,8 @@
 import UserSchema from '../models/user.model.js';
 import Patient from '../models/user-models/patient.model.js';
+import Doctor from '../models/doctor.model.js';
 import bcrypt from 'bcrypt';
+import { USER_ROLES } from '../constants/constants.js';
 
 // Register a new user
 export const register = async (data) => {
@@ -20,11 +22,29 @@ export const register = async (data) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create a new user object
-    const user = new Patient({
-      ...data,
-      password: hashedPassword
-    });
+    let user;
+    console.log(data.role);
+    switch (data.role) {
+      case USER_ROLES.USER:
+        user = new Patient({
+          ...data,
+          password: hashedPassword
+        });
+        break;
+
+      case USER_ROLES.DOCTOR:
+        user = new Doctor({
+          ...data,
+          password: hashedPassword
+        });
+        break;
+
+      default:
+        throw {
+          status: 400,
+          message: 'Invalid role'
+        };
+    }
 
     // Save the user object to the database
     await user.save();

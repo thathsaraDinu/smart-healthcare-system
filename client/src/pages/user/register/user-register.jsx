@@ -8,6 +8,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
+import { USER_ROLES } from '@/constants';
 import { userRegisterSchema } from '@/validations/user-validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -50,7 +51,7 @@ const UserRegisterForm = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    data.role = USER_ROLES.USER;
     addUser.mutate(data);
   };
 

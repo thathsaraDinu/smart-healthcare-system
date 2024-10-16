@@ -1,11 +1,10 @@
-import User from '../models/user.model.js';
 import Doctor from '../models/doctor.model.js';
 
 const DoctorController = {
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
-      const user = await User.findOne({ firstName: id });
+      const user = await Doctor.findOne({ firstName: id });
 
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -28,7 +27,7 @@ const DoctorController = {
   },
   getAllDoctors: async (req, res) => {
     try {
-      const doctors = await Doctor.find().populate('user', 'firstName lastName profileImg gender');
+      const doctors = await Doctor.find();
 
       if (!doctors.length) {
         return res.status(404).json({ message: 'No doctors found' });
