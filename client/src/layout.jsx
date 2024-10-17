@@ -6,10 +6,9 @@ import { useAuthStore } from './store/auth-store';
 import { USER_ROLES } from './constants';
 import Sidebar from './components/sidebar/sidebar';
 import DashboardNavbar from './components/navbar/dashboard-navbar';
-import { useQuery } from '@tanstack/react-query';
-import { getProfileData } from './api/user.api';
 import { LoadingSpinner } from './components/ui/spinner';
 import { useEffect } from 'react';
+import { useProfile } from './hooks/use-users';
 
 const Layout = () => {
   const isLoggedIn = useAuthStore(
@@ -25,11 +24,7 @@ const Layout = () => {
     isLoading: profileLoading,
     isError: profileError,
     isSuccess: profileSuccess,
-  } = useQuery({
-    queryKey: ['profile', isLoggedIn],
-    queryFn: getProfileData,
-    enabled: isLoggedIn,
-  });
+  } = useProfile(isLoggedIn);
 
   useEffect(() => {
     if (profileSuccess) {
