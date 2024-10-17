@@ -15,8 +15,6 @@ const Appointment = () => {
   const [filteredDoctors, setFilteredDoctors] =
     useState(data);
 
-  console.log(data);
-
   const [hospital, setHospital] = useState('');
   const [doctor, setDoctor] = useState('');
   const [specialization, setSpecialization] = useState('');

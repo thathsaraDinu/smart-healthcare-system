@@ -92,7 +92,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/channel',
+        path: '/channel/:doctorId',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ChannelingDetails />

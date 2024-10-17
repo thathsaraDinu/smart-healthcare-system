@@ -15,13 +15,13 @@ const DoctorCard = ({ data }) => {
       </p>
       <div className="px-5 pb-5">
         <h5 className="mb-2 text-lg text-center font-bold tracking-tight text-gray-900">
-          Dr. {data.fullName}
+          {data.fullName}
         </h5>
         <p className="mb-3 text-xs text-center font-normal text-gray-700">
           {data.specialization}
         </p>
         <Link
-          to="/channel"
+          to={`/channel/${data._id}`}
           className="flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600"
         >
           Channel Now
