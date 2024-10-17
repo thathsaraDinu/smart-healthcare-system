@@ -1,5 +1,8 @@
-import UserSchema from '../models/user.model.js';
+import UserSchema from '../models/user-models/user.model.js';
+import Patient from '../models/user-models/patient.model.js';
+import Doctor from '../models/user-models/doctor.model.js';
 import bcrypt from 'bcrypt';
+import { USER_ROLES } from '../constants/constants.js';
 
 // Register a new user
 export const register = async (data) => {
@@ -19,11 +22,29 @@ export const register = async (data) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create a new user object
-    const user = new UserSchema({
-      ...data,
-      password: hashedPassword
-    });
+    let user;
+    console.log(data.role);
+    switch (data.role) {
+      case USER_ROLES.USER:
+        user = new Patient({
+          ...data,
+          password: hashedPassword
+        });
+        break;
+
+      case USER_ROLES.DOCTOR:
+        user = new Doctor({
+          ...data,
+          password: hashedPassword
+        });
+        break;
+
+      default:
+        throw {
+          status: 400,
+          message: 'Invalid role'
+        };
+    }
 
     // Save the user object to the database
     await user.save();
@@ -54,12 +75,12 @@ export const getProfile = async (id) => {
     // Return only the necessary user details
     return {
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role,
       gender: user.gender,
-      mobile: user.mobile
+      mobile: user.mobile,
+      profileImg: user.profileImg
     };
   } catch (error) {
     throw {
@@ -88,8 +109,7 @@ export const getUserByEmail = async (email) => {
     // Return only the necessary user details
     return {
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role
     };
@@ -112,11 +132,25 @@ export const getUsers = async (role) => {
     // Return only the necessary user details
     return users.map((user) => ({
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role
     }));
+  } catch (error) {
+    throw {
+      status: 500,
+      message: error.message
+    };
+  }
+};
+
+// Get all doctors
+export const getDoctors = async () => {
+  try {
+    // Find all users with the role of a doctor and remove the password field
+    const doctors = await Doctor.find().select('-password');
+
+    return doctors;
   } catch (error) {
     throw {
       status: 500,
@@ -151,8 +185,7 @@ export const updateUserRole = async (id, role) => {
     // Return only the necessary user details
     return {
       id: updatedUser._id,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
+      fullName: updatedUser.fullName,
       email: updatedUser.email,
       role: updatedUser.role
     };
@@ -181,8 +214,7 @@ export const deleteUser = async (id) => {
     // Return only the necessary user details
     return {
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role
     };

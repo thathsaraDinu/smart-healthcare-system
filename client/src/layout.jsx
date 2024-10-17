@@ -38,7 +38,11 @@ const Layout = () => {
   }, [profile, profileSuccess, setProfile]);
 
   if (profileLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner className="w-32 h-32" />
+      </div>
+    );
   }
 
   if (profileError) {
@@ -51,14 +55,14 @@ const Layout = () => {
       {!isLoggedIn || role === USER_ROLES.USER ? (
         <div>
           <Navbar />
-          <div className="flex-grow min-h-[calc(100vh-137px)]">
+          <div className="flex-grow min-h-[calc(100vh-357px)]">
             <Outlet />
           </div>
           <Footer />
         </div>
-      ) : // Admin Layout
-      (isLoggedIn && role === USER_ROLES.ADMIN) ||
-        role === USER_ROLES.SUPER_ADMIN ? (
+      ) : // Admin or Doctor Layout
+      (isLoggedIn && role === USER_ROLES.DOCTOR) ||
+        role === USER_ROLES.ADMIN ? (
         <div className="flex h-screen w-screen overflow-hidden">
           <Sidebar />
           <div className="flex min-h-screen flex-1 flex-col overflow-y-auto">

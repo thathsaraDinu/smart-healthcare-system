@@ -7,6 +7,8 @@ import { useAuthStore } from '@/store/auth-store';
 import Logo from '@/assets/logo/logo.png';
 import { USER_ROLES } from '@/constants';
 import {
+  MdBarChart,
+  MdCalendarMonth,
   MdLogout,
   MdSpaceDashboard,
 
@@ -21,7 +23,21 @@ const sideBarItems = [
     icon: <MdSpaceDashboard />,
     submenu: [],
     to: '/',
-    roles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
+    roles: [USER_ROLES.DOCTOR, USER_ROLES.ADMIN],
+  },
+  {
+    title: 'Overview',
+    icon: <MdBarChart />,
+    submenu: [],
+    to: '/overview',
+    roles: [USER_ROLES.ADMIN],
+  },
+  {
+    title: 'Appointments',
+    icon: <MdCalendarMonth />,
+    submenu: [],
+    to: '/all-appointments',
+    roles: [USER_ROLES.ADMIN],
   },
 ];
 

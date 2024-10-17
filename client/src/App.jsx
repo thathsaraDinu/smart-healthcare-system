@@ -12,11 +12,11 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <AppRoutes />
-        <ReactQueryDevtools
+        {/* <ReactQueryDevtools
           initialIsOpen={false}
-          position="left"
+          position="right"
           buttonPosition="bottom-left"
-        />
+        /> */}
       </QueryClientProvider>
     </>
   );

@@ -23,6 +23,28 @@ export const LOGGER_CONFIG = {
 // Role configuration constants
 export const USER_ROLES = {
   USER: 'user',
-  ADMIN: 'admin',
-  SUPER_ADMIN: 'super_admin'
+  DOCTOR: 'doctor',
+  MEDICAL_STAFF: 'medical_staff',
+  ADMIN: 'admin'
+};
+
+// Gender enums
+export const GENDER = {
+  MALE: 'male',
+  FEMALE: 'female'
+};
+
+// Marital Status enums
+export const MARITAL_STATUS = {
+  SINGLE: 'single',
+  MARRIED: 'married',
+  DIVORCED: 'divorced',
+  WIDOWED: 'widowed'
+};
+
+// Account Status enums
+export const ACCOUNT_STATUS = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  SUSPENDED: 'suspended'
 };

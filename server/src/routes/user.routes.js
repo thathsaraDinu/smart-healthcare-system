@@ -8,16 +8,18 @@ const router = Router();
 
 // All routes are prefixed with /api/users
 // Public routes
-router.post('/', validateRequest('createUser'), UserController.register);
+// router.post('/', validateRequest('createUser'), UserController.register);
+router.post('/', UserController.register);
+router.get('/doctors', UserController.getDoctors);
 
 // User only routes
 router.get(
   '/profile',
-  verifyAuth([USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN, USER_ROLES.USER]),
+  verifyAuth([USER_ROLES.ADMIN, USER_ROLES.DOCTOR, USER_ROLES.USER]),
   UserController.profile
 );
 
 // Admin only routes
-router.get('/users', verifyAuth([USER_ROLES.SUPER_ADMIN]), UserController.getUsers);
+router.get('/users', verifyAuth([USER_ROLES.ADMIN]), UserController.getUsers);
 
 export default router;

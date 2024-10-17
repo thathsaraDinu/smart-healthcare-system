@@ -13,10 +13,12 @@ const LoadingSpinner = lazy(() =>
   })),
 );
 
-const PageLoader = () => (
-  <div className="flex items-center justify-center h-screen">
-    <LoadingSpinner className="w-32 h-32" />
-  </div>
+//admin pages
+const Overview = lazy(
+  () => import('@/pages/dashboard/overview'),
+);
+const AllAppointments = lazy(
+  () => import('@/pages/dashboard/all-appointments'),
 );
 
 // Private Route
@@ -29,10 +31,41 @@ const Register = lazy(
   () => import('@/pages/user/register'),
 );
 const Login = lazy(() => import('@/pages/user/login'));
+
+// Profile Pages
 const Profile = lazy(() => import('@/pages/user/profile'));
+const MedicalHistory = lazy(
+  () => import('@/pages/user/profile/medical-history'),
+);
+const Treatments = lazy(
+  () => import('@/pages/user/profile/treatments'),
+);
+
+// Appointments Pages
+const Appointments = lazy(
+  () => import('@/pages/appointments/appointments'),
+);
+const MyAppointments = lazy(
+  () => import('@/pages/appointments/myAppointments'),
+);
+const ChannelingDetails = lazy(
+  () => import('@/pages/appointments/channelingDetails'),
+);
+const AppointmentForm = lazy(
+  () => import('@/pages/appointments/appointmentForm'),
+);
 
 // layout
 const Layout = lazy(() => import('@/layout'));
+const ProfileLayout = lazy(
+  () => import('@/pages/user/profile-layout'),
+);
+
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <LoadingSpinner className="w-32 h-32" />
+  </div>
+);
 
 const router = createBrowserRouter([
   {
@@ -47,6 +80,38 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <RootRoute />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/appointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <Appointments />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/channel',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ChannelingDetails />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/myappointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <MyAppointments />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/appointmentform',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <AppointmentForm />
           </Suspense>
         ),
       },
@@ -74,16 +139,66 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      // admin Layout
       {
-        path: 'profile',
+        path: 'overview',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
-              element={<Profile />}
-              roles={[USER_ROLES.ADMIN, USER_ROLES.USER]}
+              element={<Overview />}
+              roles={[USER_ROLES.ADMIN]}
             />
           </Suspense>
         ),
+      },
+      {
+        path: 'all-appointments',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<AllAppointments />}
+              roles={[USER_ROLES.ADMIN]}
+            />
+          </Suspense>
+        ),
+      },
+      // Profile Layout
+      {
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<ProfileLayout />}
+              roles={[USER_ROLES.USER]}
+            />
+          </Suspense>
+        ),
+        path: 'profile',
+        children: [
+          {
+            path: '',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <Profile />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'history',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <MedicalHistory />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'treatments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <Treatments />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },

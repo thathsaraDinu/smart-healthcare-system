@@ -10,7 +10,11 @@ const ProtectedRoute = ({ element, roles }) => {
   const role = useAuthStore((state) => state.role);
 
   if (isAuthenticated === null) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner className="w-32 h-32" />
+      </div>
+    );
   }
 
   return isAuthenticated && roles.includes(role) ? (

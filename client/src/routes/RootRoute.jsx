@@ -17,14 +17,18 @@ const RootRoute = () => {
   const role = useAuthStore((state) => state.role);
 
   if (isAuthenticated === null) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner className="w-32 h-32" />
+      </div>
+    );
   }
 
   return isAuthenticated && role === USER_ROLES.USER ? (
     <Home />
-  ) : isAuthenticated && role === USER_ROLES.ADMIN ? (
+  ) : isAuthenticated && role === USER_ROLES.DOCTOR ? (
     <Dashboard />
-  ) : isAuthenticated && role === USER_ROLES.SUPER_ADMIN ? (
+  ) : isAuthenticated && role === USER_ROLES.ADMIN ? (
     <SuperDashboard />
   ) : (
     <Home />

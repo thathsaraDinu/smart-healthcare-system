@@ -5,32 +5,32 @@ import {
   useMutation,
   useQuery,
 } from '@tanstack/react-query';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from '@/components/ui/card';
+import { loginSchema } from '@/validations/user-validation';
 import { Button } from '@/components/ui/button';
-import { userLoginValidation } from '@/validations/user-validation';
-import InputField from '@/components/form-field';
-import { userLogin } from '@/api/auth.api';
+import { InputField } from '@/components/input';
+import { Form } from '@/components/ui/form';
 import { useAuthStore } from '@/store/auth-store';
 import { getProfileData } from '@/api/user.api';
+import { userLogin } from '@/api/auth.api';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 export default function Login() {
   const login = useAuthStore((state) => state.login);
   const profile = useAuthStore((state) => state.profile);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(userLoginValidation),
-    reValidateMode: 'onBlur',
+  const form = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const userData = useQuery({
@@ -88,37 +88,46 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center h-full">
       <Card className="w-full max-w-md mx-4 my-16 h-full">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">
-              Login
-            </CardTitle>
-            <CardDescription className="text-center">
-              Enter your username and password to log in.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 px-4 py-6">
-            <InputField
-              label="Email"
-              name="email"
-              type="email"
-              register={register}
-              errors={errors}
-            />
-            <InputField
-              label="Password"
-              name="password"
-              type="password"
-              register={register}
-              errors={errors}
-            />
-          </CardContent>
-          <CardFooter className="p-4">
-            <Button type="submit" className="w-full">
-              Log In
-            </Button>
-          </CardFooter>
-        </form>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
+            <CardHeader>
+              <CardTitle className="text-2xl text-center">
+                Login
+              </CardTitle>
+              <CardDescription className="text-center">
+                Enter your username and password to log in.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 px-4 py-6">
+              {/* Email */}
+              <InputField
+                control={form.control}
+                name="email"
+                label="Email"
+                type="email"
+              />
+
+              {/* Password */}
+              <InputField
+                control={form.control}
+                name="password"
+                label="Password"
+                type="password"
+              />
+            </CardContent>
+            <CardFooter className="flex p-4 justify-center">
+              <Button
+                type="submit"
+                className="w-48 bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Login
+              </Button>
+            </CardFooter>
+          </form>
+        </Form>
       </Card>
     </div>
   );
