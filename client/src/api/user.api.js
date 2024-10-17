@@ -31,3 +31,17 @@ export const getUsers = async (role) => {
     throw error;
   }
 };
+
+// Update user profile
+export const updateUserProfile = async (data) => {
+  try {
+    const response = await instance.put(
+      '/api/user/profile',
+      data,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+};

@@ -87,6 +87,7 @@ export default function Navbar() {
           </DropdownMenu>
 
           <AvatarIcon />
+
           <Sheet>
             <SheetTrigger asChild>
               <Button

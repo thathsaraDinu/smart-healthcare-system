@@ -18,6 +18,11 @@ router.get(
   verifyAuth([USER_ROLES.ADMIN, USER_ROLES.DOCTOR, USER_ROLES.USER]),
   UserController.profile
 );
+router.put(
+  '/profile',
+  verifyAuth([USER_ROLES.ADMIN, USER_ROLES.DOCTOR, USER_ROLES.USER]),
+  UserController.updateProfile
+);
 
 // Admin only routes
 router.get('/users', verifyAuth([USER_ROLES.ADMIN]), UserController.getUsers);
