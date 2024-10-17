@@ -1,16 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import {
-  useMutation,
-  useQuery,
-} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { loginSchema } from '@/validations/user-validation';
 import { Button } from '@/components/ui/button';
 import { InputField } from '@/components/input';
 import { Form } from '@/components/ui/form';
 import { useAuthStore } from '@/store/auth-store';
-import { getProfileData } from '@/api/user.api';
+import { useProfile } from '@/hooks/use-users';
 import { userLogin } from '@/api/auth.api';
 import {
   Card,
@@ -33,11 +30,7 @@ export default function Login() {
     },
   });
 
-  const userData = useQuery({
-    queryKey: ['profile'],
-    queryFn: getProfileData,
-    enabled: false,
-  });
+  const userData = useProfile(false);
 
   const loginUser = useMutation({
     mutationFn: userLogin,
