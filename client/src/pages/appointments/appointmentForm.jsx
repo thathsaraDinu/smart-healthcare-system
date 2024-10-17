@@ -2,10 +2,20 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 const AppointmentForm = () => {
-  const location = useLocation();
-  const { appointmentData } = location.state || {};
+  const loc = useLocation();
+  const {
+    doctor,
+    hospital,
+    location,
+    bookingFee,
+    date,
+    time,
+  } = loc.state || {};
 
-  console.log(location.state);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <section className="container">
@@ -13,16 +23,27 @@ const AppointmentForm = () => {
           <div className="mb-10 text-xl font-semibold">
             Place Appointment
           </div>
-          <form className="grid grid-cols-1 xl:grid-cols-5 gap-5">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 xl:grid-cols-5 gap-5"
+          >
             <div>
               <div className="p-5 rounded-xl shadow border border-gray-200 flex xl:gap-0 gap-10 flex-col md:flex-row xl:flex-col">
                 <div>
                   <div>
-                    <div className="font-semibold">
-                      Arogya Hospital
+                    <div className="font-medium text-sm">
+                      {hospital}
                     </div>
                     <div className="text-sm text-gray-500">
-                      Gampaha
+                      {location}
+                    </div>
+                  </div>
+                  <div className="mt-5">
+                    <div className="text-sm xl:text-xs 2xl:text-sm">
+                      Doctor
+                    </div>
+                    <div className="font-medium text-xs mt-1">
+                      {doctor.fullName}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -30,7 +51,7 @@ const AppointmentForm = () => {
                       Session date
                     </div>
                     <div className="font-medium text-xs mt-1">
-                      19 October 2024
+                      {date}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -38,7 +59,7 @@ const AppointmentForm = () => {
                       Session time
                     </div>
                     <div className="font-medium text-xs mt-1">
-                      06:45 PM
+                      {time}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -51,12 +72,11 @@ const AppointmentForm = () => {
                   </div>
                   <div className="text-xs mt-4 text-gray-500">
                     Your estimated appointment time is{' '}
-                    <span className="text-textBlue font-medium">
-                      6:45 PM
+                    <span className="text-blue-500 font-medium">
+                      {time}
                     </span>
                     . This time is depending on the time
-                    spend with patients / applicants ahead
-                    of you
+                    spend with patients ahead of you
                   </div>
                 </div>
               </div>
@@ -174,7 +194,7 @@ const AppointmentForm = () => {
                         Doctor fee
                       </div>
                       <div className="font-semibold text-sm xl:text-xs 2xl:text-sm ">
-                        Rs 1,500.00
+                        Rs {bookingFee.toFixed(2)}
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
@@ -215,7 +235,8 @@ const AppointmentForm = () => {
                       Total fee
                     </div>
                     <div className="font-semibold">
-                      Rs 2,299.00
+                      Rs{' '}
+                      {(bookingFee + 600 + 199).toFixed(2)}
                     </div>
                   </div>
                 </div>

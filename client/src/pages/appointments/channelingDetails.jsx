@@ -54,6 +54,11 @@ const ChannelingDetails = () => {
                   item.arrivalTimes.map((arrivalTime) => (
                     <ChannelDetailsCard
                       key={arrivalTime._id}
+                      doctor={{
+                        fullName,
+                        gender,
+                        specialization,
+                      }}
                       data={item}
                       arrivalTime={arrivalTime}
                     />
