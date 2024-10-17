@@ -9,6 +9,7 @@ const initialState = {
   role: null,
   fullName: null,
   id: null,
+  image: null,
 };
 
 // Create the store with the persist middleware
@@ -23,6 +24,7 @@ export const useAuthStore = create(
           role: role,
           fullName: null,
           id: null,
+          image: null,
         });
       },
       profile: (data) => {
@@ -30,6 +32,7 @@ export const useAuthStore = create(
           role: data.role,
           fullName: data.fullName,
           id: data.id,
+          image: data.profileImg,
         });
       },
       logOut: () => {
@@ -40,6 +43,7 @@ export const useAuthStore = create(
           role: null,
           fullName: null,
           id: null,
+          image: null,
         });
         localStorage.clear();
       },

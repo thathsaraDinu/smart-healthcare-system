@@ -97,7 +97,7 @@ const ProfileLayout = () => {
                     : defaultAvatar
                 }
                 alt="avatar"
-                className="w-24 h-24 rounded-full"
+                className="w-24 h-24 rounded-full border-2 border-gray-300"
               />
             </div>
             {/* Profile Name */}

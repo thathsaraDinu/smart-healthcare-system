@@ -177,39 +177,35 @@ export const getDoctors = async () => {
   }
 };
 
-// Update user role
-export const updateUserRole = async (id, role) => {
+// Update user profile
+export const updateProfile = async (id, role, data) => {
   try {
-    // Find the user by ID and update the role
-    const updatedUser = await UserSchema.findByIdAndUpdate(
-      id,
-      {
-        role
-      },
-      {
-        new: true,
-        runValidators: true
-      }
-    );
+    let updateUser;
+    if (role === USER_ROLES.USER) {
+      updateUser = Patient.findByIdAndUpdate(id, data, {
+        new: true
+      });
+    } else {
+      updateUser = Doctor.findByIdAndUpdate(id, data, {
+        new: true
+      });
+    }
+
+    // Find the user by ID and update
+    const user = await updateUser;
 
     // If the user is not found, throw an error
-    if (!updatedUser) {
+    if (!user) {
       throw {
         status: 404,
         message: 'User not found'
       };
     }
 
-    // Return only the necessary user details
-    return {
-      id: updatedUser._id,
-      fullName: updatedUser.fullName,
-      email: updatedUser.email,
-      role: updatedUser.role
-    };
+    return;
   } catch (error) {
     throw {
-      status: error.status || 500,
+      status: 500,
       message: error.message
     };
   }
