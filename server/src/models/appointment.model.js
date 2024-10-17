@@ -29,7 +29,7 @@ export const AppointmentSchema = new Schema(
     },
     nic: {
       type: String,
-      required: [true, 'Area is required']
+      required: [true, 'NIC is required']
     },
     schedule: {
       doctor: {
@@ -60,11 +60,11 @@ export const AppointmentSchema = new Schema(
       },
       date: {
         type: String,
-        required: [true, 'Booking fee is required']
+        required: [true, 'Date fee is required']
       },
       time: {
         type: String,
-        required: [true, 'Booking fee is required']
+        required: [true, 'Time fee is required']
       }
     }
   },
@@ -72,25 +72,5 @@ export const AppointmentSchema = new Schema(
     timestamps: true
   }
 );
-
-AppointmentSchema.pre('save', async function (next) {
-  const appointment = this;
-
-  const existingAppointments = await mongoose.model('Appointment').find({
-    'doctor.fullName': appointment.doctor.fullName,
-    date: appointment.schedule.date,
-    time: appointment.schedule.time
-  });
-
-  if (existingAppointments.length > 0) {
-    const highestAppointment = existingAppointments.reduce((max, current) => {
-      return current.appointmentNumber > max.appointmentNumber ? current : max;
-    });
-
-    appointment.appointmentNumber = highestAppointment.appointmentNumber + 1;
-  }
-
-  next();
-});
 
 export default mongoose.model.Appointments || mongoose.model('Appointment', AppointmentSchema);
