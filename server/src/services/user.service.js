@@ -73,15 +73,33 @@ export const getProfile = async (id) => {
     }
 
     // Return only the necessary user details
-    return {
-      id: user._id,
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role,
-      gender: user.gender,
-      mobile: user.mobile,
-      profileImg: user.profileImg
-    };
+    if (user.role === USER_ROLES.USER) {
+      return {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        gender: user.gender,
+        mobile: user.mobile,
+        profileImg: user.profileImg,
+        dob: user.dob,
+        patientId: user.patientId,
+        maritalStatus: user.maritalStatus,
+        physicianName: user.physicianName,
+        physicianMobile: user.physicianMobile,
+        emergencyContact: user.emergencyContact
+      };
+    } else {
+      return {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        gender: user.gender,
+        mobile: user.mobile,
+        profileImg: user.profileImg
+      };
+    }
   } catch (error) {
     throw {
       status: 500,

@@ -6,6 +6,30 @@ import { useProfile } from '@/hooks/use-users';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { MdEditSquare, MdSaveAs } from 'react-icons/md';
+import PropTypes from 'prop-types';
+import { format } from 'date-fns';
+
+const UpdatedInputField = ({
+  name,
+  label,
+  form,
+  disabled,
+  className,
+  type,
+}) => {
+  return (
+    <InputField
+      disabled={disabled}
+      control={form.control}
+      label={label}
+      labelStyle="font-bold"
+      name={name}
+      type={type || 'text'}
+      className={className}
+      inputStyle={`mx-5 border-t-0 border-r-0 border-l-0 shadow-none rounded-none focus-visible:ring-0 focus-visible:border-b-2 focus-visible:border-blue-500 ${!disabled ? 'border-blue-500' : 'disabled:cursor-auto disabled:opacity-100'}`}
+    />
+  );
+};
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,14 +38,32 @@ const Profile = () => {
 
   const form = useForm({
     defaultValues: {
-      email: profile.email,
       fullName: profile.fullName,
+      gender:
+        profile.gender.charAt(0).toUpperCase() +
+        profile.gender.slice(1),
+      dob: format(new Date(profile.dob), 'dd/MM/yyyy'),
+      patientId: profile.patientId,
+      maritalStatus: profile.maritalStatus,
+      physicianName: profile.physicianName,
+      physicianMobile: profile.physicianMobile,
+      email: profile.email,
+      mobile: profile.mobile,
+      emergencyContact: profile.emergencyContact,
+    },
+  });
+
+  const ignoredForm = useForm({
+    defaultValues: {
+      age:
+        new Date().getFullYear() -
+        new Date(profile.dob).getFullYear(),
     },
   });
 
   const editHandler = () => {
     setIsEditing(!isEditing);
-    // Submit form
+
     if (isEditing) {
       form.handleSubmit(onSubmit)();
     }
@@ -35,8 +77,6 @@ const Profile = () => {
     return <LoadingSpinner />;
   }
 
-  console.log(isEditing);
-
   return (
     <div>
       {profile && (
@@ -47,7 +87,7 @@ const Profile = () => {
                 {!isEditing ? (
                   <Button
                     variant="primary"
-                    className="text-blue-500"
+                    className="text-blue-500  p-0 m-0"
                     onClick={editHandler}
                     type="button"
                   >
@@ -61,7 +101,7 @@ const Profile = () => {
                   <div>
                     <Button
                       variant="primary"
-                      className="text-red-500"
+                      className="text-red-500 p-0 m-0"
                       type="button"
                       onClick={editHandler}
                     >
@@ -69,7 +109,7 @@ const Profile = () => {
                     </Button>
                     <Button
                       variant="primary"
-                      className="text-blue-500"
+                      className="text-blue-500 p-0 m-0"
                       type="button"
                       onClick={editHandler}
                     >
@@ -83,26 +123,104 @@ const Profile = () => {
                 )}
               </div>
 
+              {/* Full Name */}
               <div>
-                <div className="font-bold mb-2">Name</div>
-                <p className="mx-5 border-b">
-                  {profile.fullName}
-                </p>
-              </div>
-              <div>
-                <InputField
+                <UpdatedInputField
+                  name="fullName"
+                  label="Full Name"
                   disabled={!isEditing}
-                  control={form.control}
-                  label="Email"
-                  labelStyle="font-bold"
-                  name="email"
-                  inputStyle={`mx-5 border-t-0 border-r-0 border-l-0 shadow-none rounded-none focus-visible:ring-0 focus-visible:border-b-2 focus-visible:border-blue-500 ${isEditing ? 'border-blue-500' : 'disabled:cursor-auto disabled:opacity-100'}`}
-                  value={profile.email}
+                  form={form}
                 />
               </div>
+              <div className="flex justify-between gap-20">
+                {/* Age */}
+                <UpdatedInputField
+                  name="age"
+                  label="Age"
+                  disabled={true}
+                  form={ignoredForm}
+                  className="w-full"
+                />
+                {/* Gender */}
+                <UpdatedInputField
+                  name="gender"
+                  label="Gender"
+                  disabled={true}
+                  form={form}
+                  className="w-full"
+                />
+              </div>
+              {/* Date of Birth */}
               <div>
-                <div>Gender</div>
-                <p>{profile.gender}</p>
+                <UpdatedInputField
+                  name="dob"
+                  label="Date of Birth"
+                  disabled={true}
+                  form={form}
+                />
+              </div>
+              {/* Patient ID */}
+              <div>
+                <UpdatedInputField
+                  name="patientId"
+                  label="Patient ID"
+                  disabled={true}
+                  form={form}
+                />
+              </div>
+              {/* Marital Status */}
+              <div>
+                <UpdatedInputField
+                  name="maritalStatus"
+                  label="Marital Status"
+                  disabled={!isEditing}
+                  form={form}
+                />
+              </div>
+              {/* Physician Name */}
+              <div>
+                <UpdatedInputField
+                  name="physicianName"
+                  label="Primary Care Physician"
+                  disabled={!isEditing}
+                  form={form}
+                />
+              </div>
+              {/* Physician Number */}
+              <div>
+                <UpdatedInputField
+                  name="physicianMobile"
+                  label="Primary Care Physician's Number"
+                  disabled={!isEditing}
+                  form={form}
+                />
+              </div>
+              {/* Email */}
+              <div>
+                <UpdatedInputField
+                  name="email"
+                  label="Email"
+                  disabled={!isEditing}
+                  form={form}
+                />
+              </div>
+              {/* Mobile Number */}
+              <div>
+                <UpdatedInputField
+                  name="mobile"
+                  label="Mobile Number"
+                  disabled={!isEditing}
+                  form={form}
+                />
+              </div>
+              {/* Emergency Contact */}
+              <div>
+                <UpdatedInputField
+                  name="emergencyContact"
+                  label="Emergency Contact"
+                  disabled={!isEditing}
+                  form={form}
+                />
               </div>
             </form>
           </Form>
@@ -113,3 +231,13 @@ const Profile = () => {
 };
 
 export default Profile;
+
+// Prop Types
+UpdatedInputField.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+  disabled: PropTypes.bool,
+  form: PropTypes.object,
+  type: PropTypes.string,
+  className: PropTypes.string,
+};
