@@ -10,7 +10,6 @@ import {
 } from 'recharts';
 import PropTypes from 'prop-types';
 import { Button } from '../ui/button';
-import InputField from '../form-field';
 
 const BarChartComponent = ({ data, title }) => {
   return (
