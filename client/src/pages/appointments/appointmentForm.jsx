@@ -1,23 +1,85 @@
-import React from 'react';
+import { makeAppointment } from '@/api/appointment.api';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const AppointmentForm = () => {
+  const loc = useLocation();
+  const {
+    doctor,
+    hospital,
+    location,
+    bookingFee,
+    date,
+    time,
+  } = loc.state || {};
+
+  const [patientName, setPatientName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [area, setArea] = useState('');
+  const [nic, setNic] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const appointmentData = {
+      patientName,
+      email,
+      phoneNumber,
+      area,
+      nic,
+      schedule: {
+        doctor: {
+          fullName: doctor?.fullName,
+          gender: doctor?.gender,
+          specialization: doctor?.specialization,
+        },
+        hospital,
+        location,
+        bookingFee,
+        date,
+        time,
+      },
+    };
+
+    try {
+      const response =
+        await makeAppointment(appointmentData);
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <section className="container">
         <div className="mt-10">
-          <div className="mb-10 text-xl font-semibold">
+          <div className="mb-5 text-xl font-semibold">
             Place Appointment
           </div>
-          <form className="grid grid-cols-1 xl:grid-cols-5 gap-5">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 xl:grid-cols-5 gap-5"
+          >
             <div>
               <div className="p-5 rounded-xl shadow border border-gray-200 flex xl:gap-0 gap-10 flex-col md:flex-row xl:flex-col">
                 <div>
                   <div>
-                    <div className="font-semibold">
-                      Arogya Hospital
+                    <div className="font-medium text-sm">
+                      {hospital}
                     </div>
                     <div className="text-sm text-gray-500">
-                      Gampaha
+                      {location}
+                    </div>
+                  </div>
+                  <div className="mt-5">
+                    <div className="text-sm xl:text-xs 2xl:text-sm">
+                      Doctor
+                    </div>
+                    <div className="font-medium text-xs mt-1">
+                      {doctor.fullName}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -25,7 +87,7 @@ const AppointmentForm = () => {
                       Session date
                     </div>
                     <div className="font-medium text-xs mt-1">
-                      19 October 2024
+                      {date}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -33,7 +95,7 @@ const AppointmentForm = () => {
                       Session time
                     </div>
                     <div className="font-medium text-xs mt-1">
-                      06:45 PM
+                      {time}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -46,12 +108,11 @@ const AppointmentForm = () => {
                   </div>
                   <div className="text-xs mt-4 text-gray-500">
                     Your estimated appointment time is{' '}
-                    <span className="text-textBlue font-medium">
-                      6:45 PM
+                    <span className="text-blue-500 font-medium">
+                      {time}
                     </span>
                     . This time is depending on the time
-                    spend with patients / applicants ahead
-                    of you
+                    spend with patients ahead of you
                   </div>
                 </div>
               </div>
@@ -72,6 +133,9 @@ const AppointmentForm = () => {
                           <input
                             className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                             placeholder="Enter patient name"
+                            onChange={(e) =>
+                              setPatientName(e.target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -86,6 +150,9 @@ const AppointmentForm = () => {
                         <input
                           className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                           placeholder="Receipt will send to this email"
+                          onChange={(e) =>
+                            setEmail(e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -113,6 +180,9 @@ const AppointmentForm = () => {
                             className="w-full rounded-l-none false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                             placeholder="71XXXXXXX"
                             type="number"
+                            onChange={(e) =>
+                              setPhoneNumber(e.target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -127,6 +197,9 @@ const AppointmentForm = () => {
                         <input
                           className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                           placeholder="Please enter your closest city"
+                          onChange={(e) =>
+                            setArea(e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -145,6 +218,9 @@ const AppointmentForm = () => {
                           <input
                             className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                             placeholder="Enter NIC number"
+                            onChange={(e) =>
+                              setNic(e.target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -169,7 +245,7 @@ const AppointmentForm = () => {
                         Doctor fee
                       </div>
                       <div className="font-semibold text-sm xl:text-xs 2xl:text-sm ">
-                        Rs 1,500.00
+                        Rs {bookingFee.toFixed(2)}
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
@@ -210,7 +286,8 @@ const AppointmentForm = () => {
                       Total fee
                     </div>
                     <div className="font-semibold">
-                      Rs 2,299.00
+                      Rs{' '}
+                      {(bookingFee + 600 + 199).toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -229,9 +306,9 @@ const AppointmentForm = () => {
                       className="w-4 text-white"
                     >
                       <path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
-                        clip-rule="evenodd"
+                        clipRule="evenodd"
                       ></path>
                     </svg>
                   </div>
@@ -243,14 +320,14 @@ const AppointmentForm = () => {
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke="currentColor"
                       aria-hidden="true"
                       className="w-4 group-hover:ml-0 -ml-7 group-hover:opacity-100 opacity-0 duration-200 stroke-current stroke-2"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                       ></path>
                     </svg>

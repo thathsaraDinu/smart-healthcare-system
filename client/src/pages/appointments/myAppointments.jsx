@@ -1,8 +1,25 @@
+import { deleteAppointment } from '@/api/appointment.api';
+import useAppointments from '@/hooks/useAppointments';
 import React from 'react';
 import { useState } from 'react';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Link } from 'react-router-dom';
+
 const MyAppointments = () => {
+  const { data, refetch } = useAppointments();
   const [tab, setTab] = useState('Today');
+
   return (
     <>
       <section className="container">
@@ -22,14 +39,14 @@ const MyAppointments = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
-                            stroke-width="1.5"
+                            strokeWidth="1.5"
                             stroke="currentColor"
                             aria-hidden="true"
                             className="w-6 group-hover:rotate-45 duration-200 "
                           >
                             <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                               d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                             ></path>
                           </svg>
@@ -49,14 +66,14 @@ const MyAppointments = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
-                            stroke-width="1.5"
+                            strokeWidth="1.5"
                             stroke="currentColor"
                             aria-hidden="true"
                             className="w-6 group-hover:rotate-45 duration-200 "
                           >
                             <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                               d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
                             ></path>
                           </svg>
@@ -97,7 +114,7 @@ const MyAppointments = () => {
                       </div>
                       <div className="w-full sm:w-1/3 mt-6">
                         <button
-                          type="submit"
+                          type="button"
                           className="w-full px-7 py-1.5 text-sm bg-green-500 text-white px-2 py-1.5 md:py-3 mt-auto rounded-xl text-sm group border border-green-500"
                         >
                           <div className="flex justify-center items-center group-hover:gap-3">
@@ -109,14 +126,14 @@ const MyAppointments = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                stroke-width="1.5"
+                                strokeWidth="1.5"
                                 stroke="currentColor"
                                 aria-hidden="true"
                                 className="w-4 group-hover:ml-0 -ml-7 group-hover:opacity-100 opacity-0 duration-200 stroke-current stroke-2"
                               >
                                 <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                   d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                                 ></path>
                               </svg>
@@ -127,66 +144,87 @@ const MyAppointments = () => {
                     </form>
                   </div>
                 </div>
-                <div className="mt-10">
-                  <div className="px-4 mb-4">
-                    <div className="flex items-center justify-between p-3 shadow border border-gray-100 h-[100px] rounded-lg">
-                      <div className="text-sm">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Appointment ID
-                        </p>
-                        <p className="text-gray-500">
-                          AID001
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Appointment No
-                        </p>
-                        <p className="text-gray-500">3</p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Doctor
-                        </p>
-                        <p className="text-gray-500">
-                          Dr. Samantha
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Arogya Hospital
-                        </p>
-                        <p className="text-gray-500">
-                          Gampaha
-                        </p>
-                        <p className="font-semibold text-blue-500">
-                          PHYSICIAN
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500">
-                          October 14th, 2024
-                        </p>
-                        <p className="font-semibold text-blue-500">
-                          06:45 AM
-                        </p>
-                        <p className="text-gray-500">
-                          Morning
-                        </p>
-                      </div>
-                      <div className="flex items-center text-sm pl-2 border-l border-gray-300">
-                        <div className="mr-4">
-                          <p className="font-semibold text-green-500">
-                            Rs 2,100.00 + Booking Fee
-                          </p>
-                          <p className="text-gray-500 ">
-                            Channelling Fee
-                          </p>
+                {data &&
+                  data.map(
+                    (item) =>
+                      new Date().getDate() ==
+                        item.schedule.date.split(
+                          ' ',
+                        )[1] && (
+                        <div
+                          key={item._id}
+                          className="mt-10"
+                        >
+                          <div className="px-4 mb-4">
+                            <div className="flex items-center justify-between p-3 shadow border border-gray-100 h-[100px] rounded-lg">
+                              <div className="text-sm">
+                                <p className="font-semibold text-blue-500 mb-2">
+                                  Appointment No
+                                </p>
+                                <p className="text-gray-500">
+                                  {item.appointmentNumber}
+                                </p>
+                              </div>
+                              <div className="text-sm pl-2 border-l border-gray-300">
+                                <p className="font-semibold text-blue-500 mb-2">
+                                  Doctor
+                                </p>
+                                <p className="text-gray-500">
+                                  {
+                                    item.schedule.doctor
+                                      .fullName
+                                  }
+                                </p>
+                              </div>
+                              <div className="text-sm pl-2 border-l border-gray-300">
+                                <p className="font-semibold text-blue-500 mb-2">
+                                  {item.schedule.hospital}
+                                </p>
+                                <p className="text-gray-500">
+                                  {item.schedule.location}
+                                </p>
+                                <p className="font-semibold text-blue-500">
+                                  {
+                                    item.schedule.doctor
+                                      .specialization
+                                  }
+                                </p>
+                              </div>
+                              <div className="text-sm pl-2 border-l border-gray-300">
+                                <p className="font-semibold text-blue-500">
+                                  {item.schedule.date}
+                                </p>
+                                <p className="font-semibold text-blue-500">
+                                  {item.schedule.time}
+                                </p>
+                              </div>
+                              <div className="flex items-center text-sm pl-2 border-l border-gray-300">
+                                <div className="mr-4">
+                                  <p className="font-semibold text-green-500">
+                                    Rs{' '}
+                                    {item.schedule.bookingFee.toFixed(
+                                      2,
+                                    )}{' '}
+                                    + Booking Fee
+                                  </p>
+                                  <p className="text-gray-500 ">
+                                    Channelling Fee
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-xs pl-2 border-l border-gray-300">
+                                <button className="p-2 mx-2 text-blue-500 border border-blue-500 rounded-lg">
+                                  Update
+                                </button>
+                                <button className="p-2 mx-2 text-red-500 border border-red-500 rounded-lg">
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                      ),
+                  )}
               </div>
             )}
             {/* History */}
@@ -216,7 +254,7 @@ const MyAppointments = () => {
 
                       <div className="mt-6 sm:w-auto w-full">
                         <button
-                          type="submit"
+                          type="button"
                           className="w-full px-7 py-1.5 text-sm bg-green-500 text-white px-2 py-1.5 md:py-3 mt-auto rounded-xl text-sm group border border-primaryGreen"
                         >
                           <div className="flex justify-center items-center group-hover:gap-3">
@@ -228,14 +266,14 @@ const MyAppointments = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                stroke-width="1.5"
+                                strokeWidth="1.5"
                                 stroke="currentColor"
                                 aria-hidden="true"
                                 className="w-4 group-hover:ml-0 -ml-7 group-hover:opacity-100 opacity-0 duration-200 stroke-current stroke-2"
                               >
                                 <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                   d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                                 ></path>
                               </svg>
@@ -254,9 +292,9 @@ const MyAppointments = () => {
                           className="w-5"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                            clip-rule="evenodd"
+                            clipRule="evenodd"
                           ></path>
                         </svg>
                       </div>
@@ -265,126 +303,113 @@ const MyAppointments = () => {
                     </div>
                   </form>
                 </div>
-                <div className="mt-10">
-                  <div className="px-4 mb-4">
-                    <div className="flex items-center justify-between p-3 shadow border border-gray-100 h-[100px] rounded-lg">
-                      <div className="text-sm">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Appointment ID
-                        </p>
-                        <p className="text-gray-500">
-                          AID001
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Appointment No
-                        </p>
-                        <p className="text-gray-500">3</p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Doctor
-                        </p>
-                        <p className="text-gray-500">
-                          Dr. Samantha
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Arogya Hospital
-                        </p>
-                        <p className="text-gray-500">
-                          Gampaha
-                        </p>
-                        <p className="font-semibold text-blue-500">
-                          PHYSICIAN
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500">
-                          October 18th, 2024
-                        </p>
-                        <p className="font-semibold text-blue-500">
-                          06:45 AM
-                        </p>
-                        <p className="text-gray-500">
-                          Morning
-                        </p>
-                      </div>
-                      <div className="flex items-center text-sm pl-2 border-l border-gray-300">
-                        <div className="mr-4">
-                          <p className="font-semibold text-green-500">
-                            Rs 2,100.00 + Booking Fee
-                          </p>
-                          <p className="text-gray-500 ">
-                            Channelling Fee
-                          </p>
+                {data &&
+                  data.map((item) => (
+                    <div key={item._id} className="mt-10">
+                      <div className="px-4 mb-4">
+                        <div className="flex items-center justify-between p-3 shadow border border-gray-100 h-[100px] rounded-lg">
+                          <div className="text-sm">
+                            <p className="font-semibold text-blue-500 mb-2">
+                              Appointment No
+                            </p>
+                            <p className="text-gray-500">
+                              {item.appointmentNumber}
+                            </p>
+                          </div>
+                          <div className="text-sm pl-2 border-l border-gray-300">
+                            <p className="font-semibold text-blue-500 mb-2">
+                              Doctor
+                            </p>
+                            <p className="text-gray-500">
+                              {
+                                item.schedule.doctor
+                                  .fullName
+                              }
+                            </p>
+                          </div>
+                          <div className="text-sm pl-2 border-l border-gray-300">
+                            <p className="font-semibold text-blue-500 mb-2">
+                              {item.schedule.hospital}
+                            </p>
+                            <p className="text-gray-500">
+                              {item.schedule.location}
+                            </p>
+                            <p className="font-semibold text-blue-500">
+                              {
+                                item.schedule.doctor
+                                  .specialization
+                              }
+                            </p>
+                          </div>
+                          <div className="text-sm pl-2 border-l border-gray-300">
+                            <p className="font-semibold text-blue-500">
+                              {item.schedule.date}
+                            </p>
+                            <p className="font-semibold text-blue-500">
+                              {item.schedule.time}
+                            </p>
+                          </div>
+                          <div className="flex items-center text-sm pl-2 border-l border-gray-300">
+                            <div className="mr-4">
+                              <p className="font-semibold text-green-500">
+                                Rs{' '}
+                                {item.schedule.bookingFee.toFixed(
+                                  2,
+                                )}{' '}
+                                + Booking Fee
+                              </p>
+                              <p className="text-gray-500 ">
+                                Channelling Fee
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-xs pl-2 border-l border-gray-300">
+                            <Link
+                              to="/appointmentupdate"
+                              state={item}
+                              className="p-2 mx-2 text-blue-500 border border-blue-500 rounded-lg"
+                            >
+                              Update
+                            </Link>
+                            <AlertDialog>
+                              <AlertDialogTrigger className="p-2 mx-2 text-red-500 border border-red-500 rounded-lg">
+                                Cancel
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle className="text-blue-500">
+                                    Are you absolutely sure?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be
+                                    undone. This will
+                                    permanently delete your
+                                    Appointment.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel className="text-blue-500 hover:text-blue-600">
+                                    Cancel
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={async () => {
+                                      await deleteAppointment(
+                                        item._id,
+                                      );
+                                      refetch();
+                                    }}
+                                    className="bg-blue-500 hover:bg-blue-600"
+                                  >
+                                    Continue
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="mt-10">
-                  <div className="px-4 mb-4">
-                    <div className="flex items-center justify-between p-3 shadow border border-gray-100 h-[100px] rounded-lg">
-                      <div className="text-sm">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Appointment ID
-                        </p>
-                        <p className="text-gray-500">
-                          AID001
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Appointment No
-                        </p>
-                        <p className="text-gray-500">3</p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Doctor
-                        </p>
-                        <p className="text-gray-500">
-                          Dr. Samantha
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500 mb-2">
-                          Arogya Hospital
-                        </p>
-                        <p className="text-gray-500">
-                          Gampaha
-                        </p>
-                        <p className="font-semibold text-blue-500">
-                          PHYSICIAN
-                        </p>
-                      </div>
-                      <div className="text-sm pl-2 border-l border-gray-300">
-                        <p className="font-semibold text-blue-500">
-                          October 10th, 2024
-                        </p>
-                        <p className="font-semibold text-blue-500">
-                          06:45 AM
-                        </p>
-                        <p className="text-gray-500">
-                          Morning
-                        </p>
-                      </div>
-                      <div className="flex items-center text-sm pl-2 border-l border-gray-300">
-                        <div className="mr-4">
-                          <p className="font-semibold text-green-500">
-                            Rs 2,100.00 + Booking Fee
-                          </p>
-                          <p className="text-gray-500 ">
-                            Channelling Fee
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  ))}
               </div>
             )}
           </div>

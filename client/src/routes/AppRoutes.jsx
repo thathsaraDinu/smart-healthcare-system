@@ -55,6 +55,11 @@ const AppointmentForm = lazy(
   () => import('@/pages/appointments/appointmentForm'),
 );
 
+const AppointmentUpdateForm = lazy(
+  () =>
+    import('@/pages/appointments/appointmentUpdateForm'),
+);
+
 // layout
 const Layout = lazy(() => import('@/layout'));
 const ProfileLayout = lazy(
@@ -92,7 +97,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/channel',
+        path: '/channel/:doctorId',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ChannelingDetails />
@@ -112,6 +117,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <AppointmentForm />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/appointmentupdate',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <AppointmentUpdateForm />
           </Suspense>
         ),
       },
