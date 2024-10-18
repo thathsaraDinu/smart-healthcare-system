@@ -83,3 +83,33 @@ export const loginSchema = z.object({
     .string()
     .min(6, 'Password must be at least 6 characters'),
 });
+
+// Zod validation schema
+export const userUpdateSchema = z.object({
+  fullName: z.string().min(1, 'Name is required'),
+  dob: z.string().min(1, 'Date of birth is required'),
+  maritalStatus: z
+    .string()
+    .refine(
+      (val) => Object.values(MARITAL_STATUS).includes(val),
+      {
+        message: 'Marital status is required',
+      },
+    ),
+  mobile: z
+    .string()
+    .min(1, 'Mobile number is required')
+    .regex(/^\d{10}$/, 'Invalid mobile number'),
+  email: z.string().email('Invalid email address'),
+  physicianName: z.string().optional(),
+  physicianMobile: z
+    .string()
+    .optional()
+    .refine((value) => !value || /^\d{10}$/.test(value), {
+      message: 'Invalid mobile number',
+    }),
+  emergencyContact: z
+    .string()
+    .min(1, 'Emergency contact is required')
+    .regex(/^\d{10}$/, 'Invalid mobile number'),
+});

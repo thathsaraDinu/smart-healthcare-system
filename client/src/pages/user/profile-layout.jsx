@@ -1,5 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-import { getProfileData } from '@/api/user.api';
+import { useProfile } from '@/hooks/use-users';
 import { LoadingSpinner } from '@/components/ui/spinner';
 import { Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -34,12 +33,9 @@ const ProfileLayout = () => {
   const {
     data: profile,
     isLoading: isLoadingProfile,
-    isError: isProfileError,
     error: profileError,
-  } = useQuery({
-    queryKey: ['profile'],
-    queryFn: getProfileData,
-  });
+    isError: isProfileError,
+  } = useProfile();
 
   // Sidebar items
   const sidebarItems = [
@@ -101,7 +97,7 @@ const ProfileLayout = () => {
                     : defaultAvatar
                 }
                 alt="avatar"
-                className="w-24 h-24 rounded-full"
+                className="w-24 h-24 rounded-full border-2 border-gray-300"
               />
             </div>
             {/* Profile Name */}

@@ -1,5 +1,11 @@
 import { USER_ROLES } from '../constants/constants.js';
-import { getDoctors, getProfile, getUsers, register } from '../services/user.service.js';
+import {
+  getDoctors,
+  getProfile,
+  getUsers,
+  register,
+  updateProfile
+} from '../services/user.service.js';
 
 const UserController = {
   // Register a new user
@@ -49,6 +55,18 @@ const UserController = {
       const doctors = await getDoctors();
 
       return res.status(200).json(doctors);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  // Update user profile
+  // Only authenticated users can access
+  updateProfile: async (req, res) => {
+    try {
+      const user = await updateProfile(req.user.id, req.user.role, req.body);
+
+      return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
