@@ -2,42 +2,70 @@ import {
   LineChart,
   Line,
   XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 import PropTypes from 'prop-types';
 
-const data = [
-  { name: 'Jan', uv: 4000, pv: 2400, amt: 2400 },
-  { name: 'Feb', uv: 3000, pv: 1398, amt: 2210 },
-  { name: 'Mar', uv: 2000, pv: 9800, amt: 2290 },
-  { name: 'Apr', uv: 2780, pv: 3908, amt: 2000 },
-  { name: 'May', uv: 1890, pv: 4800, amt: 2181 },
-  { name: 'Jun', uv: 2390, pv: 3800, amt: 2500 },
-  { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
-];
-
 const LineChartComponent = ({ title, data }) => {
+
+  // Map the data to the required format
+  const selectedData = data?.map((item) => ({
+    name: item._id.formattedDate, // X-axis data from formattedDate
+    maleCount: item.maleCount, // Y-axis data
+    femaleCount: item.femaleCount,
+  }));
+
+  // Calculate total Male patients
+  const totalMale = selectedData.reduce(
+    (acc, item) => acc + item.maleCount,
+    0,
+  );
+
+  // Calculate total Female patients
+  const totalFemale = selectedData.reduce(
+    (acc, item) => acc + item.femaleCount,
+    0,
+  );
+
+  // Calculate Percentage of each gender
+  const totalGender =
+    title === 'Total Male'
+      ? (
+          (totalMale * 100) /
+          (totalMale + totalFemale)
+        ).toFixed(2)
+      : (
+          (totalFemale * 100) /
+          (totalMale + totalFemale)
+        ).toFixed(2);
+
   return (
     <>
+      <div className="flex h-full justify-center gap-4 xl:w-28 flex-col">
+        <div className="md:text-sm text-xs font-semibold">
+          {title}
+        </div>
+        <div>
+          <div className="md:text-lg text-sm font-bold ">
+            {isNaN(totalGender) ? 0 : totalGender}%
+          </div>
+        </div>
+      </div>
       <ResponsiveContainer
         className={'text-xs '}
         width="100%"
-        height="50%"
+        height="100%"
       >
-        <div className="text-sm">{title}</div>
         <LineChart
           width={500}
           height={300}
-          data={data}
+          data={selectedData}
           margin={{
-            top: 5,
-            right: 30,
-            bottom: 5,
-            left: 20,
+            top: 10,
+            right: 20,
+            left: 10,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -45,14 +73,13 @@ const LineChartComponent = ({ title, data }) => {
           <Tooltip />
           <Line
             type="monotone"
-            dataKey="product1"
+            dataKey={
+              title == 'Total Male'
+                ? 'maleCount'
+                : 'femaleCount'
+            }
             stroke="#8884d8"
             activeDot={{ r: 8 }}
-          />
-          <Line
-            type="monotone"
-            dataKey="product2"
-            stroke="#82ca9d"
           />
         </LineChart>
       </ResponsiveContainer>

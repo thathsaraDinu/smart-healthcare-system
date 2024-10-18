@@ -5,7 +5,7 @@ const DashboardNavbar = () => {
   const path = useLocation().pathname;
 
   return (
-    <div className="z-40 flex items-center justify-between w-full h-14 px-4 bg-white shadow-md">
+    <div className="z-40 flex items-center justify-between w-full min-h-14 px-4 bg-white shadow-md">
       <div className="flex items-center w-72">
         <h1 className="text-2xl font-bold text-gray-800">
           {path === '/allpromotions'
