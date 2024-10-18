@@ -27,12 +27,16 @@ export const MENU_ITEMS = {
       url: '/profile',
     },
     {
-      title: 'About Us',
-      url: '/about',
+      title: 'My Appointments',
+      url: '/myappointments',
     },
     {
-      title: 'Appointment',
-      url: '/appointment',
+      title: 'Doctors',
+      url: '/appointments',
+    },
+    {
+      title: 'About Us',
+      url: '/about',
     },
   ],
 };

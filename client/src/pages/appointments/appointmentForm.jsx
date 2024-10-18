@@ -1,4 +1,5 @@
-import React from 'react';
+import { makeAppointment } from '@/api/appointment.api';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const AppointmentForm = () => {
@@ -12,15 +13,50 @@ const AppointmentForm = () => {
     time,
   } = loc.state || {};
 
+  const [patientName, setPatientName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [area, setArea] = useState('');
+  const [nic, setNic] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const appointmentData = {
+      patientName,
+      email,
+      phoneNumber,
+      area,
+      nic,
+      schedule: {
+        doctor: {
+          fullName: doctor?.fullName,
+          gender: doctor?.gender,
+          specialization: doctor?.specialization,
+        },
+        hospital,
+        location,
+        bookingFee,
+        date,
+        time,
+      },
+    };
+
+    try {
+      const response =
+        await makeAppointment(appointmentData);
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
       <section className="container">
         <div className="mt-10">
-          <div className="mb-10 text-xl font-semibold">
+          <div className="mb-5 text-xl font-semibold">
             Place Appointment
           </div>
           <form
@@ -97,6 +133,9 @@ const AppointmentForm = () => {
                           <input
                             className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                             placeholder="Enter patient name"
+                            onChange={(e) =>
+                              setPatientName(e.target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -111,6 +150,9 @@ const AppointmentForm = () => {
                         <input
                           className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                           placeholder="Receipt will send to this email"
+                          onChange={(e) =>
+                            setEmail(e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -138,6 +180,9 @@ const AppointmentForm = () => {
                             className="w-full rounded-l-none false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                             placeholder="71XXXXXXX"
                             type="number"
+                            onChange={(e) =>
+                              setPhoneNumber(e.target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -152,6 +197,9 @@ const AppointmentForm = () => {
                         <input
                           className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                           placeholder="Please enter your closest city"
+                          onChange={(e) =>
+                            setArea(e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -170,6 +218,9 @@ const AppointmentForm = () => {
                           <input
                             className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
                             placeholder="Enter NIC number"
+                            onChange={(e) =>
+                              setNic(e.target.value)
+                            }
                           />
                         </div>
                       </div>

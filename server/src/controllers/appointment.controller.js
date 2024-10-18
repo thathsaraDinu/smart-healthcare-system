@@ -3,7 +3,7 @@ import { create, getById, updateById, deleteById } from '../services/appointment
 const AppointmentController = {
   makeAppointment: async (req, res) => {
     try {
-      const appointment = await create(req.body);
+      const appointment = await create({ ...req.body, user: req.user.id });
 
       return res.status(200).json(appointment);
     } catch (error) {
@@ -13,7 +13,7 @@ const AppointmentController = {
 
   getUserAppointments: async (req, res) => {
     try {
-      const appointment = await getById(req.params.id);
+      const appointment = await getById(req.user.id);
 
       return res.status(200).json(appointment);
     } catch (error) {
