@@ -35,7 +35,7 @@ const ChannelingDetails = () => {
                   {gender}
                 </p>
                 <div className="px-5 pb-5">
-                  <h5 className="mb-2 text-2xl text-center font-bold tracking-tight text-gray-900">
+                  <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900">
                     {fullName}
                   </h5>
                   <p className="mb-3 text-xs text-center font-normal text-gray-700">
