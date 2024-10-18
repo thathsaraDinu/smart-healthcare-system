@@ -40,6 +40,9 @@ const MedicalHistory = lazy(
 const Treatments = lazy(
   () => import('@/pages/user/profile/treatments'),
 );
+const AppointmentsCalendar = lazy(
+  () => import('@/pages/user/profile/appointmentsCalendar'),
+);
 
 // Appointments Pages
 const Appointments = lazy(
@@ -208,6 +211,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <Treatments />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'appointments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <AppointmentsCalendar />
               </Suspense>
             ),
           },
