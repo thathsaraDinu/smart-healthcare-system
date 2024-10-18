@@ -14,6 +14,8 @@ import { format } from 'date-fns';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userUpdateSchema } from '@/validations/user-validation';
 import { useEffect } from 'react';
+import { Modal } from '@/components/modals';
+import toast from 'react-hot-toast';
 
 const UpdatedInputField = ({
   name,
@@ -94,7 +96,16 @@ const Profile = () => {
 
     if (isEditing) {
       form.handleSubmit(onSubmit)();
+
+      if (updatePending) {
+        toast.loading('Updating Profile...');
+      }
     }
+  };
+
+  const discardHandler = () => {
+    setIsEditing(false);
+    form.reset();
   };
 
   if (profileLoading) {
@@ -127,27 +138,43 @@ const Profile = () => {
                     </Button>
                   )}
                   {isEditing && (
-                    <Button
-                      variant="primary"
-                      className="text-blue-500 font-semibold text-md p-0 m-0"
-                      type="button"
-                      onClick={editHandler}
-                    >
-                      {updatePending ? (
-                        <>
-                          Saving...
-                          <LoadingSpinner className="ml-1" />
-                        </>
-                      ) : (
-                        <>
-                          Save Changes
-                          <MdSaveAs
-                            className="ml-1"
-                            size={20}
-                          />
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex gap-4">
+                      <Modal
+                        variant="primary"
+                        buttonText={
+                          <>
+                            Discard Changes
+                            <MdSaveAs
+                              className="ml-1"
+                              size={20}
+                            />
+                          </>
+                        }
+                        buttonStyles="text-red-500 font-semibold text-md p-0 m-0"
+                        header="Discard Changes"
+                        description="Do you want to discard the changes?"
+                        onClick={discardHandler}
+                        actionButtonText="Discard"
+                        actionButtonStyles="bg-red-500 hover:bg-red-600"
+                      />
+                      <Modal
+                        variant="primary"
+                        buttonText={
+                          <>
+                            Save Changes
+                            <MdSaveAs
+                              className="ml-1"
+                              size={20}
+                            />
+                          </>
+                        }
+                        buttonStyles="text-blue-500 font-semibold text-md p-0 m-0"
+                        header="Save Changes"
+                        description="Do you want to save the changes?"
+                        onClick={editHandler}
+                        actionButtonText="Save"
+                      />
+                    </div>
                   )}
                 </div>
               </div>

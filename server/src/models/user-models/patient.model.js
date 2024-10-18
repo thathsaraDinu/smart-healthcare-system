@@ -27,6 +27,32 @@ const PatientSchema = new Schema({
   emergencyContact: {
     type: String,
     required: true
+  },
+  medicalData: {
+    bloodGroup: {
+      type: String,
+      required: false
+    },
+    weight: {
+      type: Number,
+      required: false
+    },
+    allergyList: {
+      type: [String],
+      required: false
+    },
+    cardiovascularDisease: {
+      type: [String],
+      required: false
+    },
+    others: {
+      type: [String],
+      required: false
+    },
+    specialNote: {
+      type: String,
+      required: false
+    }
   }
 });
 
