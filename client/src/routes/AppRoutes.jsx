@@ -14,11 +14,21 @@ const LoadingSpinner = lazy(() =>
 );
 
 //admin pages
-const Overview = lazy(
-  () => import('@/pages/dashboard/overview'),
-);
 const AllAppointments = lazy(
-  () => import('@/pages/dashboard/all-appointments'),
+  () =>
+    import(
+      '@/pages/dashboard/admin-dashboard/all-appointments'
+    ),
+);
+const AllPatients = lazy(
+  () =>
+    import(
+      '@/pages/dashboard/admin-dashboard/all-patients'
+    ),
+);
+const AllDoctors = lazy(
+  () =>
+    import('@/pages/dashboard/admin-dashboard/all-doctors'),
 );
 
 // Private Route
@@ -39,6 +49,9 @@ const MedicalHistory = lazy(
 );
 const Treatments = lazy(
   () => import('@/pages/user/profile/treatments'),
+);
+const AppointmentsCalendar = lazy(
+  () => import('@/pages/user/profile/appointmentsCalendar'),
 );
 
 // Appointments Pages
@@ -165,22 +178,33 @@ const router = createBrowserRouter([
       },
       // admin Layout
       {
-        path: 'overview',
+        path: 'all-appointments',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
-              element={<Overview />}
+              element={<AllAppointments />}
               roles={[USER_ROLES.ADMIN]}
             />
           </Suspense>
         ),
       },
       {
-        path: 'all-appointments',
+        path: 'all-patients',
         element: (
           <Suspense fallback={<PageLoader />}>
             <ProtectedRoute
-              element={<AllAppointments />}
+              element={<AllPatients />}
+              roles={[USER_ROLES.ADMIN]}
+            />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'all-doctors',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<AllDoctors />}
               roles={[USER_ROLES.ADMIN]}
             />
           </Suspense>
@@ -219,6 +243,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <Treatments />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'appointments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <AppointmentsCalendar />
               </Suspense>
             ),
           },

@@ -152,7 +152,13 @@ export const getUsers = async (role) => {
       id: user._id,
       fullName: user.fullName,
       email: user.email,
-      role: user.role
+      role: user.role,
+      gender: user.gender,
+      mobile: user.mobile,
+      ...(user.role === USER_ROLES.USER && {
+        dob: user.dob,
+        maritalStatus: user.maritalStatus
+      })
     }));
   } catch (error) {
     throw {
