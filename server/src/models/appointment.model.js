@@ -31,8 +31,9 @@ export const AppointmentSchema = new Schema(
       type: String,
       required: [true, 'NIC is required']
     },
-    ispaid:{
+    ispaid: {
       type: Boolean,
+      default: true,
       default: false
     },
     schedule: {
