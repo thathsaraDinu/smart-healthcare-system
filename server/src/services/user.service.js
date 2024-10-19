@@ -197,6 +197,13 @@ export const updateProfile = async (id, role, data) => {
   try {
     let updateUser;
 
+    // Check object id is valid
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      throw {
+        message: 'Invalid ID'
+      };
+    }
+
     // Check role included in USER_ROLES
     if (!Object.values(USER_ROLES).includes(role)) {
       throw {

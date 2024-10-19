@@ -56,11 +56,6 @@ const mockPatientUpdate = {
   gender: 'male'
 };
 
-const mockPatientUpdateMissed = {
-  fullName: 'Jane Doe',
-  email: 'userupdated@mail.com'
-};
-
 // Unit Tests - User Registration
 describe('User account based Unit Tests', () => {
   let mockReq, mockRes;
@@ -81,7 +76,7 @@ describe('User account based Unit Tests', () => {
   // Test Suite - Patient Register Tests
   describe('Patient Register Tests', () => {
     // Test Case 1 - Register a new patient with all required fields
-    it('Need to register patient successfully', async () => {
+    it('Need to register patient successfully (POSITIVE)', async () => {
       mockReq.body = mockPatient;
 
       await UserController.register(mockReq, mockRes);
@@ -94,7 +89,7 @@ describe('User account based Unit Tests', () => {
     });
 
     // Test Case 2 - Register a new patient with missing required fields
-    it('Need to fail registration due to validation error', async () => {
+    it('Need to fail registration due to validation error (NEGATIVE)', async () => {
       mockReq.body = mockPatientMissed;
 
       await UserController.register(mockReq, mockRes);
@@ -107,7 +102,7 @@ describe('User account based Unit Tests', () => {
     });
 
     // Test Case 3 - Register a new patient with duplicate email
-    it('Need to fail registration due to duplicate email', async () => {
+    it('Need to fail registration due to duplicate email (NEGATIVE)', async () => {
       mockReq.body = mockPatient;
 
       // First registration
@@ -127,7 +122,7 @@ describe('User account based Unit Tests', () => {
   // Test Suite - Patient Update Tests
   describe('Patient Update Tests', () => {
     // Test Case 1 - Update patient profile with all required fields
-    it('Need to update patient profile successfully', async () => {
+    it('Need to update patient profile successfully (POSITIVE)', async () => {
       mockReq.body = mockPatient;
 
       // Register a new patient
@@ -148,7 +143,7 @@ describe('User account based Unit Tests', () => {
     });
 
     // Test Case 2 - Update patient profile with invalid role
-    it('Need to fail update due to invalid role', async () => {
+    it('Need to fail update due to invalid role (NEGATIVE)', async () => {
       mockReq.body = mockPatient;
 
       // Register a new patient
@@ -159,7 +154,7 @@ describe('User account based Unit Tests', () => {
 
       // Update the patient profile with missing required fields
       mockReq.user = { id: registeredPatient._id, role: 'users' }; // Invalid role
-      mockReq.body = mockPatientUpdateMissed;
+      mockReq.body = mockPatientUpdate;
 
       await UserController.updateProfile(mockReq, mockRes);
 
@@ -170,6 +165,26 @@ describe('User account based Unit Tests', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'Invalid role' })
       );
+    });
+
+    // Test Case 3 - Update patient profile with invalid user id
+    it('Need to fail update due to invalid user id (NEGATIVE)', async () => {
+      mockReq.body = mockPatient;
+
+      // Register a new patient
+      await UserController.register(mockReq, mockRes);
+
+      // Update the patient profile with invalid user id
+      mockReq.user = { id: '1234567890', role: 'user' }; // Invalid user id
+      mockReq.body = mockPatientUpdate;
+
+      await UserController.updateProfile(mockReq, mockRes);
+
+      // const updatedPatient = await Patient.findOne({ _id: registeredPatient._id });
+
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+
+      expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'Invalid ID' }));
     });
   });
 });
