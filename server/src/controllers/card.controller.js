@@ -44,5 +44,27 @@ export const CardController = {
       console.error('Error retrieving cards:', error);
       return res.status(500).json({ error: 'An error occurred while retrieving cards' });
     }
+  },
+
+  // Delete a card by card ID
+  async deleteCard(req, res) {
+    try {
+      const { cardId } = req.params;
+
+      if (!cardId) {
+        return res.status(400).json({ error: 'Card ID is required' });
+      }
+
+      const deletedCard = await CardService.deleteCard(cardId);
+
+      if (deletedCard) {
+        return res.status(200).json({ message: 'Card deleted successfully' });
+      } else {
+        return res.status(404).json({ error: 'Card not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting card:', error);
+      return res.status(500).json({ error: 'An error occurred while deleting the card' });
+    }
   }
 };

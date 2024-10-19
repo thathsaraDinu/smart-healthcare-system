@@ -39,6 +39,16 @@ const CardService = {
     } catch (error) {
       throw new Error('Failed to retrieve cards: ' + error.message);
     }
+  },
+
+  // Delete a card by ID
+  async deleteCard(cardId) {
+    try {
+      const deletedCard = await Card.findByIdAndDelete(cardId);
+      return deletedCard;
+    } catch (error) {
+      throw new Error('Failed to delete card: ' + error.message);
+    }
   }
 };
 

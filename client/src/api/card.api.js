@@ -2,7 +2,6 @@ import { instance } from '@/hooks/use-axios';
 
 // Save a new card
 export const saveCard = async (data) => {
-  console.log('DDDDDDDDDDDDDD', data);
   const response = await instance.post(
     '/api/card/cards',
     data,
@@ -30,7 +29,7 @@ export const updateCard = async (cardId, data) => {
 // Delete a card by card ID
 export const deleteCard = async (cardId) => {
   const response = await instance.delete(
-    `/api/cards/${cardId}`,
+    `/api/card/cards/${cardId}`,
   );
   return response.data;
 };

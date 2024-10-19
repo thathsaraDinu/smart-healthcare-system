@@ -60,9 +60,9 @@ const ProfileLayout = () => {
       link: '/profile/appointments',
     },
     {
-      title: 'Payement Method',
+      title: 'Payement Details',
       icon: MdPayment,
-      link: '/profile/payment',
+      link: '/profile/paymentdetails',
     },
     {
       title: 'FAQs',
