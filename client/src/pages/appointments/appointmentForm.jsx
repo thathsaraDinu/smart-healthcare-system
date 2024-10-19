@@ -1,8 +1,9 @@
 import { makeAppointment } from '@/api/appointment.api';
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const AppointmentForm = () => {
+  const navigate = useNavigate();
   const loc = useLocation();
   const {
     doctor,
@@ -47,6 +48,7 @@ const AppointmentForm = () => {
         await makeAppointment(appointmentData);
 
       console.log(response);
+      navigate('/payment', { state: response })
     } catch (error) {
       console.log(error);
     }

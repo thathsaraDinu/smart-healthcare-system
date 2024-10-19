@@ -1,24 +1,36 @@
-import { makeAppointment } from '@/api/appointment.api';
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const AppointmentForm = () => {
+const Paymentpage = () => {
+  const navigate = useNavigate();
   const loc = useLocation();
+
+  console.log(loc.state);
   const {
-    doctor = {},
+    doctor,
     hospital,
     location,
     bookingFee,
     date,
     time,
-  } = loc.state || {};
+  } = loc.state.schedule || {};
 
   const [patientName, setPatientName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [area, setArea] = useState('');
   const [nic, setNic] = useState('');
+
+  const [paymentMethod, setPaymentMethod] = useState(''); // For selecting payment method
+  const [cashAmount, setCashAmount] = useState(''); // For cash payments
+  const [cardDetails, setCardDetails] = useState({ // For card payments
+    cardholdername: '',
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+  });
+
+  const totalFee = bookingFee + 600 + 199;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,9 +43,9 @@ const AppointmentForm = () => {
       nic,
       schedule: {
         doctor: {
-          fullName: doctor?.fullName || 'Unknown Doctor',
-          gender: doctor?.gender || 'Unknown',
-          specialization: doctor?.specialization || 'Unknown',
+          fullName: doctor?.fullName,
+          gender: doctor?.gender,
+          specialization: doctor?.specialization,
         },
         hospital,
         location,
@@ -41,16 +53,25 @@ const AppointmentForm = () => {
         date,
         time,
       },
+      paymentMethod,
+      cashAmount: paymentMethod === 'cash' ? cashAmount : null,
+      cardDetails: paymentMethod === 'card' ? cardDetails : null,
     };
 
-    try {
-      const response =
-        await makeAppointment(appointmentData);
+    console.log('Appointment Data:', appointmentData);
+    // Send the data to the backend here
+  };
 
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleCashAmountChange = (e) => {
+    setCashAmount(e.target.value);
+  };
+
+  const handleCardDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setCardDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -80,7 +101,7 @@ const AppointmentForm = () => {
                       Doctor
                     </div>
                     <div className="font-medium text-xs mt-1">
-                      {doctor.fullName || 'Unknown Doctor'}
+                      {doctor.fullName}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -119,116 +140,100 @@ const AppointmentForm = () => {
               </div>
             </div>
             <div className="xl:col-span-3">
-              <div>
-                <div className="grid grid-cols-1 md:grid-cols-8 gap-5 gap-y-5 md:gap-y-8">
-                  <div className="flex  md:col-span-4">
-                    <div className="w-full">
-                      <div className="text-xs mb-2 font-medium pl-2">
-                        Name
-                        <span className="text-red-500 ml-1">
-                          *
-                        </span>
-                      </div>
-                      <div className="relative">
-                        <div className="relative">
-                          <input
-                            className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                            placeholder="Enter patient name"
-                            onChange={(e) =>
-                              setPatientName(e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="md:col-span-4">
-                    <div className="text-xs mb-2 font-medium pl-2">
-                      Email
-                    </div>
-                    <div className="relative">
-                      <div className="relative">
-                        <input
-                          className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                          placeholder="Receipt will send to this email"
-                          onChange={(e) =>
-                            setEmail(e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex  md:col-span-4">
-                    <div className="w-1/3">
-                      <div className="text-xs mb-2 font-medium pl-2">
-                        Number
-                        <span className="text-red-500 ml-1">
-                          *
-                        </span>{' '}
-                      </div>
-                      <div className="relative">
-                        <button className="w-full rounded-r-none border-r-0 py-3 px-4 text-sm focus:outline-none rounded-xl border border-blue-500 bg-white text-left ">
-                          <div className="flex justify-between items-center">
-                            +94
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="w-full mt-6">
-                      <div className="relative">
-                        <div className="relative">
-                          <input
-                            className="w-full rounded-l-none false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                            placeholder="71XXXXXXX"
-                            type="number"
-                            onChange={(e) =>
-                              setPhoneNumber(e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="md:col-span-4">
-                    <div className="text-xs mb-2 font-medium pl-2">
-                      Area
-                    </div>
-                    <div className="relative">
-                      <div className="relative">
-                        <input
-                          className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                          placeholder="Please enter your closest city"
-                          onChange={(e) =>
-                            setArea(e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
+              <div className="mb-4">
+                <div className="font-semibold text-blue-500 mb-1">Select Payment Method</div>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="card"
+                      className="form-radio"
+                      onChange={() => setPaymentMethod('card')}
+                    />
+                    <span className="text-sm">Card</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="cash"
+                      className="form-radio"
+                      onChange={() => setPaymentMethod('cash')}
+                    />
+                    <span className="text-sm">Cash</span>
+                  </label>
+                </div>
+              </div>
 
-                  <div className="flex  md:col-span-5 col-start-1">
-                    <div className="w-full">
-                      <div className="text-xs mb-2 font-medium pl-2">
-                        NIC Number
-                        <span className="text-red-500 ml-1">
-                          *
-                        </span>
-                      </div>
-                      <div className="relative">
-                        <div className="relative">
-                          <input
-                            className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                            placeholder="Enter NIC number"
-                            onChange={(e) =>
-                              setNic(e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
+              {/* Conditional UI based on payment method */}
+              {paymentMethod === 'cash' && (
+                <div className="mt-5">
+                  <label className="block font-medium mb-2">Enter Cash Amount</label>
+                  <input
+                    type="number"
+                    value={cashAmount}
+                    onChange={handleCashAmountChange}
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                  />
+                  <div className="mt-2">
+                    <div className="font-medium">Balance:</div>
+                    <div className="text-red-600">
+                      {cashAmount && cashAmount >= totalFee
+                        ? `Rs ${(cashAmount - totalFee).toFixed(2)}`
+                        : 'Insufficient Cash'}
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {paymentMethod === 'card' && (
+
+
+                <div className="mt-5">
+                  <div>
+                    <label className="block font-medium mb-2">Card Holder Name</label>
+                    <input
+                      type="text"
+                      name="cardholdername"
+                      value={cardDetails.cardholdername}
+                      onChange={handleCardDetailsChange}
+                      className="w-full border border-gray-300 rounded px-3 py-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-medium mb-2">Card Number</label>
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      value={cardDetails.cardNumber}
+                      onChange={handleCardDetailsChange}
+                      className="w-full border border-gray-300 rounded px-3 py-2"
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <label className="block font-medium mb-2">Expiry Date</label>
+                    <input
+                      type="text"
+                      name="expiry"
+                      value={cardDetails.expiry}
+                      onChange={handleCardDetailsChange}
+                      className="w-full border border-gray-300 rounded px-3 py-2"
+                      placeholder="MM/YY"
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <label className="block font-medium mb-2">CVV</label>
+                    <input
+                      type="text"
+                      name="cvv"
+                      value={cardDetails.cvv}
+                      onChange={handleCardDetailsChange}
+                      className="w-full border border-gray-300 rounded px-3 py-2"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             <div>
               <div className="shadow border border-gray-200 p-5 rounded-xl mb-5">
@@ -246,7 +251,7 @@ const AppointmentForm = () => {
                         Doctor fee
                       </div>
                       <div className="font-semibold text-sm xl:text-xs 2xl:text-sm ">
-                        Rs {bookingFee ? bookingFee.toFixed(2) : '0.00'}
+                        Rs {bookingFee.toFixed(2)}
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
@@ -293,6 +298,7 @@ const AppointmentForm = () => {
                   </div>
                 </div>
               </div>
+
               <button
                 type="submit"
                 className="w-full px-7 py-1.5 text-sm bg-blue-500 text-white px-2 py-1.5 md:py-3 mt-auto rounded-xl text-sm group border border-blue-500"
@@ -313,11 +319,9 @@ const AppointmentForm = () => {
                       ></path>
                     </svg>
                   </div>
-                  <Link to={'/payment'}>
-                    <div className="flex items-center capitalize gap-3 whitespace-nowrap">
-                      Pay
-                    </div>
-                  </Link>
+                  <div className="flex items-center capitalize gap-3 whitespace-nowrap">
+                    Pay
+                  </div>
                   <div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -338,11 +342,13 @@ const AppointmentForm = () => {
                 </div>
               </button>
             </div>
-          </form>
-        </div>
-      </section>
+          </form >
+        </div >
+      </section >
     </>
   );
 };
 
-export default AppointmentForm;
+export default Paymentpage;
+
+
