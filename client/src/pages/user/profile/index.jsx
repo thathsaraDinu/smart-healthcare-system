@@ -2,12 +2,20 @@ import { InputField } from '@/components/input';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { LoadingSpinner } from '@/components/ui/spinner';
-import { useProfile } from '@/hooks/use-users';
+import {
+  useProfile,
+  useUpdateProfile,
+} from '@/hooks/use-users';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { MdEditSquare, MdSaveAs } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { userUpdateSchema } from '@/validations/user-validation';
+import { useEffect } from 'react';
+import { Modal } from '@/components/modals';
+import toast from 'react-hot-toast';
 
 const UpdatedInputField = ({
   name,
@@ -33,10 +41,15 @@ const UpdatedInputField = ({
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const { data: profile, isLoading: profileLoading } =
-    useProfile(true);
+
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    refetch,
+  } = useProfile(true);
 
   const form = useForm({
+    resolver: zodResolver(userUpdateSchema),
     defaultValues: {
       fullName: profile.fullName,
       gender:
@@ -53,6 +66,23 @@ const Profile = () => {
     },
   });
 
+  const {
+    mutate: updateMutate,
+    isPending: updatePending,
+    isSuccess: updateSuccess,
+  } = useUpdateProfile(refetch);
+
+  const onSubmit = (data) => {
+    console.log(data);
+    updateMutate(data);
+  };
+
+  useEffect(() => {
+    if (updateSuccess) {
+      setIsEditing(false);
+    }
+  }, [updateSuccess]);
+
   const ignoredForm = useForm({
     defaultValues: {
       age:
@@ -62,15 +92,20 @@ const Profile = () => {
   });
 
   const editHandler = () => {
-    setIsEditing(!isEditing);
+    setIsEditing(true);
 
     if (isEditing) {
       form.handleSubmit(onSubmit)();
+
+      if (updatePending) {
+        toast.loading('Updating Profile...');
+      }
     }
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const discardHandler = () => {
+    setIsEditing(false);
+    form.reset();
   };
 
   if (profileLoading) {
@@ -82,45 +117,66 @@ const Profile = () => {
       {profile && (
         <div>
           <Form {...form}>
-            <form className="space-y-4 max-w-2xl mx-auto mt-8">
+            <form
+              // onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 max-w-2xl mx-auto mt-8"
+            >
               <div className="flex justify-end">
-                {!isEditing ? (
-                  <Button
-                    variant="primary"
-                    className="text-blue-500  p-0 m-0"
-                    onClick={editHandler}
-                    type="button"
-                  >
-                    Update Info
-                    <MdEditSquare
-                      className="ml-1"
-                      size={20}
-                    />
-                  </Button>
-                ) : (
-                  <div>
+                <div className="flex justify-end">
+                  {!isEditing && (
                     <Button
                       variant="primary"
-                      className="text-red-500 p-0 m-0"
-                      type="button"
+                      className="text-blue-500 font-semibold text-md p-0 m-0"
                       onClick={editHandler}
-                    >
-                      Discard Changes
-                    </Button>
-                    <Button
-                      variant="primary"
-                      className="text-blue-500 p-0 m-0"
                       type="button"
-                      onClick={editHandler}
                     >
-                      Save Changes
-                      <MdSaveAs
+                      Update Info
+                      <MdEditSquare
                         className="ml-1"
                         size={20}
                       />
                     </Button>
-                  </div>
-                )}
+                  )}
+                  {isEditing && (
+                    <div className="flex gap-4">
+                      <Modal
+                        variant="primary"
+                        buttonText={
+                          <>
+                            Discard Changes
+                            <MdSaveAs
+                              className="ml-1"
+                              size={20}
+                            />
+                          </>
+                        }
+                        buttonStyles="text-red-500 font-semibold text-md p-0 m-0"
+                        header="Discard Changes"
+                        description="Do you want to discard the changes?"
+                        onClick={discardHandler}
+                        actionButtonText="Discard"
+                        actionButtonStyles="bg-red-500 hover:bg-red-600"
+                      />
+                      <Modal
+                        variant="primary"
+                        buttonText={
+                          <>
+                            Save Changes
+                            <MdSaveAs
+                              className="ml-1"
+                              size={20}
+                            />
+                          </>
+                        }
+                        buttonStyles="text-blue-500 font-semibold text-md p-0 m-0"
+                        header="Save Changes"
+                        description="Do you want to save the changes?"
+                        onClick={editHandler}
+                        actionButtonText="Save"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Full Name */}
@@ -234,10 +290,10 @@ export default Profile;
 
 // Prop Types
 UpdatedInputField.propTypes = {
-  name: PropTypes.string,
+  name: PropTypes.string.isRequired,
   label: PropTypes.string,
   disabled: PropTypes.bool,
-  form: PropTypes.object,
+  form: PropTypes.object.isRequired,
   type: PropTypes.string,
   className: PropTypes.string,
 };

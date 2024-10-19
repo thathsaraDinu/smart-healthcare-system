@@ -28,8 +28,8 @@ const Appointment = () => {
 
   const doctorNames =
     data?.map((item) => ({
-      value: `${item.user.firstName} ${item.user.lastName}`,
-      label: `${item.user.firstName} ${item.user.lastName}`,
+      value: item.fullName,
+      label: item.fullName,
     })) || [];
 
   const hospitalNames =
@@ -58,7 +58,7 @@ const Appointment = () => {
           )
         : true;
       const doctorMatch = doctor
-        ? `${item.user.firstName} ${item.user.lastName}`
+        ? item.fullName
             .toLowerCase()
             .includes(doctor.toLowerCase())
         : true;
@@ -89,8 +89,8 @@ const Appointment = () => {
 
   return (
     <>
-      <section className="container">
-        <div className="mt-10 px-[120px] flex justify-between">
+      <section className="lg:container">
+        <div className="mt-10 lg:px-[120px] p-5 flex flex-col lg:flex-row  justify-between">
           <div>
             <h2 className="mt-2 text-4xl font-bold leading-[50px]">
               <span className="text-blue-500">
@@ -116,7 +116,7 @@ const Appointment = () => {
           {data && (
             <form
               onSubmit={onSearch}
-              className="mx-10 min-w-[400px]"
+              className="mx-0 lg:mx-10 max-w-[400px]"
             >
               <h3></h3>
               <div className="mt-4">
@@ -172,11 +172,11 @@ const Appointment = () => {
         </div>
       </section>
       <section className="container my-10">
-        <div className="px-[120px]">
+        <div className="lg:px-[120px]">
           <h2 className="font-bold text-2xl mb-5">
             Available Doctors
           </h2>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 place-items-strech gap-4">
             {filteredDoctors &&
             filteredDoctors.length > 0 ? (
               filteredDoctors.map((item) => (

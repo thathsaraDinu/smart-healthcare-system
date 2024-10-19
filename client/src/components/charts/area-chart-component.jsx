@@ -10,16 +10,25 @@ import {
 } from 'recharts';
 
 export function AreaChartComponent({ title, data }) {
+
+  // Map the data to the required format
+  const selectedData = data?.map((item) => ({
+    name: item._id.formattedDate, // X-axis data from formattedDate
+    maleCount: item.maleCount, // Y-axis data
+    femaleCount: item.femaleCount,
+  }));
+
+  
   return (
     <>
-      <h2 className='text-sm'>{title}</h2>
+      <h2 className="text-sm">{title}</h2>
       <ResponsiveContainer
         className={'text-xs'}
         width="100%"
         height="100%"
       >
         <AreaChart
-          data={data}
+          data={selectedData}
           margin={{ right: 20, left: 20 }}
         >
           <XAxis dataKey={'name'}></XAxis>
@@ -28,19 +37,23 @@ export function AreaChartComponent({ title, data }) {
           <Tooltip />
           <Area
             type="monotone"
+            stroke="#DE3163"
+            fill="#DE3163"
+            strokeWidth={2}
+            fillOpacity={0.3}
+            dataKey="femaleCount"
+            name="Female"
+            z={-2}
+          ></Area>
+          <Area
+            type="monotone"
             stroke="#0024e8"
             fill="#0024e8"
             strokeWidth={2}
             fillOpacity={0.3}
-            dataKey="product2"
-          ></Area>
-          <Area
-            type="monotone"
-            stroke="#eb8900"
-            fillOpacity={0.3}
-            strokeWidth={2}
-            fill="#eb8900"
-            dataKey="product1"
+            dataKey="maleCount"
+            name="Male"
+            z={1}
           ></Area>
         </AreaChart>
       </ResponsiveContainer>

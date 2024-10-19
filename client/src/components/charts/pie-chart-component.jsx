@@ -1,31 +1,55 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 import {
   PieChart,
   Pie,
   Tooltip,
   Cell,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 
-const data1 = [
-  { name: 'Group A', sh: 400 },
-  { name: 'Group B', sh: 300 },
-  { name: 'Group C', sh: 300 },
- 
-];
-
 const COLORS = [
-  '#0D47A1',
-  '#1976D2',
-  '#42A5F5',
-  '#90CAF9',
-  '#E3F2FD',
+  '#003f5c', // Dark Teal
+  '#2f4b7c', // Dark Blue
+  '#665191', // Purple
+  '#a05195', // Rose
+  '#d45087', // Raspberry
+  '#f95d6a', // Coral Red
+  '#ff7c43', // Orange
+  '#ffa600', // Gold
+  '#ffcc00', // Bright Yellow
+  '#bc5090', // Fuchsia
+  '#ff5e78', // Salmon
+  '#ef476f', // Bright Pink
 ];
 
 const PieChartComponent = ({ data, title }) => {
-  const [pieSelected, setPieSelected] = useState(100);
+  const selectedData = [];
+  const hospitalMap = {};
+
+  // Map the data to the required format
+  data?.forEach((item) => {
+    Object.entries(item.hospitalAppointments).forEach(
+      ([hospitalName, appointmentCount]) => {
+        hospitalMap[hospitalName] =
+          (hospitalMap[hospitalName] || 0) +
+          appointmentCount;
+      },
+    );
+  });
+  Object.entries(hospitalMap).forEach(
+    ([hospitalName, totalAppointments]) => {
+      selectedData.push({
+        name: hospitalName,
+        totalAppointments,
+      });
+    },
+  );
+
+  // Calculate the total number of appointments
+  const totalAppointmentsCount = selectedData.reduce(
+    (acc, item) => acc + item.totalAppointments,
+    0,
+  );
 
   return (
     <>
@@ -33,49 +57,33 @@ const PieChartComponent = ({ data, title }) => {
         <h2 className="text-sm w-auto line-clamp-1 md:line-clamp-2 lg:line-clamp-none">
           {title}
         </h2>
-        <select
-          onChange={() => {
-            setPieSelected(event.target.value);
-          }}
-          className="py-1 px-2 text-xs rounded-md"
-        >
-          <option className="py-2">Select</option>
-          <option className="py-2">type 1</option>
-          <option className="py-2">type 2</option>
-          <option className="py-2">type 3</option>
-          <option className="py-2">type 4</option>
-        </select>
       </div>
       <ResponsiveContainer
-        className={'text-xs'}
+        className="text-xs"
         width="100%"
         height="100%"
       >
-        <PieChart margin={{ top: -20 }}>
-          <Legend />
-          <text
-            x="50%"
-            y="42%"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            className="text-xs"
-          >
-            Overall {pieSelected} %
-          </text>
+        <PieChart margin={{ top: -0 }}>
           <Pie
-            data={data1}
-            innerRadius={50} // Inner radius for the donut effect
+            data={selectedData}
+            innerRadius={50}
             outerRadius={80}
             fill="#8884d8"
-            dataKey="sh"
+            label={({ name, totalAppointments }) => {
+              const displayName = name.length > 9 ? `${name.slice(0, 9)}.` : name;
+              const percentage = ((totalAppointments / totalAppointmentsCount) * 100).toFixed(0);
+              return `${displayName}: ${percentage}%`;
+            }}
+            labelLine={false}
+            dataKey="totalAppointments"
           >
-            {data.map((entry, index) => (
+            {selectedData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
                 fill={COLORS[index % COLORS.length]}
               />
             ))}
-          </Pie><div className=''></div>
+          </Pie>
           <Tooltip />
         </PieChart>
       </ResponsiveContainer>
@@ -84,8 +92,8 @@ const PieChartComponent = ({ data, title }) => {
 };
 
 PieChartComponent.propTypes = {
-  data: PropTypes.array.isRequired, // Ensure 'data' is an array and is required
-  title: PropTypes.string.isRequired, // Ensure 'title' is a string and is required
+  data: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default PieChartComponent;

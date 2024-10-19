@@ -13,7 +13,7 @@ import {
   SheetTrigger,
   SheetContent,
 } from '@/components/ui/sheet';
-import AvatarIcon from '@/components/navbar/auth-button';
+import AvatarIcon from '@/components/navbar/avatar';
 import { useAuthStore } from '@/store/auth-store';
 import { MENU_ITEMS } from '@/constants';
 
@@ -87,6 +87,7 @@ export default function Navbar() {
           </DropdownMenu>
 
           <AvatarIcon />
+
           <Sheet>
             <SheetTrigger asChild>
               <Button

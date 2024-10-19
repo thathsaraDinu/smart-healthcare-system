@@ -1,17 +1,12 @@
-import { USER_ROLES } from '../constants/constants.js';
-import { getDoctors, getProfile, getUsers, register } from '../services/user.service.js';
+import * as userService from '../services/user.service.js';
 
 const UserController = {
   // Register a new user
   // Anyone can register
   register: async (req, res) => {
     try {
-      const user = await register(req.body);
-
-      // If the user is created successfully, return a 201 status code
-      if (user) {
-        return res.status(201).json({ message: 'Registration successful' });
-      }
+      const user = await userService.register(req.body);
+      return res.status(201).json({ message: 'Registration successful', user });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
@@ -21,8 +16,7 @@ const UserController = {
   // Only authenticated users can access
   profile: async (req, res) => {
     try {
-      const user = await getProfile(req.user.id);
-
+      const user = await userService.getProfile(req.user.id);
       return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -34,8 +28,7 @@ const UserController = {
   getUsers: async (req, res) => {
     try {
       const { role } = req.query;
-      const users = await getUsers(role);
-
+      const users = await userService.getUsers(role);
       return res.status(200).json(users);
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -46,9 +39,19 @@ const UserController = {
   // Anyone can access
   getDoctors: async (req, res) => {
     try {
-      const doctors = await getDoctors();
-
+      const doctors = await userService.getDoctors();
       return res.status(200).json(doctors);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  // Update user profile
+  // Only authenticated users can access
+  updateProfile: async (req, res) => {
+    try {
+      const user = await userService.updateProfile(req.user.id, req.user.role, req.body);
+      return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

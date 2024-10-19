@@ -1,31 +1,36 @@
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
-import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import defaultAvatar from '@/assets/avatar/default.png';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar';
 
 export default function AvatarIcon() {
   const isLoggedIn = useAuthStore(
     (state) => state.isLoggedIn,
   );
   const navigate = useNavigate();
-  const logOut = useAuthStore((state) => state.logOut);
-
-  const logOutHandler = () => {
-    logOut();
-    toast.success('Logged out successfully');
-    navigate('/');
-  };
+  const image = useAuthStore((state) => state.image);
 
   return (
-    <div>
+    <div className="flex items-center gap-4">
       {/* Logged in */}
       {isLoggedIn && (
-        <Button
-          onClick={logOutHandler}
-          variant="destructive"
+        <Avatar
+          onClick={() => navigate('/profile')}
+          className="cursor-pointer"
         >
-          Log out
-        </Button>
+          <AvatarImage
+            src={
+              image !== 'default' ? image : defaultAvatar
+            }
+            alt="avatar"
+          />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
       )}
 
       {/* Not logged in */}
