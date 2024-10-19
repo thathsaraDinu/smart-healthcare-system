@@ -60,6 +60,9 @@ const AppointmentUpdateForm = lazy(
     import('@/pages/appointments/appointmentUpdateForm'),
 );
 
+//payment pages
+const Payment = lazy(() => import('@/pages/payment/Paymentpage'));
+
 // layout
 const Layout = lazy(() => import('@/layout'));
 const ProfileLayout = lazy(
@@ -93,6 +96,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <Appointments />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/payment',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <Payment />
           </Suspense>
         ),
       },
