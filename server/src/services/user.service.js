@@ -23,7 +23,7 @@ export const register = async (data) => {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     let user;
-    console.log(data.role);
+
     switch (data.role) {
       case USER_ROLES.USER:
         user = new Patient({
@@ -44,6 +44,15 @@ export const register = async (data) => {
           status: 400,
           message: 'Invalid role'
         };
+    }
+
+    // If Schema validation fails, throw an error
+    const error = user.validateSync();
+    if (error) {
+      throw {
+        status: 400,
+        message: 'Validation failed'
+      };
     }
 
     // Save the user object to the database
@@ -187,6 +196,14 @@ export const getDoctors = async () => {
 export const updateProfile = async (id, role, data) => {
   try {
     let updateUser;
+
+    // Check role included in USER_ROLES
+    if (!Object.values(USER_ROLES).includes(role)) {
+      throw {
+        message: 'Invalid role'
+      };
+    }
+
     if (role === USER_ROLES.USER) {
       updateUser = Patient.findByIdAndUpdate(id, data, {
         new: true

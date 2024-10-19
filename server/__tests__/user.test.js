@@ -35,7 +35,34 @@ const mockPatient = {
   dob: '1990-01-01'
 };
 
-describe('User based Unit Tests', () => {
+const mockPatientMissed = {
+  fullName: 'John Doe',
+  role: 'user',
+  email: 'user@mail.com',
+  password: 'password',
+  mobile: '1234567890',
+  gender: 'male',
+  emergencyContact: '1234567890',
+  maritalStatus: 'single'
+  // dob: '1990-01-01' // Missed dob
+};
+
+// This data will be used to update the patient profile
+const mockPatientUpdate = {
+  fullName: 'Jane Doe',
+  role: 'user',
+  email: 'userupdated@mail.com',
+  mobile: '0123456789',
+  gender: 'male'
+};
+
+const mockPatientUpdateMissed = {
+  fullName: 'Jane Doe',
+  email: 'userupdated@mail.com'
+};
+
+// Unit Tests - User Registration
+describe('User account based Unit Tests', () => {
   let mockReq, mockRes;
 
   beforeEach(() => {
@@ -51,7 +78,9 @@ describe('User based Unit Tests', () => {
     };
   });
 
+  // Test Suite - Patient Register Tests
   describe('Patient Register Tests', () => {
+    // Test Case 1 - Register a new patient with all required fields
     it('Need to register patient successfully', async () => {
       mockReq.body = mockPatient;
 
@@ -61,6 +90,85 @@ describe('User based Unit Tests', () => {
 
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'Registration successful' })
+      );
+    });
+
+    // Test Case 2 - Register a new patient with missing required fields
+    it('Need to fail registration due to validation error', async () => {
+      mockReq.body = mockPatientMissed;
+
+      await UserController.register(mockReq, mockRes);
+
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+
+      expect(mockRes.json).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Validation failed' })
+      );
+    });
+
+    // Test Case 3 - Register a new patient with duplicate email
+    it('Need to fail registration due to duplicate email', async () => {
+      mockReq.body = mockPatient;
+
+      // First registration
+      await UserController.register(mockReq, mockRes);
+
+      // Second registration
+      await UserController.register(mockReq, mockRes);
+
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+
+      expect(mockRes.json).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'User already exists' })
+      );
+    });
+  });
+
+  // Test Suite - Patient Update Tests
+  describe('Patient Update Tests', () => {
+    // Test Case 1 - Update patient profile with all required fields
+    it('Need to update patient profile successfully', async () => {
+      mockReq.body = mockPatient;
+
+      // Register a new patient
+      await UserController.register(mockReq, mockRes);
+
+      // Extract registered patient _id
+      const registeredPatient = await Patient.findOne({ email: mockPatient.email });
+
+      // Update the patient profile
+      mockReq.user = { id: registeredPatient._id, role: 'user' };
+      mockReq.body = mockPatientUpdate;
+
+      await UserController.updateProfile(mockReq, mockRes);
+
+      // const updatedPatient = await Patient.findOne({ email: mockPatientUpdate.email });
+
+      expect(mockRes.status).toHaveBeenCalledWith(200);
+    });
+
+    // Test Case 2 - Update patient profile with invalid role
+    it('Need to fail update due to invalid role', async () => {
+      mockReq.body = mockPatient;
+
+      // Register a new patient
+      await UserController.register(mockReq, mockRes);
+
+      // Extract registered patient _id
+      const registeredPatient = await Patient.findOne({ email: mockPatient.email });
+
+      // Update the patient profile with missing required fields
+      mockReq.user = { id: registeredPatient._id, role: 'users' }; // Invalid role
+      mockReq.body = mockPatientUpdateMissed;
+
+      await UserController.updateProfile(mockReq, mockRes);
+
+      // const updatedPatient = await Patient.findOne({ _id: registeredPatient._id });
+
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+
+      expect(mockRes.json).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Invalid role' })
       );
     });
   });
