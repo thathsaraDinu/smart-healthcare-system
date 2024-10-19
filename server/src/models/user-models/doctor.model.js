@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { USER_ROLES } from '../../constants/constants.js';
+import User from './user.model.js';
 
 const DoctorSchema = new Schema({
   specialization: {
@@ -37,4 +38,8 @@ const DoctorSchema = new Schema({
   ]
 });
 
-export default mongoose.models.User.discriminator(USER_ROLES.DOCTOR, DoctorSchema);
+const Doctor = User.discriminator(USER_ROLES.DOCTOR, DoctorSchema);
+
+export default Doctor;
+
+// export default mongoose.models.User.discriminator(USER_ROLES.DOCTOR, DoctorSchema);
