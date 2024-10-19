@@ -1,16 +1,13 @@
-import UserSchema from '../models/user-models/user.model.js';
-import Patient from '../models/user-models/patient.model.js';
-import Doctor from '../models/user-models/doctor.model.js';
 import bcrypt from 'bcrypt';
 import { USER_ROLES } from '../constants/constants.js';
+import { createUserByRole } from '../factories/user.factory.js';
+import userRepository from '../repositories/user.repository.js';
 
 // Register a new user
 export const register = async (data) => {
   try {
     // Check if the user already exists
-    const exitistingUser = await UserSchema.findOne({
-      email: data.email
-    });
+    const exitistingUser = await userRepository.findUserByEmail(data.email);
 
     if (exitistingUser) {
       throw {
@@ -21,29 +18,23 @@ export const register = async (data) => {
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(data.password, 10);
+    data.password = hashedPassword;
 
-    let user;
-    console.log(data.role);
-    switch (data.role) {
-      case USER_ROLES.USER:
-        user = new Patient({
-          ...data,
-          password: hashedPassword
-        });
-        break;
+    // Get last patient ID and assign next id to the data (Format is P100010)
+    if (data.role === USER_ROLES.USER) {
+      const lastPatientId = await userRepository.getLastPatientId();
+      data.patientId = `P${parseInt(lastPatientId.toString().slice(1)) + 1}`;
+    }
 
-      case USER_ROLES.DOCTOR:
-        user = new Doctor({
-          ...data,
-          password: hashedPassword
-        });
-        break;
+    const user = createUserByRole(data.role, data);
 
-      default:
-        throw {
-          status: 400,
-          message: 'Invalid role'
-        };
+    // If Schema validation fails, throw an error
+    const error = user.validateSync();
+    if (error) {
+      throw {
+        status: 400,
+        message: 'Validation failed'
+      };
     }
 
     // Save the user object to the database
@@ -62,7 +53,7 @@ export const register = async (data) => {
 export const getProfile = async (id) => {
   try {
     // Find the user by ID
-    const user = await UserSchema.findById(id);
+    const user = await userRepository.findUserById(id);
 
     // If the user is not found, throw an error
     if (!user) {
@@ -112,9 +103,7 @@ export const getProfile = async (id) => {
 export const getUserByEmail = async (email) => {
   try {
     // Find the user by email
-    const user = await UserSchema.findOne({
-      email
-    });
+    const user = await userRepository.findUserByEmail(email);
 
     // If the user is not found, throw an error
     if (!user) {
@@ -143,9 +132,7 @@ export const getUserByEmail = async (email) => {
 export const getUsers = async (role) => {
   try {
     // Find all users with the specified role
-    const users = await UserSchema.find({
-      role
-    });
+    const users = await userRepository.findUsersByRole(role);
 
     // Return only the necessary user details
     return users.map((user) => ({
@@ -171,8 +158,12 @@ export const getUsers = async (role) => {
 // Get all doctors
 export const getDoctors = async () => {
   try {
-    // Find all users with the role of a doctor and remove the password field
-    const doctors = await Doctor.find().select('-password');
+    const doctors = await userRepository.findUsersByRole(USER_ROLES.DOCTOR);
+
+    // Remove the password field from the user object
+    doctors.forEach((doctor) => {
+      doctor.password = undefined;
+    });
 
     return doctors;
   } catch (error) {
@@ -187,18 +178,27 @@ export const getDoctors = async () => {
 export const updateProfile = async (id, role, data) => {
   try {
     let updateUser;
-    if (role === USER_ROLES.USER) {
-      updateUser = Patient.findByIdAndUpdate(id, data, {
-        new: true
-      });
-    } else {
-      updateUser = Doctor.findByIdAndUpdate(id, data, {
-        new: true
-      });
+
+    // Check object id is valid
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      throw {
+        message: 'Invalid ID'
+      };
     }
 
-    // Find the user by ID and update
-    const user = await updateUser;
+    // Check role included in USER_ROLES
+    if (!Object.values(USER_ROLES).includes(role)) {
+      throw {
+        message: 'Invalid role'
+      };
+    }
+
+    let user;
+    if (role === USER_ROLES.USER) {
+      user = await userRepository.updateUserProfile(id, data);
+    } else {
+      user = await userRepository.updateDoctorProfile(id, data);
+    }
 
     // If the user is not found, throw an error
     if (!user) {
@@ -221,7 +221,7 @@ export const updateProfile = async (id, role, data) => {
 export const deleteUser = async (id) => {
   try {
     // Find the user by ID and delete
-    const user = await UserSchema.findByIdAndDelete(id);
+    const user = await userRepository.findByIdAndDeleteProfile(id);
 
     // If the user is not found, throw an error
     if (!user) {
