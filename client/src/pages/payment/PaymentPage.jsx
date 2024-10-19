@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { saveCard, getSavedCards } from '@/api/card.api'; // Assuming you have your card API ready
 import { useAuthStore } from '@/store/auth-store';
@@ -6,34 +6,28 @@ import { useAuthStore } from '@/store/auth-store';
 const Paymentpage = () => {
   const navigate = useNavigate();
   const loc = useLocation();
-  console.log(loc.state);
 
-  const userId = useAuthStore(
-    (state) => state.id,);
-
+  const userId = useAuthStore((state) => state.id);
   const [savedCard, setSavedCard] = useState(null); // Holds the saved card details if any
   const [isLoading, setIsLoading] = useState(true); // Loading state while fetching card details
   const [useSavedCard, setUseSavedCard] = useState(false); // Whether the user wants to use the saved card
 
   useEffect(() => {
-    // Fetch saved card details when the component is mounted
     const fetchSavedCard = async () => {
       try {
-        const cardDetails = await getSavedCards(userId); // API call to get saved card
-        if (cardDetails) {
-          setSavedCard(cardDetails); // Set saved card details if they exist
+        const cardDetails = await getSavedCards(userId);
+        if (cardDetails.length > 0) {
+          setSavedCard(cardDetails[0]); // Assuming you only have one saved card
         }
       } catch (error) {
-        console.error('Error fetching saved card details:', error);
+        console.error('Error fetching saved card:', error);
       } finally {
-        setIsLoading(false); // Stop loading
+        setIsLoading(false);
       }
     };
 
     fetchSavedCard();
-  }, []);
-
-
+  }, [userId]);
 
   const {
     doctor,
@@ -51,7 +45,8 @@ const Paymentpage = () => {
   const [nic, setNic] = useState('');
 
   // Set default payment method to "card"
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] =
+    useState('card');
   const [cashAmount, setCashAmount] = useState('');
   const [cardDetails, setCardDetails] = useState({
     cardholdername: '',
@@ -66,48 +61,65 @@ const Paymentpage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log('Payment Method:', {
+      paymentMethod,
+      totalFee,
+      cardDetails,
+      saveCardInfo,
+    });
+
     // Check if it's a card payment and all required card details are filled
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-
-      // Check if it's a card payment and all required card details are filled
-      if (paymentMethod === 'card') {
-        if (!cardDetails.cardholdername || !cardDetails.cardNumber || !cardDetails.expiry || !cardDetails.cvv) {
-          alert("Please fill in all card details.");
-          return;
-        }
-
-        // Save card details if "save card details" is checked
-        if (saveCardInfo) {
-          try {
-            const cardData = {
-              cardholdername: cardDetails.cardholdername,
-              cardNumber: cardDetails.cardNumber,
-              expiry: cardDetails.expiry,
-              cvv: cardDetails.cvv,
-            };
-
-            const savedCardResponse = await saveCard(cardData);
-            console.log('Saved Card Data:', savedCardResponse);
-          } catch (error) {
-            console.error('Error saving card details:', error);
-          }
-        }
+    if (paymentMethod === 'card') {
+      if (
+        !cardDetails.cardholdername ||
+        !cardDetails.cardNumber ||
+        !cardDetails.expiry ||
+        !cardDetails.cvv
+      ) {
+        alert('Please fill in all card details.');
+        return;
       }
 
-      // Check if it's a cash payment and if the amount entered is valid
-      if (paymentMethod === 'cash') {
-        if (cashAmount < totalFee) {
-          alert("Insufficient cash amount.");
-          return;
+      // Save card details if "save card details" is checked
+      if (saveCardInfo) {
+        try {
+          const cardData = {
+            appointmentId: loc.state._id,
+            userId: userId,
+            paymentMethod: paymentMethod,
+            cardholderName: cardDetails.cardholdername,
+            cardNumber: cardDetails.cardNumber,
+            expiry: cardDetails.expiry,
+            cvv: cardDetails.cvv,
+            totalFee: totalFee,
+          };
+          console.log('Card Data:', cardData);
+
+          const savedCardResponse =
+            await saveCard(cardData);
+
+          console.log(savedCardResponse);
+        } catch (error) {
+          console.error(
+            'Error saving card details:',
+            error,
+          );
         }
       }
+    }
 
-      // Here you can make the actual appointment booking API call
-      // Assuming that the payment is successful, navigate to '/myAppointments'
-      navigate('/myAppointments');
-    };
+    // Check if it's a cash payment and if the amount entered is valid
+    if (paymentMethod === 'cash') {
+      if (cashAmount < totalFee) {
+        alert('Insufficient cash amount.');
+        return;
+      }
+    }
 
+    // Here you can make the actual appointment booking API call
+    // Assuming that the payment is successful, navigate to '/myAppointments'
+    // navigate('/myAppointments');
+    // };
 
     // Proceed with appointment booking (you can send data to backend here)
   };
@@ -196,7 +208,9 @@ const Paymentpage = () => {
 
             <div className="xl:col-span-3">
               <div className="mb-4">
-                <div className="font-semibold text-blue-500 mb-1">Select Payment Method</div>
+                <div className="font-semibold text-blue-500 mb-1">
+                  Select Payment Method
+                </div>
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2">
                     <input
@@ -205,7 +219,9 @@ const Paymentpage = () => {
                       value="card"
                       className="form-radio"
                       checked={paymentMethod === 'card'}
-                      onChange={() => setPaymentMethod('card')}
+                      onChange={() =>
+                        setPaymentMethod('card')
+                      }
                     />
                     <span className="text-sm">Card</span>
                   </label>
@@ -215,7 +231,9 @@ const Paymentpage = () => {
                       name="paymentMethod"
                       value="cash"
                       className="form-radio"
-                      onChange={() => setPaymentMethod('cash')}
+                      onChange={() =>
+                        setPaymentMethod('cash')
+                      }
                     />
                     <span className="text-sm">Cash</span>
                   </label>
@@ -225,7 +243,9 @@ const Paymentpage = () => {
               {/* Conditional UI based on payment method */}
               {paymentMethod === 'cash' && (
                 <div className="mt-5">
-                  <label className="block font-medium mb-2">Enter Cash Amount</label>
+                  <label className="block font-medium mb-2">
+                    Enter Cash Amount
+                  </label>
                   <input
                     type="number"
                     value={cashAmount}
@@ -233,7 +253,9 @@ const Paymentpage = () => {
                     className="w-full border border-gray-300 rounded px-3 py-2"
                   />
                   <div className="mt-2">
-                    <div className="font-medium">Balance:</div>
+                    <div className="font-medium">
+                      Balance:
+                    </div>
                     <div className="text-red-600">
                       {cashAmount && cashAmount >= totalFee
                         ? `Rs ${(cashAmount - totalFee).toFixed(2)}`
@@ -254,45 +276,71 @@ const Paymentpage = () => {
                         <input
                           type="checkbox"
                           checked={useSavedCard}
-                          onChange={(e) => setUseSavedCard(e.target.checked)}
+                          onChange={(e) =>
+                            setUseSavedCard(
+                              e.target.checked,
+                            )
+                          }
                           className="mr-2"
                         />
-                        <span>Use saved card ending in {savedCard.last4Digits}</span> {/* Show last 4 digits of card */}
+                        <span>
+                          Use saved card ending in{' '}
+                          {savedCard.last4Digits}
+                        </span>{' '}
+                        {/* Show last 4 digits of card */}
                       </label>
                       {!useSavedCard && (
                         // Display the card form if the user chooses not to use the saved card
                         <div>
-                          <label className="block font-medium mb-2">Card Holder Name</label>
+                          <label className="block font-medium mb-2">
+                            Card Holder Name
+                          </label>
                           <input
                             type="text"
                             name="cardholdername"
-                            value={cardDetails.cardholdername}
-                            onChange={handleCardDetailsChange}
+                            value={
+                              cardDetails.cardholdername
+                            }
+                            onChange={
+                              handleCardDetailsChange
+                            }
                             className="w-full border border-gray-300 rounded px-3 py-2"
                           />
-                          <label className="block font-medium mb-2 mt-3">Card Number</label>
+                          <label className="block font-medium mb-2 mt-3">
+                            Card Number
+                          </label>
                           <input
                             type="text"
                             name="cardNumber"
                             value={cardDetails.cardNumber}
-                            onChange={handleCardDetailsChange}
+                            onChange={
+                              handleCardDetailsChange
+                            }
                             className="w-full border border-gray-300 rounded px-3 py-2"
                           />
-                          <label className="block font-medium mb-2 mt-3">Expiry Date</label>
+                          <label className="block font-medium mb-2 mt-3">
+                            Expiry Date
+                          </label>
                           <input
                             type="text"
                             name="expiry"
                             value={cardDetails.expiry}
-                            onChange={handleCardDetailsChange}
+                            onChange={
+                              handleCardDetailsChange
+                            }
                             className="w-full border border-gray-300 rounded px-3 py-2"
                             placeholder="MM/YY"
                           />
-                          <label className="block font-medium mb-2 mt-3">CVV</label>
+                          <label className="block font-medium mb-2 mt-3">
+                            CVV
+                          </label>
                           <input
                             type="text"
                             name="cvv"
                             value={cardDetails.cvv}
-                            onChange={handleCardDetailsChange}
+                            onChange={
+                              handleCardDetailsChange
+                            }
                             className="w-full border border-gray-300 rounded px-3 py-2"
                           />
                         </div>
@@ -301,7 +349,9 @@ const Paymentpage = () => {
                   ) : (
                     <div>
                       {/* No saved card, show the card form */}
-                      <label className="block font-medium mb-2">Card Holder Name</label>
+                      <label className="block font-medium mb-2">
+                        Card Holder Name
+                      </label>
                       <input
                         type="text"
                         name="cardholdername"
@@ -309,7 +359,9 @@ const Paymentpage = () => {
                         onChange={handleCardDetailsChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                       />
-                      <label className="block font-medium mb-2 mt-3">Card Number</label>
+                      <label className="block font-medium mb-2 mt-3">
+                        Card Number
+                      </label>
                       <input
                         type="text"
                         name="cardNumber"
@@ -317,7 +369,9 @@ const Paymentpage = () => {
                         onChange={handleCardDetailsChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                       />
-                      <label className="block font-medium mb-2 mt-3">Expiry Date</label>
+                      <label className="block font-medium mb-2 mt-3">
+                        Expiry Date
+                      </label>
                       <input
                         type="text"
                         name="expiry"
@@ -326,7 +380,9 @@ const Paymentpage = () => {
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         placeholder="MM/YY"
                       />
-                      <label className="block font-medium mb-2 mt-3">CVV</label>
+                      <label className="block font-medium mb-2 mt-3">
+                        CVV
+                      </label>
                       <input
                         type="text"
                         name="cvv"
@@ -346,7 +402,9 @@ const Paymentpage = () => {
                         checked={saveCardInfo}
                         onChange={handleSaveCardChange}
                       />
-                      <span className="text-sm">Save Card Details for Future Use</span>
+                      <span className="text-sm">
+                        Save Card Details for Future Use
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -410,15 +468,13 @@ const Paymentpage = () => {
                       Total fee
                     </div>
                     <div className="font-semibold">
-                      Rs{' '}
-                      {(bookingFee + 600 + 199).toFixed(2)}
+                      Rs {totalFee.toFixed(2)}
                     </div>
                   </div>
                 </div>
               </div>
 
               <button
-
                 type="submit"
                 className="w-full px-7 py-1.5 text-sm bg-blue-500 text-white px-2 py-1.5 md:py-3 mt-auto rounded-xl text-sm group border border-blue-500"
               >
@@ -461,9 +517,9 @@ const Paymentpage = () => {
                 </div>
               </button>
             </div>
-          </form >
-        </div >
-      </section >
+          </form>
+        </div>
+      </section>
     </>
   );
 };

@@ -1,12 +1,11 @@
-import CardService from '../services/cardService.js';
+import CardService from '../services/card.service.js';
 
 // Controller to handle card-related operations
 export const CardController = {
-  
   // Save a new card
   async saveCard(req, res) {
     try {
-      const { userId, cardholderName, cardNumber, expiry, cvv } = req.body;
+      const { userId, cardholderName, cardNumber, expiry, cvv, appointmentId } = req.body;
 
       if (!userId || !cardholderName || !cardNumber || !expiry || !cvv) {
         return res.status(400).json({ error: 'All fields are required' });
@@ -19,6 +18,7 @@ export const CardController = {
         cardNumber,
         expiry,
         cvv,
+        appointmentId
       });
 
       return res.status(201).json({ message: 'Card saved successfully', card: savedCard });
@@ -44,5 +44,5 @@ export const CardController = {
       console.error('Error retrieving cards:', error);
       return res.status(500).json({ error: 'An error occurred while retrieving cards' });
     }
-  },
+  }
 };

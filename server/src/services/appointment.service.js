@@ -35,3 +35,10 @@ export const deleteById = async (id) => {
 
   return appointment;
 };
+
+// Change payment status
+export const changePaymentStatus = async (id, status) => {
+  const appointment = await Appointment.findByIdAndUpdate(id, { ispaid: status }, { new: true });
+
+  return appointment;
+};

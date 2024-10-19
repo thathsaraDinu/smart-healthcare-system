@@ -5,13 +5,13 @@ export const cardSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User' 
+      ref: 'User'
     },
-    cardholdername: {
-        type: String,
-        required: true,
-        trim: true
-      },
+    cardholderName: {
+      type: String,
+      required: true,
+      trim: true
+    },
     cardNumber: {
       type: String,
       required: true,
