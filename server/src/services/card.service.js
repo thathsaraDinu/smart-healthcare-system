@@ -8,10 +8,15 @@ const CardService = {
       // Create a new card record in the database
       const card = new Card(cardDetails);
       if (card) {
-        console.log('Card details:', cardDetails);
         this.completePayment(cardDetails.appointmentId);
       }
-      return await card.save();
+      const savedCard = await card.save();
+      if (savedCard) {
+        console.log('Card saved successfully:', savedCard);
+      } else {
+        console.log('Failed to save card.');
+      }
+      return savedCard;
     } catch (error) {
       throw new Error('Failed to save card: ' + error.message);
     }

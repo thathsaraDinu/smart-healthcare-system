@@ -38,12 +38,6 @@ const Paymentpage = () => {
     time,
   } = loc.state.schedule || {};
 
-  const [patientName, setPatientName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [area, setArea] = useState('');
-  const [nic, setNic] = useState('');
-
   // Set default payment method to "card"
   const [paymentMethod, setPaymentMethod] =
     useState('card');
@@ -116,10 +110,9 @@ const Paymentpage = () => {
       }
     }
 
-    // Here you can make the actual appointment booking API call
     // Assuming that the payment is successful, navigate to '/myAppointments'
-    // navigate('/myAppointments');
-    // };
+    //navigate('/myAppointments');
+
 
     // Proceed with appointment booking (you can send data to backend here)
   };
