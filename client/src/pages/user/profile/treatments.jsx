@@ -30,51 +30,8 @@ import {
 } from '@/components/ui/table';
 import { RiArrowUpDownFill } from 'react-icons/ri';
 import { FiMoreHorizontal } from 'react-icons/fi';
-
-const data = [
-  {
-    id: 'm5gr84i9',
-    doctorName: 'Dr. John Doe',
-    typeOfTreatment: 'CT Scan',
-    hospital: 'St. Mary Hospital',
-    date: '2021-09-01',
-  },
-  {
-    id: 'a1b2c3d4',
-    doctorName: 'Dr. Jane Smith',
-    typeOfTreatment: 'MRI',
-    hospital: 'General Hospital',
-    date: '2021-08-15',
-  },
-  {
-    id: 'e5f6g7h8',
-    doctorName: 'Dr. Emily Johnson',
-    typeOfTreatment: 'X-Ray',
-    hospital: 'City Clinic',
-    date: '2021-07-20',
-  },
-  {
-    id: 'i9j0k1l2',
-    doctorName: 'Dr. Michael Brown',
-    typeOfTreatment: 'Blood Test',
-    hospital: 'Health Center',
-    date: '2021-06-10',
-  },
-  {
-    id: 'm3n4o5p6',
-    doctorName: 'Dr. Sarah Davis',
-    typeOfTreatment: 'Ultrasound',
-    hospital: 'Community Hospital',
-    date: '2021-05-05',
-  },
-  {
-    id: 'q7r8s9t0',
-    doctorName: 'Dr. William Wilson',
-    typeOfTreatment: 'Physical Therapy',
-    hospital: 'Rehab Clinic',
-    date: '2021-04-25',
-  },
-];
+import useAppointments from '@/hooks/useAppointments';
+import { useEffect } from 'react';
 
 const columns = [
   {
@@ -130,14 +87,16 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue('date')}</div>,
+    cell: ({ row }) => (
+      <div className="text-right">
+        {row.getValue('date')}
+      </div>
+    ),
   },
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
+    cell: () => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -148,20 +107,8 @@ const columns = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(payment.id)
-              }
-            >
-              Copy payment ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              View customer
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              View payment details
-            </DropdownMenuItem>
+            <DropdownMenuItem>Reminder</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -170,11 +117,28 @@ const columns = [
 ];
 
 const Treatments = () => {
+  const { data: appoinmentData } = useAppointments();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState(
     {},
   );
+  const [data, setData] = useState([]);
+
+  // console.log(appoinmentData);
+  useEffect(() => {
+    const data = appoinmentData
+      ? appoinmentData.map((item) => ({
+          id: item._id,
+          doctorName: item.schedule.doctor.fullName,
+          typeOfTreatment:
+            item.schedule.doctor.specialization,
+          hospital: item.schedule.hospital,
+          date: item.schedule.date,
+        }))
+      : [];
+    setData(data);
+  }, [appoinmentData]);
 
   const table = useReactTable({
     data,
