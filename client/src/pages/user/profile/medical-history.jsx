@@ -3,6 +3,12 @@ import { MdBloodtype } from 'react-icons/md';
 import { RiBodyScanFill } from 'react-icons/ri';
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
 import { InputField } from '@/components/input';
+import { useForm } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
+import {
+  useProfile,
+  useUpdateProfile,
+} from '@/hooks/use-users';
 
 const allergiesOptions = [
   'Medication Allergies',
@@ -29,6 +35,35 @@ const otherConditions = [
 ];
 
 const MedicalHistory = () => {
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    refetch,
+  } = useProfile(true);
+
+  const medForm = useForm({
+    defaultValues: {
+      // allergies: true,
+      // allergies: '',
+      // cardiovascular: '',
+      // otherConditions: '',
+    },
+  });
+
+  const {
+    mutate: updateMutate,
+    isPending: updatePending,
+    isSuccess: updateSuccess,
+  } = useUpdateProfile(refetch);
+
+  const onSubmit = (data) => {
+    console.log(data);
+    updateMutate(data);
+  };
+
+  // const all = medForm.watch('allergies');
+  // console.log(all);
+
   return (
     <div className="p-4">
       <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 items-center justify-between mb-4 border-b border-gray-200 pb-4">
@@ -92,87 +127,95 @@ const MedicalHistory = () => {
 
       {/* Data */}
       <div className="bg-gray-50 p-8 rounded-lg shadow-lg max-w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Allergies Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Allergies
-            </h3>
-            {allergiesOptions.map((option) => (
-              <label
-                key={option}
-                className="flex items-center space-x-2 mb-2"
-              >
+        <Form {...medForm}>
+          <form onSubmit={medForm.handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Allergies Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4">
+                  Allergies
+                </h3>
+
+                <div className="flex items-center space-x-2 mb-2">
+                  <InputField
+                    className="flex flex-row-reverse items-center space-x-3 space-y-0 gap-4"
+                    type="checkbox"
+                    values={allergiesOptions?.map(
+                      (option, index) => ({
+                        id: String(index),
+                        label: option,
+                      }),
+                    )}
+                    name="allergies"
+                    control={medForm.control}
+                  />
+                </div>
+              </div>
+
+              {/* Cardiovascular Diseases Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4">
+                  Cardiovascular Diseases
+                </h3>
+
+                <div className="flex items-center space-x-2 mb-2">
+                  <InputField
+                    className="flex flex-row-reverse items-center space-x-3 space-y-0 gap-4"
+                    type="checkbox"
+                    values={cardiovascularOptions?.map(
+                      (option, index) => ({
+                        id: String(index),
+                        label: option,
+                      }),
+                    )}
+                    name="cardiovascular"
+                    control={medForm.control}
+                  />
+                </div>
+              </div>
+
+              {/* Other Conditions */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4">
+                  Other Conditions
+                </h3>
+
+                <div className="flex items-center space-x-2 mb-2">
+                  <InputField
+                    className="flex flex-row-reverse items-center space-x-3 space-y-0 gap-4"
+                    type="checkbox"
+                    values={otherConditions?.map(
+                      (option, index) => ({
+                        id: String(index),
+                        label: option,
+                      }),
+                    )}
+                    name="otherCondition"
+                    control={medForm.control}
+                  />
+                </div>
+              </div>
+              {/* For Doctor Section */}
+              <div className="">
+                <h3 className="text-lg font-semibold mb-2">
+                  Special Note
+                </h3>
                 <InputField
-                  type="checkbox"
-                  value={option}
+                  inputStyle="min-h-52"
+                  type="textarea"
+                  name="note"
+                  control={medForm.control}
                 />
-                <span>{option}</span>
-              </label>
-            ))}
-          </div>
-
-          {/* Cardiovascular Diseases Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Cardiovascular Diseases
-            </h3>
-            {cardiovascularOptions.map((option) => (
-              <label
-                key={option}
-                className="flex items-center space-x-2 mb-2"
-              >
-                <input
-                  type="checkbox"
-                  value={option}
-                  // onChange={() =>
-                  //   handleCheckboxChange('cardiovascularDiseases', option)
-                  // }
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-                <span>{option}</span>
-              </label>
-            ))}
-          </div>
-
-          {/* Other Conditions */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Other Conditions
-            </h3>
-            {otherConditions.map((option) => (
-              <label
-                key={option}
-                className="flex items-center space-x-2 mb-2"
-              >
-                <input
-                  type="checkbox"
-                  value={option}
-                  // onChange={() =>
-                  //   handleCheckboxChange('cardiovascularDiseases', option)
-                  // }
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-                <span>{option}</span>
-              </label>
-            ))}
-          </div>
-          {/* For Doctor Section */}
-          <div className="">
-            <h3 className="text-lg font-semibold mb-2">
-              Special Note
-            </h3>
-            <textarea
-              // value={formData.explanation}
-              // onChange={(e) =>
-              //   setFormData({ ...formData, explanation: e.target.value })
-              // }
-              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200"
-              rows={4}
-              placeholder="Explanation..."
-            />
-          </div>
-        </div>
+                <Button
+                  variant="primary"
+                  className="bg-blue-500 hover:bg-blue-600 text-white mt-5"
+                >
+                  Update
+                </Button>
+              </div>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   );
