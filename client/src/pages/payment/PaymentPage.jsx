@@ -15,7 +15,9 @@ const Paymentpage = () => {
   const [savedCards, setSavedCards] = useState([]); // Store user's saved cards
   const [selectedCard, setSelectedCard] = useState(null); // Store selected saved card
   const [paymentMethod, setPaymentMethod] = useState('card');// Set default payment method to "card"
-  const [cashAmount, setCashAmount] = useState('');
+  const [cashAmount, setCashAmount] = useState('');// State to store the cash amount entered by the user
+
+  // State to store the card details entered by the user
   const [cardDetails, setCardDetails] = useState({
     cardname: '',
     cardholdername: '',
@@ -23,8 +25,11 @@ const Paymentpage = () => {
     expiry: '',
     cvv: '',
   });
-  const [saveCardInfo, setSaveCardInfo] = useState(false); // Checkbox for saving card details
 
+  // State to handle the checkbox for saving card details
+  const [saveCardInfo, setSaveCardInfo] = useState(false);
+
+  // Destructure necessary details from location state
   const {
     doctor,
     hospital,
@@ -34,6 +39,7 @@ const Paymentpage = () => {
     time,
   } = loc.state.schedule || {};
 
+  // Calculate the total fee
   const totalFee = bookingFee + 600 + 199;
 
   // Fetch saved cards on component load
@@ -76,6 +82,7 @@ const Paymentpage = () => {
       processPayment();
     }
 
+    // Check if it's a cash payment and the entered cash amount is sufficient
     if (paymentMethod === 'cash') {
       if (cashAmount < totalFee) {
         alert('Insufficient cash amount.');
@@ -112,10 +119,11 @@ const Paymentpage = () => {
     }
 
     try {
+      // Update the appointment status to paid
       await updateAppointment(loc.state._id, { ispaid: true });
       console.log("Appointment payment status updated");
       alert('Payment successful!');
-      generatePDFReport();
+      generatePDFReport(); // Generate PDF report after successful payment
       navigate('/myAppointments'); // Redirect to appointments page after payment
     } catch (error) {
       console.error('Error updating appointment payment status:', error);
@@ -182,10 +190,12 @@ const Paymentpage = () => {
     setSaveCardInfo(false); // Uncheck save card info checkbox
   };
 
+  // Handle changes in the cash amount input field
   const handleCashAmountChange = (e) => {
     setCashAmount(e.target.value);
   };
 
+  // Handle changes in the card details input fields
   const handleCardDetailsChange = (e) => {
     const { name, value } = e.target;
     setCardDetails((prev) => ({
@@ -194,10 +204,12 @@ const Paymentpage = () => {
     }));
   };
 
+  // Handle the checkbox for saving card information
   const handleSaveCardChange = (e) => {
-    setSaveCardInfo(e.target.checked); // Handle the checkbox for saving card
+    setSaveCardInfo(e.target.checked);
   };
 
+  // Handle the confirmation of the card name in the popup
   const handleConfirmCardName = () => {
     if (!enteredCardName) {
       alert('Please enter a card name.');
