@@ -20,6 +20,8 @@ const AppointmentForm = () => {
   const [area, setArea] = useState('');
   const [nic, setNic] = useState('');
 
+  const [error, setError] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,9 +50,11 @@ const AppointmentForm = () => {
         await makeAppointment(appointmentData);
 
       console.log(response);
-      navigate('/payment', { state: response })
+      navigate('/payment', { state: response });
     } catch (error) {
       console.log(error);
+      setError(true);
+      setTimeout(() => setError(false), 3000);
     }
   };
 
@@ -229,6 +233,19 @@ const AppointmentForm = () => {
                     </div>
                   </div>
                 </div>
+                {error && (
+                  <div
+                    className="mt-10 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    role="alert"
+                  >
+                    <strong className="font-bold">
+                      Error!
+                    </strong>{' '}
+                    <span className="block sm:inline">
+                      Fields cann't be empty
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
             <div>
