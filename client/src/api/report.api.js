@@ -6,7 +6,7 @@ export const getAllAppointments = async () => {
         const response = await instance.get(
           `api/report`,
         );
-        console.log('boo');
+        
         return response.data;
     } catch (error) {
         console.error('Error fetching promotions:', error);
@@ -20,7 +20,7 @@ export const getAppointmentStats = async () => {
         const response = await instance.get(
             `api/report/stats`,
         );
-        console.log('response',response);
+        
         return response.data;
     } catch (error) {
         console.error(

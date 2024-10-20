@@ -4,15 +4,18 @@ import { getUsers } from './user.service.js';
 // Get all appointments
 export const getAllAppointments = async () => {
   try {
+    // Find the appointments from the appointments collection
     const appointments = await Appointment.find().populate('user', 'fullName');
 
-    console.log('appointments', appointments);
+    // If appointments are not found throw an error
     if (!appointments) {
       throw {
         status: 404,
         message: 'No appointments found'
       };
     }
+
+    // Map the required fields and return it
     return appointments.map((appointment) => {
       const appointmentObj = appointment.toObject();
       return {
@@ -33,8 +36,6 @@ export const getAllAppointments = async () => {
 // Function to get all Chart Data
 export const getAppointmentStats = async () => {
   try {
-    console.log('getAppointmentStats');
-
     const result = await Appointment.aggregate([
       // Join with the user model to get gender information
       {
@@ -120,15 +121,14 @@ export const getAppointmentStats = async () => {
 
     // Get the total patient count
     const totalPatients = await getUsers('user').then((users) => users.length);
+
+    // If the result is null return throw an error
     if (!result) {
       throw {
         status: 404,
         message: 'No appointments found'
       };
     }
-
-    console.log('result', result);
-    console.log('totalPatients: ', totalPatients);
 
     return { stats: result, totalPatients: totalPatients || 0 };
   } catch (error) {
