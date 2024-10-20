@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { saveCard, getSavedCards } from '@/api/card.api'; // Assuming you have your card API ready
 import { updateAppointment } from '@/api/appointment.api';
 import { useAuthStore } from '@/store/auth-store';
+import jsPDF from 'jspdf';
 
 const Paymentpage = () => {
   const navigate = useNavigate();
@@ -116,11 +117,60 @@ const Paymentpage = () => {
       await updateAppointment(loc.state._id, { ispaid: true });
       console.log("Appointment payment status updated");
       alert('Payment successful!');
+      generatePDFReport();
       navigate('/myAppointments'); // Redirect to appointments page after payment
     } catch (error) {
       console.error('Error updating appointment payment status:', error);
     }
   };
+
+  const generatePDFReport = () => {
+    const doc = new jsPDF();
+
+    // Set the background color for the header
+    doc.setFillColor(173, 216, 230); // Light blue color
+    doc.rect(0, 0, 210, 20, 'F'); // Fill the rectangle for the header
+
+    // Add title
+    doc.setFontSize(20);
+    doc.setTextColor(0, 0, 0); // Black color
+    doc.text('Appointment Details', 14, 15);
+
+    // Set font size and color for details
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50); // Dark gray for details
+
+    // Add appointment details
+    doc.text(`Doctor: ${doctor.fullName}`, 14, 30);
+    doc.text(`Hospital: ${hospital}`, 14, 40);
+    doc.text(`Location: ${location}`, 14, 50);
+    doc.text(`Date: ${date}`, 14, 60);
+    doc.text(`Time: ${time}`, 14, 70);
+    doc.text(`Payment Method: ${paymentMethod}`, 14, 80);
+
+    // Add a line separator
+    doc.setDrawColor(173, 216, 230); // Light blue for line
+    doc.line(14, 85, 196, 85); // Horizontal line
+
+    // Payment breakdown title
+    doc.setFontSize(14);
+    doc.setTextColor(0, 102, 204); // Blue color for section title
+    doc.text('Payment Breakdown:', 14, 100);
+
+    // Reset font size and color for payment details
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50); // Dark gray for payment details
+
+    // Payment breakdown details
+    doc.text(`Doctor Fee: Rs ${bookingFee.toFixed(2)}`, 14, 110);
+    doc.text(`Hospital Fee: Rs 600.00`, 14, 120);
+    doc.text(`eChannelling Fee: Rs 199.00`, 14, 130);
+    doc.text(`Total Fee: Rs ${totalFee.toFixed(2)}`, 14, 140);
+
+    // Save the PDF
+    doc.save('appointment_report.pdf');
+  };
+
 
   // Autofill card details when a saved card is selected
   const handleSelectSavedCard = (card) => {
@@ -226,7 +276,7 @@ const Paymentpage = () => {
               </div>
             </div>
 
-            <div className="xl:col-span-3">
+            <div className="xl:col-span-3 ml-2 mr-2">
               <div className="mb-4">
                 <div className="font-semibold text-blue-500 mb-1">Select Payment Method</div>
                 <div className="flex gap-4">
@@ -324,33 +374,39 @@ const Paymentpage = () => {
                       <span className="text-red-500 text-sm">Invalid card number. Must be 16 digits.</span>
                     )}
 
-                    <label className="block font-medium mb-2 mt-3">Expiry Date</label>
-                    <input
-                      type="text"
-                      name="expiry"
-                      value={cardDetails.expiry}
-                      onChange={handleCardDetailsChange}
-                      className={`w-full border ${/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
-                      placeholder="MM/YY"
-                      required
-                    />
-                    {cardDetails.expiry && !/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) && (
-                      <span className="text-red-500 text-sm">Invalid expiry date. Format MM/YY.</span>
-                    )}
+                    <div className="flex space-x-4 mt-3">
+                      <div className="flex-1">
+                        <label className="block font-medium mb-2">Expiry Date</label>
+                        <input
+                          type="text"
+                          name="expiry"
+                          value={cardDetails.expiry}
+                          onChange={handleCardDetailsChange}
+                          className={`w-full border ${/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                          placeholder="MM/YY"
+                          required
+                        />
+                        {cardDetails.expiry && !/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) && (
+                          <span className="text-red-500 text-sm">Invalid expiry date. Format MM/YY.</span>
+                        )}
+                      </div>
 
-                    <label className="block font-medium mb-2 mt-3">CVV</label>
-                    <input
-                      type="text"
-                      name="cvv"
-                      value={cardDetails.cvv}
-                      onChange={handleCardDetailsChange}
-                      className={`w-full border ${selectedCard || /^\d{3}$/.test(cardDetails.cvv) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
-                      placeholder="123"
-                      required
-                    />
-                    {cardDetails.cvv && !selectedCard && !/^\d{3}$/.test(cardDetails.cvv) && (
-                      <span className="text-red-500 text-sm">Invalid CVV. Must be 3 digits.</span>
-                    )}
+                      <div className="flex-1">
+                        <label className="block font-medium mb-2">CVV</label>
+                        <input
+                          type="text"
+                          name="cvv"
+                          value={cardDetails.cvv}
+                          onChange={handleCardDetailsChange}
+                          className={`w-full border ${selectedCard || /^\d{3}$/.test(cardDetails.cvv) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                          placeholder="123"
+                          required
+                        />
+                        {cardDetails.cvv && !selectedCard && !/^\d{3}$/.test(cardDetails.cvv) && (
+                          <span className="text-red-500 text-sm">Invalid CVV. Must be 3 digits.</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Conditionally render the save card checkbox */}
@@ -367,6 +423,7 @@ const Paymentpage = () => {
                   )}
                 </div>
               )}
+
             </div>
             <div>
 
