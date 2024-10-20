@@ -24,6 +24,8 @@ const AppointmentForm = () => {
     nic: nic || '',
   });
 
+  const [error, setError] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -34,6 +36,19 @@ const AppointmentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (
+      !formData.patientName ||
+      !formData.email ||
+      !formData.phoneNumber ||
+      !formData.area ||
+      !formData.nic
+    ) {
+      setError(true);
+      setTimeout(() => setError(false), 3000);
+
+      return;
+    }
 
     const appointmentData = {
       patientName: formData.patientName,
@@ -204,6 +219,19 @@ const AppointmentForm = () => {
                   </div>
                 </div>
               </div>
+              {error && (
+                <div
+                  className="mt-10 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                  role="alert"
+                >
+                  <strong className="font-bold">
+                    Error!
+                  </strong>{' '}
+                  <span className="block sm:inline">
+                    Fields cann't be empty
+                  </span>
+                </div>
+              )}
             </div>
             <div>
               <div className="shadow border border-gray-200 p-5 rounded-xl mb-5">
