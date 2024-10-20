@@ -73,7 +73,6 @@ const Profile = () => {
   } = useUpdateProfile(refetch);
 
   const onSubmit = (data) => {
-    console.log(data);
     updateMutate(data);
   };
 
