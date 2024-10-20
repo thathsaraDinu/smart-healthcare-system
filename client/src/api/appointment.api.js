@@ -30,3 +30,10 @@ export const deleteAppointment = async (id) => {
 
   return response.data;
 };
+
+export const getPaidAppointments = async () => {
+  const response = await instance.get(
+    '/api/appointment?isPaid=true',
+  ); // Adjust this endpoint based on your API design
+  return response.data;
+};

@@ -53,6 +53,9 @@ const Treatments = lazy(
 const PaymentDetails = lazy(
   () => import('@/pages/user/profile/paymentDetails'),
 );
+const PaidAppointments = lazy(
+  () => import('@/pages/user/profile/paidAppointment'),
+);
 const AppointmentsCalendar = lazy(
   () => import('@/pages/user/profile/appointmentsCalendar'),
 );
@@ -246,6 +249,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <Treatments />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'paidappointments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PaidAppointments />
               </Suspense>
             ),
           },
