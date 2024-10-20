@@ -38,15 +38,15 @@ const PatientSchema = new Schema({
       type: Number,
       required: false
     },
-    allergyList: {
+    allergies: {
       type: [String],
       required: false
     },
-    cardiovascularDisease: {
+    cardiovascular: {
       type: [String],
       required: false
     },
-    others: {
+    otherCondition: {
       type: [String],
       required: false
     },
