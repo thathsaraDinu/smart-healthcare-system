@@ -59,6 +59,13 @@ const PaidAppointments = lazy(
 const AppointmentsCalendar = lazy(
   () => import('@/pages/user/profile/appointmentsCalendar'),
 );
+const Patients = lazy(
+  () => import('@/pages/dashboard/medical_staff/user'),
+);
+const MedicalHistoryStaff = lazy(
+  () =>
+    import('@/pages/dashboard/medical_staff/user-update'),
+);
 
 // Appointments Pages
 const Appointments = lazy(
@@ -80,7 +87,9 @@ const AppointmentUpdateForm = lazy(
 );
 
 //payment pages
-const Payment = lazy(() => import('@/pages/payment/Paymentpage'));
+const Payment = lazy(
+  () => import('@/pages/payment/Paymentpage'),
+);
 
 // layout
 const Layout = lazy(() => import('@/layout'));
@@ -212,6 +221,29 @@ const router = createBrowserRouter([
             <ProtectedRoute
               element={<AllDoctors />}
               roles={[USER_ROLES.ADMIN]}
+            />
+          </Suspense>
+        ),
+      },
+      // medical staff Layout
+      {
+        path: 'patients',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<Patients />}
+              roles={[USER_ROLES.MEDICAL_STAFF]}
+            />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'patients/:id',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<MedicalHistoryStaff />}
+              roles={[USER_ROLES.MEDICAL_STAFF]}
             />
           </Suspense>
         ),

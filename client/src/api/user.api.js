@@ -17,6 +17,18 @@ export const getProfileData = async () => {
   }
 };
 
+export const getProfileDataById = async (userId) => {
+  try {
+    const response = await instance.get(
+      `/api/user/${userId}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching profile data:', error);
+    throw error;
+  }
+};
+
 // Get all users with query params
 export const getUsers = async (role) => {
   try {

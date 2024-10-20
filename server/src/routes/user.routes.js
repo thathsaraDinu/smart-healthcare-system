@@ -15,7 +15,7 @@ router.get('/doctors', UserController.getDoctors);
 // User only routes
 router.get(
   '/profile',
-  verifyAuth([USER_ROLES.ADMIN, USER_ROLES.DOCTOR, USER_ROLES.USER]),
+  verifyAuth([USER_ROLES.ADMIN, USER_ROLES.DOCTOR, USER_ROLES.MEDICAL_STAFF, USER_ROLES.USER]),
   UserController.profile
 );
 router.put(
@@ -25,6 +25,13 @@ router.put(
 );
 
 // Admin only routes
-router.get('/users', verifyAuth([USER_ROLES.ADMIN]), UserController.getUsers);
+router.get(
+  '/users',
+  verifyAuth([USER_ROLES.ADMIN, USER_ROLES.MEDICAL_STAFF]),
+  UserController.getUsers
+);
+
+// Medical Staff only routes
+router.get('/:id', verifyAuth([USER_ROLES.MEDICAL_STAFF]), UserController.getProfileById);
 
 export default router;

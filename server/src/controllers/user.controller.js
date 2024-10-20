@@ -23,6 +23,17 @@ const UserController = {
     }
   },
 
+  // Get user profile by id
+  // Only authenticated users can access
+  getProfileById: async (req, res) => {
+    try {
+      const user = await userService.getProfile(req.params.id);
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
   // Get all users
   // Only authenticated users can access
   getUsers: async (req, res) => {
