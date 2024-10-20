@@ -24,7 +24,6 @@ const AppointmentController = {
   updateAppointment: async (req, res) => {
     try {
       const appointment = await updateById(req.params.id, req.body);
-
       return res.status(200).json(appointment);
     } catch (error) {
       return res.status(500).json({ message: error.message });

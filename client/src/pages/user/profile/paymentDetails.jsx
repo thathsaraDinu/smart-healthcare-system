@@ -46,6 +46,7 @@ function PaymentDetails() {
                 <ul className="space-y-4">
                     {savedCards.map((card) => (
                         <li key={card._id} className="p-5 border rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow duration-300 relative">
+                            <p className="font-semibold text-gray-700">Card Name: {card.cardname}</p>
                             <p className="font-semibold text-gray-700">Cardholder Name: {card.cardholderName}</p>
                             <p className="text-gray-600">Card Number: **** **** **** {card.cardNumber.slice(-4)}</p>
                             <p className="text-gray-600">Expiry Date: {card.expiry}</p>
@@ -61,6 +62,6 @@ function PaymentDetails() {
             )}
         </section>
     );
-} 
+}
 
 export default PaymentDetails;

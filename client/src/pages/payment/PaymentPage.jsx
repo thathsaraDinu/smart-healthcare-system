@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { saveCard, getSavedCards } from '@/api/card.api'; // Assuming you have your card API ready
+import { updateAppointment } from '@/api/appointment.api';
 import { useAuthStore } from '@/store/auth-store';
 
 const Paymentpage = () => {
@@ -8,26 +9,10 @@ const Paymentpage = () => {
   const loc = useLocation();
 
   const userId = useAuthStore((state) => state.id);
-  const [savedCard, setSavedCard] = useState(null); // Holds the saved card details if any
-  const [isLoading, setIsLoading] = useState(true); // Loading state while fetching card details
-  const [useSavedCard, setUseSavedCard] = useState(false); // Whether the user wants to use the saved card
-
-  useEffect(() => {
-    const fetchSavedCard = async () => {
-      try {
-        const cardDetails = await getSavedCards(userId);
-        if (cardDetails.length > 0) {
-          setSavedCard(cardDetails[0]); // Assuming you only have one saved card
-        }
-      } catch (error) {
-        console.error('Error fetching saved card:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSavedCard();
-  }, [userId]);
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // For showing popup
+  const [enteredCardName, setEnteredCardName] = useState(''); // For storing entered card name
+  const [savedCards, setSavedCards] = useState([]); // Store user's saved cards
+  const [selectedCard, setSelectedCard] = useState(null); // Store selected saved card
 
   const {
     doctor,
@@ -39,10 +24,10 @@ const Paymentpage = () => {
   } = loc.state.schedule || {};
 
   // Set default payment method to "card"
-  const [paymentMethod, setPaymentMethod] =
-    useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const [cashAmount, setCashAmount] = useState('');
   const [cardDetails, setCardDetails] = useState({
+    cardname: '',
     cardholdername: '',
     cardNumber: '',
     expiry: '',
@@ -52,15 +37,23 @@ const Paymentpage = () => {
   const [saveCardInfo, setSaveCardInfo] = useState(false); // Checkbox for saving card details
   const totalFee = bookingFee + 600 + 199;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Fetch saved cards on component load
+  useEffect(() => {
+    const fetchSavedCards = async () => {
+      try {
+        const response = await getSavedCards(userId);
+        const cards = response.cards;
+        setSavedCards(cards);
+      } catch (error) {
+        console.error('Error fetching saved cards:', error);
+      }
+    };
 
-    console.log('Payment Method:', {
-      paymentMethod,
-      totalFee,
-      cardDetails,
-      saveCardInfo,
-    });
+    fetchSavedCards();
+  }, [userId]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     // Check if it's a card payment and all required card details are filled
     if (paymentMethod === 'card') {
@@ -74,47 +67,71 @@ const Paymentpage = () => {
         return;
       }
 
-      // Save card details if "save card details" is checked
+      // If save card is checked, show the popup for entering card name
       if (saveCardInfo) {
-        try {
-          const cardData = {
-            appointmentId: loc.state._id,
-            userId: userId,
-            paymentMethod: paymentMethod,
-            cardholderName: cardDetails.cardholdername,
-            cardNumber: cardDetails.cardNumber,
-            expiry: cardDetails.expiry,
-            cvv: cardDetails.cvv,
-            totalFee: totalFee,
-          };
-          console.log('Card Data:', cardData);
-
-          const savedCardResponse =
-            await saveCard(cardData);
-
-          console.log(savedCardResponse);
-        } catch (error) {
-          console.error(
-            'Error saving card details:',
-            error,
-          );
-        }
+        setIsPopupVisible(true);
+        return;
       }
+
+      // Proceed with payment process if no popup is required
+      processPayment();
     }
 
-    // Check if it's a cash payment and if the amount entered is valid
     if (paymentMethod === 'cash') {
       if (cashAmount < totalFee) {
         alert('Insufficient cash amount.');
         return;
       }
+
+      // If cash amount is enough, proceed with payment
+      processPayment();
+    }
+  };
+
+  const processPayment = async () => {
+    // Save card details if "save card details" is checked and card name has been provided
+    if (saveCardInfo && enteredCardName) {
+      try {
+        const cardData = {
+          appointmentId: loc.state._id,
+          userId: userId,
+          paymentMethod: paymentMethod,
+          cardholderName: cardDetails.cardholdername,
+          cardNumber: cardDetails.cardNumber,
+          expiry: cardDetails.expiry,
+          cvv: cardDetails.cvv,
+          totalFee: totalFee,
+          cardname: enteredCardName,
+        };
+
+        console.log('Card Data:', cardData);
+        const savedCardResponse = await saveCard(cardData);
+        console.log(savedCardResponse);
+      } catch (error) {
+        console.error('Error saving card details:', error);
+      }
     }
 
-    // Assuming that the payment is successful, navigate to '/myAppointments'
-    //navigate('/myAppointments');
+    try {
+      await updateAppointment(loc.state._id, { ispaid: true });
+      console.log("Appointment payment status updated");
+      alert('Payment successful!');
+      navigate('/myAppointments'); // Redirect to appointments page after payment
+    } catch (error) {
+      console.error('Error updating appointment payment status:', error);
+    }
+  };
 
-
-    // Proceed with appointment booking (you can send data to backend here)
+  // Autofill card details when a saved card is selected
+  const handleSelectSavedCard = (card) => {
+    setSelectedCard(card);
+    setCardDetails({
+      cardholdername: card.cardholderName,
+      cardNumber: card.cardNumber,
+      expiry: card.expiry,
+      cvv: '***', // Hide CVV for security reasons
+    });
+    setSaveCardInfo(false); // Uncheck save card info checkbox
   };
 
   const handleCashAmountChange = (e) => {
@@ -132,6 +149,16 @@ const Paymentpage = () => {
   const handleSaveCardChange = (e) => {
     setSaveCardInfo(e.target.checked); // Handle the checkbox for saving card
   };
+
+  const handleConfirmCardName = () => {
+    if (!enteredCardName) {
+      alert('Please enter a card name.');
+      return;
+    }
+    setIsPopupVisible(false); // Close the popup
+    processPayment(); // Proceed with payment
+  };
+
 
   return (
     <>
@@ -201,9 +228,7 @@ const Paymentpage = () => {
 
             <div className="xl:col-span-3">
               <div className="mb-4">
-                <div className="font-semibold text-blue-500 mb-1">
-                  Select Payment Method
-                </div>
+                <div className="font-semibold text-blue-500 mb-1">Select Payment Method</div>
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2">
                     <input
@@ -212,9 +237,7 @@ const Paymentpage = () => {
                       value="card"
                       className="form-radio"
                       checked={paymentMethod === 'card'}
-                      onChange={() =>
-                        setPaymentMethod('card')
-                      }
+                      onChange={() => setPaymentMethod('card')}
                     />
                     <span className="text-sm">Card</span>
                   </label>
@@ -224,21 +247,35 @@ const Paymentpage = () => {
                       name="paymentMethod"
                       value="cash"
                       className="form-radio"
-                      onChange={() =>
-                        setPaymentMethod('cash')
-                      }
+                      onChange={() => setPaymentMethod('cash')}
                     />
                     <span className="text-sm">Cash</span>
                   </label>
                 </div>
               </div>
 
+              {/* Display saved cards */}
+              {paymentMethod === 'card' && savedCards.length > 0 && (
+                <div className="mb-4">
+                  <label className="block font-semibold mb-2">Select a saved card</label>
+                  <select
+                    onChange={(e) => handleSelectSavedCard(savedCards.find(card => card.cardname === e.target.value))}
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                  >
+                    <option value="">-- Select a Card --</option>
+                    {savedCards.map((card) => (
+                      <option key={card._id} value={card.cardname}>
+                        {card.cardname}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {/* Conditional UI based on payment method */}
               {paymentMethod === 'cash' && (
                 <div className="mt-5">
-                  <label className="block font-medium mb-2">
-                    Enter Cash Amount
-                  </label>
+                  <label className="block font-medium mb-2">Enter Cash Amount</label>
                   <input
                     type="number"
                     value={cashAmount}
@@ -246,9 +283,7 @@ const Paymentpage = () => {
                     className="w-full border border-gray-300 rounded px-3 py-2"
                   />
                   <div className="mt-2">
-                    <div className="font-medium">
-                      Balance:
-                    </div>
+                    <div className="font-medium">Balance:</div>
                     <div className="text-red-600">
                       {cashAmount && cashAmount >= totalFee
                         ? `Rs ${(cashAmount - totalFee).toFixed(2)}`
@@ -260,151 +295,115 @@ const Paymentpage = () => {
 
               {paymentMethod === 'card' && (
                 <div className="mt-5">
-                  {isLoading ? (
-                    <div>Loading saved card details...</div> // Display loading spinner or message while fetching
-                  ) : savedCard ? (
-                    <div>
-                      {/* Checkbox to use the saved card */}
-                      <label className="flex items-center mb-4">
-                        <input
-                          type="checkbox"
-                          checked={useSavedCard}
-                          onChange={(e) =>
-                            setUseSavedCard(
-                              e.target.checked,
-                            )
-                          }
-                          className="mr-2"
-                        />
-                        <span>
-                          Use saved card ending in{' '}
-                          {savedCard.last4Digits}
-                        </span>{' '}
-                        {/* Show last 4 digits of card */}
-                      </label>
-                      {!useSavedCard && (
-                        // Display the card form if the user chooses not to use the saved card
-                        <div>
-                          <label className="block font-medium mb-2">
-                            Card Holder Name
-                          </label>
-                          <input
-                            type="text"
-                            name="cardholdername"
-                            value={
-                              cardDetails.cardholdername
-                            }
-                            onChange={
-                              handleCardDetailsChange
-                            }
-                            className="w-full border border-gray-300 rounded px-3 py-2"
-                          />
-                          <label className="block font-medium mb-2 mt-3">
-                            Card Number
-                          </label>
-                          <input
-                            type="text"
-                            name="cardNumber"
-                            value={cardDetails.cardNumber}
-                            onChange={
-                              handleCardDetailsChange
-                            }
-                            className="w-full border border-gray-300 rounded px-3 py-2"
-                          />
-                          <label className="block font-medium mb-2 mt-3">
-                            Expiry Date
-                          </label>
-                          <input
-                            type="text"
-                            name="expiry"
-                            value={cardDetails.expiry}
-                            onChange={
-                              handleCardDetailsChange
-                            }
-                            className="w-full border border-gray-300 rounded px-3 py-2"
-                            placeholder="MM/YY"
-                          />
-                          <label className="block font-medium mb-2 mt-3">
-                            CVV
-                          </label>
-                          <input
-                            type="text"
-                            name="cvv"
-                            value={cardDetails.cvv}
-                            onChange={
-                              handleCardDetailsChange
-                            }
-                            className="w-full border border-gray-300 rounded px-3 py-2"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div>
-                      {/* No saved card, show the card form */}
-                      <label className="block font-medium mb-2">
-                        Card Holder Name
-                      </label>
-                      <input
-                        type="text"
-                        name="cardholdername"
-                        value={cardDetails.cardholdername}
-                        onChange={handleCardDetailsChange}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
-                      />
-                      <label className="block font-medium mb-2 mt-3">
-                        Card Number
-                      </label>
-                      <input
-                        type="text"
-                        name="cardNumber"
-                        value={cardDetails.cardNumber}
-                        onChange={handleCardDetailsChange}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
-                      />
-                      <label className="block font-medium mb-2 mt-3">
-                        Expiry Date
-                      </label>
-                      <input
-                        type="text"
-                        name="expiry"
-                        value={cardDetails.expiry}
-                        onChange={handleCardDetailsChange}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
-                        placeholder="MM/YY"
-                      />
-                      <label className="block font-medium mb-2 mt-3">
-                        CVV
-                      </label>
-                      <input
-                        type="text"
-                        name="cvv"
-                        value={cardDetails.cvv}
-                        onChange={handleCardDetailsChange}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
-                      />
-                    </div>
-                  )}
+                  <div>
+                    <label className="block font-medium mb-2">Card Holder Name</label>
+                    <input
+                      type="text"
+                      name="cardholdername"
+                      value={cardDetails.cardholdername}
+                      onChange={handleCardDetailsChange}
+                      className={`w-full border ${cardDetails.cardholdername ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                      placeholder="Enter your name as on the card"
+                      required
+                    />
+                    {!cardDetails.cardholdername && (
+                      <span className="text-red-500 text-sm">Card holder name is required.</span>
+                    )}
 
-                  {/* Checkbox for saving card details */}
-                  <div className="mt-3">
-                    <label className="flex items-center">
+                    <label className="block font-medium mb-2 mt-3">Card Number</label>
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      value={cardDetails.cardNumber}
+                      onChange={handleCardDetailsChange}
+                      className={`w-full border ${/^\d{16}$/.test(cardDetails.cardNumber) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                      placeholder="1234 5678 9012 3456"
+                      required
+                    />
+                    {cardDetails.cardNumber && !/^\d{16}$/.test(cardDetails.cardNumber) && (
+                      <span className="text-red-500 text-sm">Invalid card number. Must be 16 digits.</span>
+                    )}
+
+                    <label className="block font-medium mb-2 mt-3">Expiry Date</label>
+                    <input
+                      type="text"
+                      name="expiry"
+                      value={cardDetails.expiry}
+                      onChange={handleCardDetailsChange}
+                      className={`w-full border ${/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                      placeholder="MM/YY"
+                      required
+                    />
+                    {cardDetails.expiry && !/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) && (
+                      <span className="text-red-500 text-sm">Invalid expiry date. Format MM/YY.</span>
+                    )}
+
+                    <label className="block font-medium mb-2 mt-3">CVV</label>
+                    <input
+                      type="text"
+                      name="cvv"
+                      value={cardDetails.cvv}
+                      onChange={handleCardDetailsChange}
+                      className={`w-full border ${selectedCard || /^\d{3}$/.test(cardDetails.cvv) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                      placeholder="123"
+                      required
+                    />
+                    {cardDetails.cvv && !selectedCard && !/^\d{3}$/.test(cardDetails.cvv) && (
+                      <span className="text-red-500 text-sm">Invalid CVV. Must be 3 digits.</span>
+                    )}
+                  </div>
+
+                  {/* Conditionally render the save card checkbox */}
+                  {!selectedCard && (
+                    <div className="mt-5 flex items-center">
                       <input
                         type="checkbox"
-                        className="mr-2"
                         checked={saveCardInfo}
                         onChange={handleSaveCardChange}
+                        className="form-checkbox"
                       />
-                      <span className="text-sm">
-                        Save Card Details for Future Use
-                      </span>
-                    </label>
-                  </div>
+                      <label className="ml-2 text-sm">Save card details for future use</label>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-
             <div>
+
+              {/* Add Popup for entering card name */}
+              {isPopupVisible && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                  <div className="bg-white p-5 rounded-md shadow-lg">
+                    <h3 className="mb-4 text-lg font-semibold">Enter Card Name</h3>
+                    <input
+                      type="text"
+                      value={enteredCardName}
+                      onChange={(e) =>
+                        setEnteredCardName(e.target.value)
+                      }
+                      className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+                      placeholder="Enter a name for this card"
+                    />
+                    <div className="flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={handleConfirmCardName}
+                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsPopupVisible(false)}
+                        className="px-4 py-2 bg-gray-300 rounded"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="shadow border border-gray-200 p-5 rounded-xl mb-5">
                 <div className="font-semibold text-blue-500 mb-1">
                   Payment Details
@@ -461,7 +460,8 @@ const Paymentpage = () => {
                       Total fee
                     </div>
                     <div className="font-semibold">
-                      Rs {totalFee.toFixed(2)}
+                      Rs{' '}
+                      {(bookingFee + 600 + 199).toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -509,6 +509,7 @@ const Paymentpage = () => {
                   </div>
                 </div>
               </button>
+
             </div>
           </form>
         </div>

@@ -20,7 +20,6 @@ export const updateAppointment = async (id, data) => {
     `/api/appointment/${id}`,
     data,
   );
-
   return response.data;
 };
 

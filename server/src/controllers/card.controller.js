@@ -5,9 +5,9 @@ export const CardController = {
   // Save a new card
   async saveCard(req, res) {
     try {
-      const { userId, cardholderName, cardNumber, expiry, cvv, appointmentId } = req.body;
+      const { userId, cardholderName, cardNumber, expiry, cvv, appointmentId, cardname } = req.body;
 
-      if (!userId || !cardholderName || !cardNumber || !expiry || !cvv) {
+      if (!userId || !cardholderName || !cardNumber || !expiry || !cvv || !cardname) {
         return res.status(400).json({ error: 'All fields are required' });
       }
 
@@ -18,7 +18,8 @@ export const CardController = {
         cardNumber,
         expiry,
         cvv,
-        appointmentId
+        appointmentId,
+        cardname
       });
 
       return res.status(201).json({ message: 'Card saved successfully', card: savedCard });

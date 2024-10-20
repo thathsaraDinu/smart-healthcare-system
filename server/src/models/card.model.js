@@ -7,6 +7,11 @@ export const cardSchema = new mongoose.Schema(
       required: true,
       ref: 'User'
     },
+    cardname: {
+      type: String,
+      required: true,
+      trim: true
+    },
     cardholderName: {
       type: String,
       required: true,
