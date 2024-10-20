@@ -14,6 +14,16 @@ const Paymentpage = () => {
   const [enteredCardName, setEnteredCardName] = useState(''); // For storing entered card name
   const [savedCards, setSavedCards] = useState([]); // Store user's saved cards
   const [selectedCard, setSelectedCard] = useState(null); // Store selected saved card
+  const [paymentMethod, setPaymentMethod] = useState('card');// Set default payment method to "card"
+  const [cashAmount, setCashAmount] = useState('');
+  const [cardDetails, setCardDetails] = useState({
+    cardname: '',
+    cardholdername: '',
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+  });
+  const [saveCardInfo, setSaveCardInfo] = useState(false); // Checkbox for saving card details
 
   const {
     doctor,
@@ -24,18 +34,6 @@ const Paymentpage = () => {
     time,
   } = loc.state.schedule || {};
 
-  // Set default payment method to "card"
-  const [paymentMethod, setPaymentMethod] = useState('card');
-  const [cashAmount, setCashAmount] = useState('');
-  const [cardDetails, setCardDetails] = useState({
-    cardname: '',
-    cardholdername: '',
-    cardNumber: '',
-    expiry: '',
-    cvv: '',
-  });
-
-  const [saveCardInfo, setSaveCardInfo] = useState(false); // Checkbox for saving card details
   const totalFee = bookingFee + 600 + 199;
 
   // Fetch saved cards on component load
