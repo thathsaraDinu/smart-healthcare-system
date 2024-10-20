@@ -26,6 +26,11 @@ export function reportGeneration(data, title) {
     startY: 50,
   });
 
-  // Show PDF
-  doc.save('report.pdf');
+  // Initiate a variable to save date&time for the file name
+  const currentTime = new Date()
+    .toISOString()
+    .replace(/:/g, '-'); 
+
+  // Save PDF
+  doc.save(`${title}_${currentTime}.pdf`);
 }

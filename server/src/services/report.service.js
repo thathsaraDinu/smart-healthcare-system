@@ -5,6 +5,14 @@ import { getUsers } from './user.service.js';
 export const getAllAppointments = async () => {
   try {
     const appointments = await Appointment.find().populate('user', 'fullName');
+
+    console.log('appointments', appointments);
+    if (!appointments) {
+      throw {
+        status: 404,
+        message: 'No appointments found'
+      };
+    }
     return appointments.map((appointment) => {
       const appointmentObj = appointment.toObject();
       return {
@@ -14,7 +22,11 @@ export const getAllAppointments = async () => {
       };
     });
   } catch (error) {
-    throw new Error('Error fetching appointments: ' + error.message);
+    console.error('Error fetching appointments: ', error.message);
+    throw {
+      status: 500,
+      message: 'Error fetching appointments: ' + error.message
+    };
   }
 };
 
@@ -108,6 +120,12 @@ export const getAppointmentStats = async () => {
 
     // Get the total patient count
     const totalPatients = await getUsers('user').then((users) => users.length);
+    if (!result) {
+      throw {
+        status: 404,
+        message: 'No appointments found'
+      };
+    }
 
     console.log('result', result);
     console.log('totalPatients: ', totalPatients);

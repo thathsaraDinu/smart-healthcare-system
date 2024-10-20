@@ -50,7 +50,7 @@ const AllPatients = () => {
   );
 
   // Handle the Report Download
-  const handleClick = async () => {
+  const handleClick = () => {
     setReportLoading(true); // Start loading
     try {
       reportGeneration(
