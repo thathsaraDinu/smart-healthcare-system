@@ -5,7 +5,8 @@ import { lazy } from 'react';
 
 // Admin page
 const Overview = lazy(
-  () => import('@/pages/dashboard/admin-dashboard/overview'),
+  () =>
+    import('@/pages/dashboard/admin-dashboard/overview'),
 );
 
 // Home page
@@ -33,6 +34,9 @@ const RootRoute = () => {
   ) : isAuthenticated && role === USER_ROLES.DOCTOR ? (
     <Dashboard />
   ) : isAuthenticated && role === USER_ROLES.ADMIN ? (
+    <Overview />
+  ) : isAuthenticated &&
+    role === USER_ROLES.MEDICAL_STAFF ? (
     <Overview />
   ) : (
     <Home />

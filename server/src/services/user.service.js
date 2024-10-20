@@ -78,7 +78,8 @@ export const getProfile = async (id) => {
         maritalStatus: user.maritalStatus,
         physicianName: user.physicianName,
         physicianMobile: user.physicianMobile,
-        emergencyContact: user.emergencyContact
+        emergencyContact: user.emergencyContact,
+        medicalData: user.medicalData
       };
     } else {
       return {

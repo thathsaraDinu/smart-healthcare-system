@@ -5,6 +5,7 @@ import {
 import {
   getProfileData,
   updateUserProfile,
+  getProfileDataById,
 } from '@/api/user.api';
 import toast from 'react-hot-toast';
 
@@ -13,6 +14,15 @@ export const useProfile = (enabled) => {
   return useQuery({
     queryKey: ['profile'],
     queryFn: getProfileData,
+    enabled: !!enabled,
+  });
+};
+
+// Get profile data
+export const GetProfileDataId = (enabled, userId) => {
+  return useQuery({
+    queryKey: ['profileData', userId],
+    queryFn: () => getProfileDataById(userId),
     enabled: !!enabled,
   });
 };

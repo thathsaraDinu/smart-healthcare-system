@@ -6,10 +6,11 @@ import { InputField } from '@/components/input';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import {
-  useProfile,
+  GetProfileDataId,
   useUpdateProfile,
 } from '@/hooks/use-users';
 import { Modal } from '@/components/modals';
+import { useParams } from 'react-router-dom';
 
 const allergiesOptions = [
   'Medication Allergies',
@@ -35,21 +36,22 @@ const otherConditions = [
   'Other',
 ];
 
-const MedicalHistory = () => {
-  const {
-    data: profile,
-    // isLoading: profileLoading,
-    refetch,
-  } = useProfile(true);
+const MedicalHistoryStaff = () => {
+  // Read ID from URL
+  const { id } = useParams();
+
+  const { data: profileData, refetch: refetchProfile } =
+    GetProfileDataId(true, id);
 
   const medForm = useForm({
     defaultValues: {
-      allergies: profile?.medicalData?.allergies || [],
+      allergies: profileData?.medicalData?.allergies || [],
       cardiovascular:
-        profile?.medicalData?.cardiovascular || [],
+        profileData?.medicalData?.cardiovascular || [],
       otherCondition:
-        profile?.medicalData?.otherCondition || [],
-      specialNote: profile?.medicalData?.specialNote || '',
+        profileData?.medicalData?.otherCondition || [],
+      specialNote:
+        profileData?.medicalData?.specialNote || '',
     },
   });
 
@@ -57,12 +59,12 @@ const MedicalHistory = () => {
     mutate: updateMutate,
     // isPending: updatePending,
     // isSuccess: updateSuccess,
-  } = useUpdateProfile(refetch);
+  } = useUpdateProfile(refetchProfile);
 
   const onSubmit = (data) => {
     // Send data as medicalData
     updateMutate({
-      ...profile,
+      ...profileData,
       medicalData: data,
     });
   };
@@ -229,4 +231,4 @@ const MedicalHistory = () => {
   );
 };
 
-export default MedicalHistory;
+export default MedicalHistoryStaff;
