@@ -1,52 +1,52 @@
-import Card from '../models/card.model.js';
+import CardRepository from '../repositories/card.repository.js';
 import { changePaymentStatus } from './appointment.service.js';
 
 const CardService = {
-  // Save card details
+  // Save card details and complete payment if the card is saved successfully
   async saveCard(cardDetails) {
     try {
-      // Create a new card record in the database
-      const card = new Card(cardDetails);
-      if (card) {
-        this.completePayment(cardDetails.appointmentId);
-      }
-      const savedCard = await card.save();
+      // Attempt to save the card details in the repository
+      const savedCard = await CardRepository.save(cardDetails);
       if (savedCard) {
-        console.log('Card saved successfully:', savedCard);
-      } else {
-        console.log('Failed to save card.');
+        // If the card is saved successfully, complete the payment
+        await this.completePayment(cardDetails.appointmentId);
       }
       return savedCard;
     } catch (error) {
+      // Throw an error if saving the card fails
       throw new Error('Failed to save card: ' + error.message);
     }
   },
 
-  // Complete payment
+  // Complete the payment by changing the payment status of the appointment
   async completePayment(appointmentId) {
     try {
-      console.log('Appointment ID:', appointmentId);
+      // Change the payment status of the appointment to true (paid)
       return await changePaymentStatus(appointmentId, true);
     } catch (error) {
+      // Throw an error if completing the payment fails
       throw new Error('Failed to complete payment: ' + error.message);
     }
   },
 
-  // Get all saved cards for a specific user
+  // Retrieve saved cards for a specific user
   async getSavedCards(userId) {
     try {
-      return await Card.find({ userId }).exec();
+      // Fetch all saved cards for the given user ID from the repository
+      return await CardRepository.findByUserId(userId);
     } catch (error) {
+      // Throw an error if retrieving the cards fails
       throw new Error('Failed to retrieve cards: ' + error.message);
     }
   },
 
-  // Delete a card by ID
+  // Delete a card by its ID
   async deleteCard(cardId) {
     try {
-      const deletedCard = await Card.findByIdAndDelete(cardId);
-      return deletedCard;
+      // Delete the card with the given ID from the repository
+      return await CardRepository.deleteById(cardId);
     } catch (error) {
+      // Throw an error if deleting the card fails
       throw new Error('Failed to delete card: ' + error.message);
     }
   }

@@ -8,12 +8,13 @@ function PaymentDetails() {
     const userId = useAuthStore((state) => state.id); // Get user ID from your auth store
 
     useEffect(() => {
+        // Function to fetch saved cards from the API
         const fetchSavedCards = async () => {
             try {
                 const response = await getSavedCards(userId); // Fetch saved cards
                 setSavedCards(response.cards); // Assuming your response contains a 'cards' array
             } catch (error) {
-                console.error('Error fetching saved cards:', error);
+                console.error('Error fetching saved cards:', error); // Log any errors
             } finally {
                 setIsLoading(false); // Stop loading
             }
@@ -22,17 +23,19 @@ function PaymentDetails() {
         fetchSavedCards(); // Call the function to fetch cards
     }, [userId]); // Dependency on userId
 
+    // Function to handle card deletion
     const handleDeleteCard = async (cardId) => {
         if (confirm('Are you sure you want to delete this card?')) { // Confirmation before deleting
             try {
                 await deleteCard(cardId); // Call the API to delete the card
                 setSavedCards(savedCards.filter((card) => card._id !== cardId)); // Update the state to remove the deleted card
             } catch (error) {
-                console.error('Error deleting card:', error);
+                console.error('Error deleting card:', error); // Log any errors
             }
         }
     };
 
+    // Show loading state while fetching data
     if (isLoading) {
         return <div className="text-center">Loading saved card details...</div>; // Loading state
     }
@@ -41,13 +44,13 @@ function PaymentDetails() {
         <section className="lg:container my-10 px-4">
             <h2 className="font-bold text-2xl mb-5 text-gray-800">Saved Card Details</h2>
             {savedCards.length === 0 ? (
-                <p className="text-center text-gray-600">No saved cards found.</p>
+                <p className="text-center text-gray-600">No saved cards found.</p> // Message when no cards are found
             ) : (
                 <ul className="space-y-4">
                     {savedCards.map((card) => (
                         <li key={card._id} className="p-5 border rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow duration-300 relative">
                             <p className="font-semibold text-gray-700">Card Name: {card.cardname}</p>
-                            <p className="font-semibold text-gray-700">Cardholder Name: {card.cardholderName}</p>
+                            <p className="text-gray-700">Cardholder Name: {card.cardholderName}</p>
                             <p className="text-gray-600">Card Number: **** **** **** {card.cardNumber.slice(-4)}</p>
                             <p className="text-gray-600">Expiry Date: {card.expiry}</p>
                             <button
