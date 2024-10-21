@@ -13,6 +13,8 @@ import { reportGeneration } from '../report-generation/reportGeneration';
 function AllAppointments() {
   const [reportLoading, setReportLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage] = useState(10); // Change rows per page 
 
   // Fetch the appointments Data
   const { queryData, isLoading, isError } =
@@ -32,7 +34,7 @@ function AllAppointments() {
         .includes(searchQuery.toLowerCase()),
   );
 
-  // Filter the fields need
+  // Filter the fields needed
   const specificFieldsArray = filteredAppointments?.map(
     (appointment) => ({
       patientName: appointment.patientName,
@@ -47,10 +49,13 @@ function AllAppointments() {
   );
 
   // Handle the Report Download
-  const handleClick = async () => {
+  const handleClick = () => {
     setReportLoading(true); // Start ReportLoading
     try {
-      reportGeneration(specificFieldsArray, 'Appointments Report');
+      reportGeneration(
+        specificFieldsArray,
+        'Appointments Report',
+      );
       console.log(' done');
     } catch (error) {
       console.error('Error downloading the report:', error);
@@ -58,6 +63,15 @@ function AllAppointments() {
       setReportLoading(false); // End ReportLoading
     }
   };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(
+    specificFieldsArray?.length / rowsPerPage,
+  );
+  const paginatedAppointments = specificFieldsArray?.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
+  );
 
   return (
     <div className="w-full flex flex-col  p-5">
@@ -88,7 +102,7 @@ function AllAppointments() {
       </div>
       <hr className="mb-5 border-gray-300" />
 
-      <div className="px-10 flex flex-col">
+      <div className="px-10 h-[490px] flex flex-col relative">
         <Table>
           <TableHeader>
             <TableRow>
@@ -103,7 +117,7 @@ function AllAppointments() {
           <TableBody>
             {isLoading && <p>Loading...</p>}
             {isError && <p>Error loading</p>}
-            {specificFieldsArray?.map(
+            {paginatedAppointments?.map(
               (appointment, index) => (
                 <TableRow key={index}>
                   <TableCell>
@@ -127,6 +141,33 @@ function AllAppointments() {
             )}
           </TableBody>
         </Table>
+
+        {/* Pagination controls */}
+        <div className="absolute text-sm bottom-0 right-20">
+          <div className="flex justify-center mt-10 items-center ">
+            <Button
+              className="px-3 py-1 border rounded-md "
+              disabled={currentPage === 1}
+              onClick={() =>
+                setCurrentPage(currentPage - 1)
+              }
+            >
+              Previous
+            </Button>
+            <span className="px-2 py-1 text-center w-36">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              className="px-3 py-1 border rounded-md"
+              disabled={currentPage === totalPages}
+              onClick={() =>
+                setCurrentPage(currentPage + 1)
+              }
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

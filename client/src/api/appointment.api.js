@@ -20,7 +20,6 @@ export const updateAppointment = async (id, data) => {
     `/api/appointment/${id}`,
     data,
   );
-
   return response.data;
 };
 
@@ -29,5 +28,12 @@ export const deleteAppointment = async (id) => {
     `/api/appointment/${id}`,
   );
 
+  return response.data;
+};
+
+export const getPaidAppointments = async () => {
+  const response = await instance.get(
+    '/api/appointment?isPaid=true',
+  ); // Adjust this endpoint based on your API design
   return response.data;
 };

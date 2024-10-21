@@ -50,8 +50,21 @@ const MedicalHistory = lazy(
 const Treatments = lazy(
   () => import('@/pages/user/profile/treatments'),
 );
+const PaymentDetails = lazy(
+  () => import('@/pages/user/profile/paymentDetails'),
+);
+const PaidAppointments = lazy(
+  () => import('@/pages/user/profile/paidAppointment'),
+);
 const AppointmentsCalendar = lazy(
   () => import('@/pages/user/profile/appointmentsCalendar'),
+);
+const Patients = lazy(
+  () => import('@/pages/dashboard/medical_staff/user'),
+);
+const MedicalHistoryStaff = lazy(
+  () =>
+    import('@/pages/dashboard/medical_staff/user-update'),
 );
 
 // Appointments Pages
@@ -74,7 +87,9 @@ const AppointmentUpdateForm = lazy(
 );
 
 //payment pages
-const Payment = lazy(() => import('@/pages/payment/Paymentpage'));
+const Payment = lazy(
+  () => import('@/pages/payment/Paymentpage'),
+);
 
 // layout
 const Layout = lazy(() => import('@/layout'));
@@ -210,6 +225,29 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      // medical staff Layout
+      {
+        path: 'patients',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<Patients />}
+              roles={[USER_ROLES.MEDICAL_STAFF]}
+            />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'patients/:id',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ProtectedRoute
+              element={<MedicalHistoryStaff />}
+              roles={[USER_ROLES.MEDICAL_STAFF]}
+            />
+          </Suspense>
+        ),
+      },
       // Profile Layout
       {
         element: (
@@ -243,6 +281,22 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <Treatments />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'paidappointments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PaidAppointments />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'paymentdetails',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PaymentDetails />
               </Suspense>
             ),
           },

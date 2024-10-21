@@ -50,7 +50,10 @@ export const InputField = ({
                   className="flex flex-row items-start space-x-3 space-y-0"
                 >
                   <FormControl>
+                    {/* TODO: Label Mistake */}
                     <Checkbox
+                      id={item.label}
+                      name={item.label}
                       checked={field.value?.includes(
                         item.id,
                       )}
@@ -67,7 +70,10 @@ export const InputField = ({
                       }}
                     />
                   </FormControl>
-                  <FormLabel className="font-normal">
+                  <FormLabel
+                    className="font-normal"
+                    htmlFor={item.label}
+                  >
                     {item.label}
                   </FormLabel>
                 </FormItem>
@@ -78,6 +84,8 @@ export const InputField = ({
           // Single checkbox (just a boolean value)
           return (
             <Checkbox
+              id={name}
+              name={name}
               checked={field.value || false}
               onCheckedChange={(checked) =>
                 field.onChange(checked)
@@ -168,42 +176,44 @@ export const InputField = ({
   };
 
   return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className={className}>
-          {label && type === 'radio' ? (
-            <FormLabel
-              className={labelStyle}
-              htmlFor={undefined}
-              id={name}
-              name={name}
-            >
-              {label}
-            </FormLabel>
-          ) : label ? (
-            <FormLabel
-              className={labelStyle}
-              htmlFor={name}
-            >
-              {label}
-            </FormLabel>
-          ) : null}
+    <>
+      <FormField
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <FormItem className={className}>
+            {label && type === 'radio' ? (
+              <FormLabel
+                className={labelStyle}
+                htmlFor={undefined}
+                id={name}
+                name={name}
+              >
+                {label}
+              </FormLabel>
+            ) : label ? (
+              <FormLabel
+                className={labelStyle}
+                htmlFor={name}
+              >
+                {label}
+              </FormLabel>
+            ) : null}
 
-          <FormControl className={formStyle}>
-            {renderInput(type, field)}
-          </FormControl>
-          {description && (
-            <FormDescription className={descriptionStyle}>
-              {description}
-            </FormDescription>
-          )}
-          <FormMessage />
-          {children && <div>{children}</div>}
-        </FormItem>
-      )}
-    />
+            <FormControl className={formStyle}>
+              {renderInput(type, field)}
+            </FormControl>
+            {description && (
+              <FormDescription className={descriptionStyle}>
+                {description}
+              </FormDescription>
+            )}
+            <FormMessage />
+            {children && <div>{children}</div>}
+          </FormItem>
+        )}
+      />
+    </>
   );
 };
 
@@ -211,7 +221,7 @@ export const InputField = ({
 InputField.propTypes = {
   control: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   type: PropTypes.string,
   values: PropTypes.arrayOf(
     PropTypes.shape({

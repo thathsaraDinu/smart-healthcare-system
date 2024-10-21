@@ -9,8 +9,7 @@ import { useMemo } from 'react';
 import useDoctors from '@/hooks/useDoctors';
 
 function Overview() {
-  const [monthPeriod, setMonthPeriod] = useState(6);
-  const [selectedMonth, setSelectedMonth] = useState(6); // Default to 6 months
+  const [selectedMonth, setSelectedMonth] = useState(3); // Default to 6 months
 
   // Fetch the Chart Data
   const { data, loading: isLoadingChart } = useChartInfo();
@@ -68,8 +67,7 @@ function Overview() {
             Overview{' '}
           </span>
           <span className="font-medium text-md">
-            of {' '}
-            {monthPeriod}
+            of {selectedMonth}
             {` Months`}
           </span>
         </div>
@@ -78,18 +76,18 @@ function Overview() {
           <span
             onClick={() => {
               handleFilterClick(3);
-              setMonthPeriod(3);
+              setSelectedMonth(3);
             }}
-            className={`py-2 px-3 ${monthPeriod == 3 ? 'bg-blue-900' : 'bg-blue-600 hover:bg-blue-700'} transition-all duration-300 hover:ring-2 hover:ring-blue-900 text-white text-sm rounded-full cursor-pointer`}
+            className={`py-2 px-3 ${selectedMonth == 3 ? 'bg-blue-900' : 'bg-blue-600 hover:bg-blue-700'} transition-all duration-300 hover:ring-2 hover:ring-blue-900 text-white text-sm rounded-full cursor-pointer`}
           >
             Last 3 Months
           </span>
           <span
             onClick={() => {
               handleFilterClick(6);
-              setMonthPeriod(6);
+              setSelectedMonth(6);
             }}
-            className={`py-2 px-3 ${monthPeriod == 6 ? 'bg-blue-900' : 'bg-blue-600 hover:bg-blue-700'} transition-all duration-300 hover:ring-2 hover:ring-blue-900 text-white text-sm rounded-full cursor-pointer`}
+            className={`py-2 px-3 ${selectedMonth == 6 ? 'bg-blue-900' : 'bg-blue-600 hover:bg-blue-700'} transition-all duration-300 hover:ring-2 hover:ring-blue-900 text-white text-sm rounded-full cursor-pointer`}
           >
             Last 6 Months
           </span>
@@ -98,9 +96,9 @@ function Overview() {
           <span
             onClick={() => {
               handleFilterClick(12);
-              setMonthPeriod(12);
+              setSelectedMonth(12);
             }}
-            className={`py-2 px-3 ${monthPeriod == 12 ? 'bg-blue-900' : 'bg-blue-600 hover:bg-blue-700'} transition-all duration-300 hover:ring-2 hover:ring-blue-900 text-white text-sm rounded-full cursor-pointer`}
+            className={`py-2 px-3 ${selectedMonth == 12 ? 'bg-blue-900' : 'bg-blue-600 hover:bg-blue-700'} transition-all duration-300 hover:ring-2 hover:ring-blue-900 text-white text-sm rounded-full cursor-pointer`}
           >
             Last 12 Months
           </span>
@@ -161,9 +159,9 @@ function Overview() {
             loading={isLoadingChart}
           />
           <AmountCard
-            name="Staff"
-            value={noOfDoctors}
-            loading={isLoadingDocs}
+            name="Total Hospitals"
+            value={10}
+            loading={false}
           />
         </div>
       </div>

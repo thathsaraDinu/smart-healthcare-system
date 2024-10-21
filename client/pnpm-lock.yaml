@@ -87,7 +87,7 @@ importers:
         specifier: ^1.4.1
         version: 1.4.1
       jspdf:
-        specifier: ^2.5.1
+        specifier: ^2.5.2
         version: 2.5.2
       jspdf-autotable:
         specifier: ^3.8.3

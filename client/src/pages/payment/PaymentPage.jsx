@@ -1,57 +1,224 @@
-import { makeAppointment } from '@/api/appointment.api';
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { saveCard, getSavedCards } from '@/api/card.api'; // Assuming you have your card API ready
+import { updateAppointment } from '@/api/appointment.api';
+import { useAuthStore } from '@/store/auth-store';
+import jsPDF from 'jspdf';
 
-const AppointmentForm = () => {
+const Paymentpage = () => {
+  const navigate = useNavigate();
   const loc = useLocation();
+
+  const userId = useAuthStore((state) => state.id);
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // For showing popup
+  const [enteredCardName, setEnteredCardName] = useState(''); // For storing entered card name
+  const [savedCards, setSavedCards] = useState([]); // Store user's saved cards
+  const [selectedCard, setSelectedCard] = useState(null); // Store selected saved card
+  const [paymentMethod, setPaymentMethod] = useState('card');// Set default payment method to "card"
+  const [cashAmount, setCashAmount] = useState('');// State to store the cash amount entered by the user
+
+  // State to store the card details entered by the user
+  const [cardDetails, setCardDetails] = useState({
+    cardname: '',
+    cardholdername: '',
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+  });
+
+  // State to handle the checkbox for saving card details
+  const [saveCardInfo, setSaveCardInfo] = useState(false);
+
+  // Destructure necessary details from location state
   const {
-    doctor = {},
+    doctor,
     hospital,
     location,
     bookingFee,
     date,
     time,
-  } = loc.state || {};
+  } = loc.state.schedule || {};
 
-  const [patientName, setPatientName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [area, setArea] = useState('');
-  const [nic, setNic] = useState('');
+  // Calculate the total fee
+  const totalFee = bookingFee + 600 + 199;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const appointmentData = {
-      patientName,
-      email,
-      phoneNumber,
-      area,
-      nic,
-      schedule: {
-        doctor: {
-          fullName: doctor?.fullName || 'Unknown Doctor',
-          gender: doctor?.gender || 'Unknown',
-          specialization: doctor?.specialization || 'Unknown',
-        },
-        hospital,
-        location,
-        bookingFee,
-        date,
-        time,
-      },
+  // Fetch saved cards on component load
+  useEffect(() => {
+    const fetchSavedCards = async () => {
+      try {
+        const response = await getSavedCards(userId);
+        const cards = response.cards;
+        setSavedCards(cards);
+      } catch (error) {
+        console.error('Error fetching saved cards:', error);
+      }
     };
 
-    try {
-      const response =
-        await makeAppointment(appointmentData);
+    fetchSavedCards();
+  }, [userId]);
 
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Check if it's a card payment and all required card details are filled
+    if (paymentMethod === 'card') {
+      if (
+        !cardDetails.cardholdername ||
+        !cardDetails.cardNumber ||
+        !cardDetails.expiry ||
+        !cardDetails.cvv
+      ) {
+        alert('Please fill in all card details.');
+        return;
+      }
+
+      // If save card is checked, show the popup for entering card name
+      if (saveCardInfo) {
+        setIsPopupVisible(true);
+        return;
+      }
+
+      // Proceed with payment process if no popup is required
+      processPayment();
+    }
+
+    // Check if it's a cash payment and the entered cash amount is sufficient
+    if (paymentMethod === 'cash') {
+      if (cashAmount < totalFee) {
+        alert('Insufficient cash amount.');
+        return;
+      }
+
+      // If cash amount is enough, proceed with payment
+      processPayment();
     }
   };
+
+  const processPayment = async () => {
+    // Save card details if "save card details" is checked and card name has been provided
+    if (saveCardInfo && enteredCardName) {
+      try {
+        const cardData = {
+          appointmentId: loc.state._id,
+          userId: userId,
+          paymentMethod: paymentMethod,
+          cardholderName: cardDetails.cardholdername,
+          cardNumber: cardDetails.cardNumber,
+          expiry: cardDetails.expiry,
+          cvv: cardDetails.cvv,
+          totalFee: totalFee,
+          cardname: enteredCardName,
+        };
+
+        console.log('Card Data:', cardData);
+        const savedCardResponse = await saveCard(cardData);
+        console.log(savedCardResponse);
+      } catch (error) {
+        console.error('Error saving card details:', error);
+      }
+    }
+
+    try {
+      // Update the appointment status to paid
+      await updateAppointment(loc.state._id, { ispaid: true });
+      console.log("Appointment payment status updated");
+      alert('Payment successful!');
+      generatePDFReport(); // Generate PDF report after successful payment
+      navigate('/myAppointments'); // Redirect to appointments page after payment
+    } catch (error) {
+      console.error('Error updating appointment payment status:', error);
+    }
+  };
+
+  const generatePDFReport = () => {
+    const doc = new jsPDF();
+
+    // Set the background color for the header
+    doc.setFillColor(173, 216, 230); // Light blue color
+    doc.rect(0, 0, 210, 20, 'F'); // Fill the rectangle for the header
+
+    // Add title
+    doc.setFontSize(20);
+    doc.setTextColor(0, 0, 0); // Black color
+    doc.text('Appointment Details', 14, 15);
+
+    // Set font size and color for details
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50); // Dark gray for details
+
+    // Add appointment details
+    doc.text(`Doctor: ${doctor.fullName}`, 14, 30);
+    doc.text(`Hospital: ${hospital}`, 14, 40);
+    doc.text(`Location: ${location}`, 14, 50);
+    doc.text(`Date: ${date}`, 14, 60);
+    doc.text(`Time: ${time}`, 14, 70);
+    doc.text(`Payment Method: ${paymentMethod}`, 14, 80);
+
+    // Add a line separator
+    doc.setDrawColor(173, 216, 230); // Light blue for line
+    doc.line(14, 85, 196, 85); // Horizontal line
+
+    // Payment breakdown title
+    doc.setFontSize(14);
+    doc.setTextColor(0, 102, 204); // Blue color for section title
+    doc.text('Payment Breakdown:', 14, 100);
+
+    // Reset font size and color for payment details
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50); // Dark gray for payment details
+
+    // Payment breakdown details
+    doc.text(`Doctor Fee: Rs ${bookingFee.toFixed(2)}`, 14, 110);
+    doc.text(`Hospital Fee: Rs 600.00`, 14, 120);
+    doc.text(`eChannelling Fee: Rs 199.00`, 14, 130);
+    doc.text(`Total Fee: Rs ${totalFee.toFixed(2)}`, 14, 140);
+
+    // Save the PDF
+    doc.save('appointment_report.pdf');
+  };
+
+
+  // Autofill card details when a saved card is selected
+  const handleSelectSavedCard = (card) => {
+    setSelectedCard(card);
+    setCardDetails({
+      cardholdername: card.cardholderName,
+      cardNumber: card.cardNumber,
+      expiry: card.expiry,
+      cvv: '***', // Hide CVV for security reasons
+    });
+    setSaveCardInfo(false); // Uncheck save card info checkbox
+  };
+
+  // Handle changes in the cash amount input field
+  const handleCashAmountChange = (e) => {
+    setCashAmount(e.target.value);
+  };
+
+  // Handle changes in the card details input fields
+  const handleCardDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setCardDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle the checkbox for saving card information
+  const handleSaveCardChange = (e) => {
+    setSaveCardInfo(e.target.checked);
+  };
+
+  // Handle the confirmation of the card name in the popup
+  const handleConfirmCardName = () => {
+    if (!enteredCardName) {
+      alert('Please enter a card name.');
+      return;
+    }
+    setIsPopupVisible(false); // Close the popup
+    processPayment(); // Proceed with payment
+  };
+
 
   return (
     <>
@@ -80,7 +247,7 @@ const AppointmentForm = () => {
                       Doctor
                     </div>
                     <div className="font-medium text-xs mt-1">
-                      {doctor.fullName || 'Unknown Doctor'}
+                      {doctor.fullName}
                     </div>
                   </div>
                   <div className="mt-5">
@@ -118,119 +285,192 @@ const AppointmentForm = () => {
                 </div>
               </div>
             </div>
-            <div className="xl:col-span-3">
-              <div>
-                <div className="grid grid-cols-1 md:grid-cols-8 gap-5 gap-y-5 md:gap-y-8">
-                  <div className="flex  md:col-span-4">
-                    <div className="w-full">
-                      <div className="text-xs mb-2 font-medium pl-2">
-                        Name
-                        <span className="text-red-500 ml-1">
-                          *
-                        </span>
-                      </div>
-                      <div className="relative">
-                        <div className="relative">
-                          <input
-                            className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                            placeholder="Enter patient name"
-                            onChange={(e) =>
-                              setPatientName(e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
+
+            <div className="xl:col-span-3 ml-2 mr-2">
+              <div className="mb-4">
+                <div className="font-semibold text-blue-500 mb-1">Select Payment Method</div>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="card"
+                      className="form-radio"
+                      checked={paymentMethod === 'card'}
+                      onChange={() => setPaymentMethod('card')}
+                    />
+                    <span className="text-sm">Card</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="cash"
+                      className="form-radio"
+                      onChange={() => setPaymentMethod('cash')}
+                    />
+                    <span className="text-sm">Cash</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Display saved cards */}
+              {paymentMethod === 'card' && savedCards.length > 0 && (
+                <div className="mb-4">
+                  <label className="block font-semibold mb-2">Select a saved card</label>
+                  <select
+                    onChange={(e) => handleSelectSavedCard(savedCards.find(card => card.cardname === e.target.value))}
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                  >
+                    <option value="">-- Select a Card --</option>
+                    {savedCards.map((card) => (
+                      <option key={card._id} value={card.cardname}>
+                        {card.cardname}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Conditional UI based on payment method */}
+              {paymentMethod === 'cash' && (
+                <div className="mt-5">
+                  <label className="block font-medium mb-2">Enter Cash Amount</label>
+                  <input
+                    type="number"
+                    value={cashAmount}
+                    onChange={handleCashAmountChange}
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                  />
+                  <div className="mt-2">
+                    <div className="font-medium">Balance:</div>
+                    <div className="text-red-600">
+                      {cashAmount && cashAmount >= totalFee
+                        ? `Rs ${(cashAmount - totalFee).toFixed(2)}`
+                        : 'Insufficient Cash'}
                     </div>
                   </div>
-                  <div className="md:col-span-4">
-                    <div className="text-xs mb-2 font-medium pl-2">
-                      Email
-                    </div>
-                    <div className="relative">
-                      <div className="relative">
+                </div>
+              )}
+
+              {paymentMethod === 'card' && (
+                <div className="mt-5">
+                  <div>
+                    <label className="block font-medium mb-2">Card Holder Name</label>
+                    <input
+                      type="text"
+                      name="cardholdername"
+                      value={cardDetails.cardholdername}
+                      onChange={handleCardDetailsChange}
+                      className={`w-full border ${cardDetails.cardholdername ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                      placeholder="Enter your name as on the card"
+                      required
+                    />
+                    {!cardDetails.cardholdername && (
+                      <span className="text-red-500 text-sm">Card holder name is required.</span>
+                    )}
+
+                    <label className="block font-medium mb-2 mt-3">Card Number</label>
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      value={cardDetails.cardNumber}
+                      onChange={handleCardDetailsChange}
+                      className={`w-full border ${/^\d{16}$/.test(cardDetails.cardNumber) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                      placeholder="1234 5678 9012 3456"
+                      required
+                    />
+                    {cardDetails.cardNumber && !/^\d{16}$/.test(cardDetails.cardNumber) && (
+                      <span className="text-red-500 text-sm">Invalid card number. Must be 16 digits.</span>
+                    )}
+
+                    <div className="flex space-x-4 mt-3">
+                      <div className="flex-1">
+                        <label className="block font-medium mb-2">Expiry Date</label>
                         <input
-                          className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                          placeholder="Receipt will send to this email"
-                          onChange={(e) =>
-                            setEmail(e.target.value)
-                          }
+                          type="text"
+                          name="expiry"
+                          value={cardDetails.expiry}
+                          onChange={handleCardDetailsChange}
+                          className={`w-full border ${/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                          placeholder="MM/YY"
+                          required
                         />
+                        {cardDetails.expiry && !/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiry) && (
+                          <span className="text-red-500 text-sm">Invalid expiry date. Format MM/YY.</span>
+                        )}
                       </div>
-                    </div>
-                  </div>
-                  <div className="flex  md:col-span-4">
-                    <div className="w-1/3">
-                      <div className="text-xs mb-2 font-medium pl-2">
-                        Number
-                        <span className="text-red-500 ml-1">
-                          *
-                        </span>{' '}
-                      </div>
-                      <div className="relative">
-                        <button className="w-full rounded-r-none border-r-0 py-3 px-4 text-sm focus:outline-none rounded-xl border border-blue-500 bg-white text-left ">
-                          <div className="flex justify-between items-center">
-                            +94
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="w-full mt-6">
-                      <div className="relative">
-                        <div className="relative">
-                          <input
-                            className="w-full rounded-l-none false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                            placeholder="71XXXXXXX"
-                            type="number"
-                            onChange={(e) =>
-                              setPhoneNumber(e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="md:col-span-4">
-                    <div className="text-xs mb-2 font-medium pl-2">
-                      Area
-                    </div>
-                    <div className="relative">
-                      <div className="relative">
+
+                      <div className="flex-1">
+                        <label className="block font-medium mb-2">CVV</label>
                         <input
-                          className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                          placeholder="Please enter your closest city"
-                          onChange={(e) =>
-                            setArea(e.target.value)
-                          }
+                          type="text"
+                          name="cvv"
+                          value={cardDetails.cvv}
+                          onChange={handleCardDetailsChange}
+                          className={`w-full border ${selectedCard || /^\d{3}$/.test(cardDetails.cvv) ? 'border-gray-300' : 'border-red-500'} rounded px-3 py-2`}
+                          placeholder="123"
+                          required
                         />
+                        {cardDetails.cvv && !selectedCard && !/^\d{3}$/.test(cardDetails.cvv) && (
+                          <span className="text-red-500 text-sm">Invalid CVV. Must be 3 digits.</span>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex  md:col-span-5 col-start-1">
-                    <div className="w-full">
-                      <div className="text-xs mb-2 font-medium pl-2">
-                        NIC Number
-                        <span className="text-red-500 ml-1">
-                          *
-                        </span>
-                      </div>
-                      <div className="relative">
-                        <div className="relative">
-                          <input
-                            className="w-full undefined false rounded-xl py-[12px] px-4 text-sm focus:outline-none border border-blue-500"
-                            placeholder="Enter NIC number"
-                            onChange={(e) =>
-                              setNic(e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
+                  {/* Conditionally render the save card checkbox */}
+                  {!selectedCard && (
+                    <div className="mt-5 flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={saveCardInfo}
+                        onChange={handleSaveCardChange}
+                        className="form-checkbox"
+                      />
+                      <label className="ml-2 text-sm">Save card details for future use</label>
+                    </div>
+                  )}
+                </div>
+              )}
+
+            </div>
+            <div>
+
+              {/* Add Popup for entering card name */}
+              {isPopupVisible && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                  <div className="bg-white p-5 rounded-md shadow-lg">
+                    <h3 className="mb-4 text-lg font-semibold">Enter Card Name</h3>
+                    <input
+                      type="text"
+                      value={enteredCardName}
+                      onChange={(e) =>
+                        setEnteredCardName(e.target.value)
+                      }
+                      className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+                      placeholder="Enter a name for this card"
+                    />
+                    <div className="flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={handleConfirmCardName}
+                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsPopupVisible(false)}
+                        className="px-4 py-2 bg-gray-300 rounded"
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div>
+              )}
+
               <div className="shadow border border-gray-200 p-5 rounded-xl mb-5">
                 <div className="font-semibold text-blue-500 mb-1">
                   Payment Details
@@ -246,7 +486,7 @@ const AppointmentForm = () => {
                         Doctor fee
                       </div>
                       <div className="font-semibold text-sm xl:text-xs 2xl:text-sm ">
-                        Rs {bookingFee ? bookingFee.toFixed(2) : '0.00'}
+                        Rs {bookingFee.toFixed(2)}
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
@@ -293,6 +533,7 @@ const AppointmentForm = () => {
                   </div>
                 </div>
               </div>
+
               <button
                 type="submit"
                 className="w-full px-7 py-1.5 text-sm bg-blue-500 text-white px-2 py-1.5 md:py-3 mt-auto rounded-xl text-sm group border border-blue-500"
@@ -313,11 +554,9 @@ const AppointmentForm = () => {
                       ></path>
                     </svg>
                   </div>
-                  <Link to={'/payment'}>
-                    <div className="flex items-center capitalize gap-3 whitespace-nowrap">
-                      Pay
-                    </div>
-                  </Link>
+                  <div className="flex items-center capitalize gap-3 whitespace-nowrap">
+                    Pay
+                  </div>
                   <div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -337,6 +576,7 @@ const AppointmentForm = () => {
                   </div>
                 </div>
               </button>
+
             </div>
           </form>
         </div>
@@ -345,4 +585,4 @@ const AppointmentForm = () => {
   );
 };
 
-export default AppointmentForm;
+export default Paymentpage;

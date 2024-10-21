@@ -37,8 +37,8 @@ export function AreaChartComponent({ title, data }) {
           <Tooltip />
           <Area
             type="monotone"
-            stroke="#DE3163"
-            fill="#DE3163"
+            stroke="#FFA600"
+            fill="#FFA600"
             strokeWidth={2}
             fillOpacity={0.3}
             dataKey="femaleCount"

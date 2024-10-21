@@ -26,7 +26,7 @@ const AllDoctors = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Filter the fields need
+  // Extract only the necessary fields
   const specificFieldsArray = filteredDoctors?.map(
     (doctor) => ({
       fullName: doctor.fullName,
@@ -38,12 +38,15 @@ const AllDoctors = () => {
     }),
   );
 
-  // Handle the Report Download
-  const handleClick = async () => {
+  // Handle the report generation
+  const handleClick = () => {
     setReportLoading(true); // Start loading
     try {
-      reportGeneration(specificFieldsArray, 'Registered Doctors Report');
-      console.log(' done');
+      reportGeneration(
+        specificFieldsArray,
+        'Registered Doctors Report',
+      );
+      console.log('Report generation done');
     } catch (error) {
       console.error('Error downloading the report:', error);
     } finally {
@@ -63,14 +66,14 @@ const AllDoctors = () => {
             placeholder="Search by name or specialization"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 mr-5 border rounded-md w-72 appearance-none focus:outline-none text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border rounded-md w-72 appearance-none focus:outline-none text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
           />
           <select
             value={filterStatus}
             onChange={(e) =>
               setFilterStatus(e.target.value)
             }
-            className="px-4 py-2 mr-5 border rounded-md w-56 appearance-none focus:outline-none text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border rounded-md w-56 appearance-none focus:outline-none text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="All">All</option>
             <option value="active">Available</option>
@@ -89,16 +92,16 @@ const AllDoctors = () => {
       </div>
       <hr className="mb-5 border-gray-300" />
       {isLoading && <p>Loading...</p>}
-      {error && <p>Error loading</p>}
-      <div className="flex gap-5 flex-wrap justify-center ">
+      {error && <p>Error loading doctors</p>}
+      <div className="flex gap-5 flex-wrap justify-center">
         {specificFieldsArray?.map((doctor, index) => (
           <div
             key={index}
-            className="lg:w-[260px] bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 "
+            className="lg:w-[260px] bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
             <img
               className="rounded-full mx-auto mt-5 mb-2 w-[150px] h-[150px] object-cover"
-              src={avatar} // Make sure to define the 'avatar' source
+              src={avatar}
               alt={`${doctor.fullName}'s profile`}
             />
             <div className="px-5 pb-5">

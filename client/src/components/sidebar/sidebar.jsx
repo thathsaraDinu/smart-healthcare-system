@@ -9,7 +9,9 @@ import { USER_ROLES } from '@/constants';
 import {
   MdCalendarMonth,
   MdLogout,
+  MdPerson,
   MdSpaceDashboard,
+  MdVerifiedUser,
 
   // MdSettings,
 } from 'react-icons/md';
@@ -22,7 +24,11 @@ const sideBarItems = [
     icon: <MdSpaceDashboard />,
     submenu: [],
     to: '/',
-    roles: [USER_ROLES.DOCTOR, USER_ROLES.ADMIN],
+    roles: [
+      USER_ROLES.DOCTOR,
+      USER_ROLES.ADMIN,
+      USER_ROLES.MEDICAL_STAFF,
+    ],
   },
   {
     title: 'Appointments',
@@ -33,17 +39,24 @@ const sideBarItems = [
   },
   {
     title: 'Doctors',
-    icon: <MdCalendarMonth />,
+    icon: <MdVerifiedUser />,
     submenu: [],
     to: '/all-doctors',
     roles: [USER_ROLES.ADMIN],
   },
   {
     title: 'Patients',
-    icon: <MdCalendarMonth />,
+    icon: <MdPerson />,
     submenu: [],
     to: '/all-patients',
     roles: [USER_ROLES.ADMIN],
+  },
+  {
+    title: 'Patients',
+    icon: <MdCalendarMonth />,
+    submenu: [],
+    to: '/patients',
+    roles: [USER_ROLES.MEDICAL_STAFF],
   },
 ];
 

@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { reportGeneration } from '../report-generation/reportGeneration';
 
-const AllPatients = () => {
+const Patients = () => {
   const [reportLoading, setReportLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -50,7 +50,7 @@ const AllPatients = () => {
   );
 
   // Handle the Report Download
-  const handleClick = () => {
+  const handleClick = async () => {
     setReportLoading(true); // Start loading
     try {
       reportGeneration(
@@ -139,4 +139,4 @@ const AllPatients = () => {
   );
 };
 
-export default AllPatients;
+export default Patients;

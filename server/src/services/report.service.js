@@ -4,7 +4,18 @@ import { getUsers } from './user.service.js';
 // Get all appointments
 export const getAllAppointments = async () => {
   try {
+    // Find the appointments from the appointments collection
     const appointments = await Appointment.find().populate('user', 'fullName');
+
+    // If appointments are not found throw an error
+    if (!appointments) {
+      throw {
+        status: 404,
+        message: 'No appointments found'
+      };
+    }
+
+    // Map the required fields and return it
     return appointments.map((appointment) => {
       const appointmentObj = appointment.toObject();
       return {
@@ -14,15 +25,17 @@ export const getAllAppointments = async () => {
       };
     });
   } catch (error) {
-    throw new Error('Error fetching appointments: ' + error.message);
+    console.error('Error fetching appointments: ', error.message);
+    throw {
+      status: 500,
+      message: 'Error fetching appointments: ' + error.message
+    };
   }
 };
 
 // Function to get all Chart Data
 export const getAppointmentStats = async () => {
   try {
-    console.log('getAppointmentStats');
-
     const result = await Appointment.aggregate([
       // Join with the user model to get gender information
       {
@@ -109,8 +122,13 @@ export const getAppointmentStats = async () => {
     // Get the total patient count
     const totalPatients = await getUsers('user').then((users) => users.length);
 
-    console.log('result', result);
-    console.log('totalPatients: ', totalPatients);
+    // If the result is null return throw an error
+    if (!result) {
+      throw {
+        status: 404,
+        message: 'No appointments found'
+      };
+    }
 
     return { stats: result, totalPatients: totalPatients || 0 };
   } catch (error) {

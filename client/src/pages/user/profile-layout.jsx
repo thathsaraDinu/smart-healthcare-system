@@ -60,9 +60,14 @@ const ProfileLayout = () => {
       link: '/profile/appointments',
     },
     {
-      title: 'Payement Method',
+      title: 'Paid Appointments',
+      icon: RiFileList3Fill,
+      link: '/profile/paidappointments',
+    },
+    {
+      title: 'Payement Details',
       icon: MdPayment,
-      link: '/profile/payment',
+      link: '/profile/paymentdetails',
     },
     {
       title: 'FAQs',
