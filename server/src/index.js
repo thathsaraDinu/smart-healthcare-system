@@ -7,7 +7,7 @@ import { httpLogger } from './middleware/logger.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
-const PORT = SERVER_PORT;
+const PORT = process.env.PORT || SERVER_PORT;
 const corsOptions = {
   origin: 'http://localhost:5173', // Specify your frontend URL
   credentials: true // Allow cookies to be sent
