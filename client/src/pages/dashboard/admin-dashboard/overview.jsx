@@ -26,7 +26,7 @@ function Overview() {
         item._id.formattedDate.split('/');
       const itemDate = new Date(
         new Date().getFullYear(),
-        month - 2, // Adjust month index
+        month - 1, // Adjust month index
         day,
       );
       const currentDate = new Date();

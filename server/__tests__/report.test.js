@@ -60,7 +60,7 @@ describe('Getting Data with Report Function', () => {
   });
 
   // Test Case 1 = if error returns when no data found in appointments
-  it('should return 404 when no appointments are found', async () => {
+  it('should return 404 when no appointments are found (NEGATIVE)', async () => {
     try {
       // Call the real function directly, assuming the database may return no appointments
       const result = await getAllAppointments();
@@ -93,7 +93,7 @@ describe('Getting Data with Report Function', () => {
   });
 
   // Test Case 3 = if error returns when no data found in appointments stats for reports
-  it('should return 404 when no appointment Stats are made', async () => {
+  it('should return 404 when no appointment Stats are made (NEGATIVE)', async () => {
     try {
       // Call the real function directly
       const result = await getAppointmentStats();
