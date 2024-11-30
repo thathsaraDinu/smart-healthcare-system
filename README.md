@@ -7,7 +7,7 @@
 </a>
 </p>
 
-# <b>Project Highlights</b><br/>
+## <b>Project Highlights</b><br/>
 
 Appointment Management: Simple scheduling, updating, and viewing of appointments for users.<br/>
 Billing & Payments: Efficient payment processing with multiple options like cash and card.<br/>
