@@ -88,7 +88,7 @@ const AppointmentUpdateForm = lazy(
 
 //payment pages
 const Payment = lazy(
-  () => import('@/pages/payment/Paymentpage'),
+  () => import('@/pages/payment/PaymentPage'),
 );
 
 // layout
