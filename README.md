@@ -13,17 +13,20 @@ Billing & Payments: Efficient payment processing with multiple options like cash
 Data Analytics: Detailed insights for admins, including visual reports and metrics.<br/>
 Patient Management: Secure handling of patient data and medical records.
 
-![Logo](https://drive.google.com/file/d/1FbxjuWcORcXGXxTd7lR1aY9CPwLaziFp/view?usp=drive_link)
+## Logo
+<img src="client/screenshots/logo.png" alt="App Screenshot 1">
 
 ## Screenshots
 
-![App Screenshot](https://drive.google.com/file/d/1BOsO5ofYCLCg8d_NoRveqGUGccwuvvC8/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1Ti8M4fFC-g2HwNojPEdVgN9_3al_e9iG/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1CmNXuREcQopAcV7yDtXQPgUH2zaoWCOQ/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1MtMJ16d8gRHzhMHDhEroJeLajULsvpKl/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1a7TKbkLXKNlFDWgJS7gG7hIl8gx_3WpH/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1zuY0U61-lsY22xrHwFfRk_RKV08Vkf23/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1CPdaFpHTOjiESGHM5rENnEo3J3o5e8uG/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1Ad8unLBTZ2XRUFkCpgdZ0Xc1FIcBSQ7C/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1dAM7yevp77MOkUy0c8Hg-fh89YTLk4AD/view?usp=sharing)
-![App Screenshot](https://drive.google.com/file/d/1PLucJuDMPh3rlXfe7wY5E5Mw5wGj7cu2/view?usp=drive_link)
+<img src="client/screenshots/homepage.png" alt="App Screenshot 1">
+<img src="client/screenshots/admin_dashboard.png" alt="App Screenshot 2">
+<img src="client/screenshots/doctor_search.png" alt="App Screenshot 3">
+<img src="client/screenshots/make_appointment.png" alt="App Screenshot 4">
+<img src="client/screenshots/profile.png" alt="App Screenshot 5">
+<img src="client/screenshots/appointment_calender.png" alt="App Screenshot 6">
+<img src="client/screenshots/med_history.png" alt="App Screenshot 7">
+<img src="client/screenshots/payment_cards.png" alt="App Screenshot 8">
+<img src="client/screenshots/payment_page.png" alt="App Screenshot 9">
+<img src="client/screenshots/appointment_reports.png" alt="App Screenshot 10">
+<img src="client/screenshots/doctors_reports.png" alt="App Screenshot 11">
+<img src="client/screenshots/sign_up.png" alt="App Screenshot 12">
