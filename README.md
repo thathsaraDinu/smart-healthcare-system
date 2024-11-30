@@ -16,7 +16,7 @@
   Streamlined payment processing with support for multiple payment options, including cash and card.
 
 - **Data Analytics**  
-  Comprehensive visual reports and metrics, empowering admins with actionable insights for better decision-making.
+  Comprehensive visual reports and metrics, including interactive charts for analyzing trends and performance, providing admins with insights.
 
 - **Patient Management**  
   Secure and efficient management of patient data and medical records, ensuring privacy and accuracy.
