@@ -7,11 +7,21 @@
 </a>
 </p>
 
-<b>Project Highlights</b><br/>
-Appointment Management: Simple scheduling, updating, and viewing of appointments for users.<br/>
-Billing & Payments: Efficient payment processing with multiple options like cash and card.<br/>
-Data Analytics: Detailed insights for admins, including visual reports and metrics.<br/>
-Patient Management: Secure handling of patient data and medical records.
+## <b>Project Features</b><br/>
+
+- **Appointment Management**  
+  Seamless scheduling, updating, and viewing of appointments for both patients and healthcare providers.
+
+- **Billing & Payments**  
+  Streamlined payment processing with support for multiple payment options, including cash and card.
+
+- **Data Analytics**  
+  Comprehensive visual reports and metrics, including interactive charts for analyzing trends and performance, providing admins with insights.
+
+- **Patient Management**  
+  Secure and efficient management of patient data and medical records, ensuring privacy and accuracy.
+
+---
 
 ## Logo
 
