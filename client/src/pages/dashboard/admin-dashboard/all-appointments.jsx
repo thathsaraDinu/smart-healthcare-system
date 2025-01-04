@@ -56,7 +56,6 @@ function AllAppointments() {
         specificFieldsArray,
         'Appointments Report',
       );
-      console.log(' done');
     } catch (error) {
       console.error('Error downloading the report:', error);
     } finally {
