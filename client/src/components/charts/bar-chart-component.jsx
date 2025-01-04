@@ -10,11 +10,14 @@ import {
 import PropTypes from 'prop-types';
 
 const BarChartComponent = ({ data, title }) => {
+  console.log('data', data);
   // Format and map data for chart
   const selectedData = data?.map((item) => ({
     name: item._id.formattedDate, // X-axis data from formattedDate
     totalAppointments: item.totalAppointments, // Y-axis data
   }));
+
+  console.log('selectedData', selectedData);
 
   return (
     <>

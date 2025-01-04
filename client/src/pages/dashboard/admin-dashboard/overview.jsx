@@ -22,19 +22,31 @@ function Overview() {
   const filteredData = useMemo(() => {
     if (!data) return [];
     return data.stats.filter((item) => {
-      const [day, month] =
+      const [year, month] =
         item._id.formattedDate.split('/');
       const itemDate = new Date(
-        new Date().getFullYear(),
+        `20${year}`,
         month - 1, // Adjust month index
-        day,
+        '1',
       );
       const currentDate = new Date();
       const pastDate = new Date();
-      pastDate.setMonth(
-        currentDate.getMonth() - selectedMonth,
-      ); // Set past date range
-
+      if(currentDate.getMonth() < selectedMonth){
+        pastDate.setFullYear(
+          currentDate.getFullYear() - 1,
+        ); // Set past date range
+        pastDate.setMonth(
+          currentDate.getMonth() + 12 - selectedMonth,
+        ); // Set past date range
+      }
+      else{
+        pastDate.setFullYear(
+          currentDate.getFullYear(),
+        ); // Set past date range
+        pastDate.setMonth(
+          currentDate.getMonth() - selectedMonth,
+        ); // Set past date range
+      }
       return (
         itemDate >= pastDate && itemDate <= currentDate
       ); // Return filtered items
