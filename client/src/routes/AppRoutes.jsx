@@ -131,7 +131,10 @@ const router = createBrowserRouter([
         path: '/payment',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <Payment />
+            <ProtectedRoute
+              element={<Payment />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },
@@ -147,7 +150,10 @@ const router = createBrowserRouter([
         path: '/myappointments',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <MyAppointments />
+            <ProtectedRoute
+              element={<MyAppointments />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },
@@ -155,7 +161,10 @@ const router = createBrowserRouter([
         path: '/appointmentform',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <AppointmentForm />
+            <ProtectedRoute
+              element={<AppointmentForm />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },
@@ -163,7 +172,10 @@ const router = createBrowserRouter([
         path: '/appointmentupdate',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <AppointmentUpdateForm />
+            <ProtectedRoute
+              element={<AppointmentUpdateForm />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },

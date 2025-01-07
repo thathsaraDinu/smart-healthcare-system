@@ -22,7 +22,7 @@ const ProtectedRoute = ({ element, roles }) => {
   ) : !isAuthenticated && roles.length === 0 ? (
     element
   ) : (
-    <Navigate to="/" />
+    <Navigate to="/login" />
   );
 };
 
