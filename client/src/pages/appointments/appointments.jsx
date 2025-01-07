@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Combobox } from '@/components/ui/combobox';
 import DoctorCard from './doctorCard';
 import { DatePicker } from '@/components/ui/date-picker';
 import useDoctors from '@/hooks/useDoctors';
-
-const doctors = [
-  { value: '1', label: '1' },
-  { value: '2', label: '2' },
-  { value: '3', label: '3' },
-];
+import { LoadingSpinner } from '@/components/ui/spinner';
 
 const Appointment = () => {
-  const { data } = useDoctors();
+  const { data, isLoading } = useDoctors();
   const [filteredDoctors, setFilteredDoctors] =
     useState(data);
 
@@ -177,8 +172,12 @@ const Appointment = () => {
             Available Doctors
           </h2>
           <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 place-items-strech gap-4">
-            {filteredDoctors &&
-            filteredDoctors.length > 0 ? (
+            {isLoading ? (
+              <div className="col-span-5 h-36 flex items-center justify-center">
+                <LoadingSpinner />
+              </div>
+            ) : filteredDoctors &&
+              filteredDoctors.length > 0 ? (
               filteredDoctors.map((item) => (
                 <DoctorCard key={item._id} data={item} />
               ))
