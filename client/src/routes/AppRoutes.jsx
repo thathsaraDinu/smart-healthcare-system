@@ -13,6 +13,8 @@ const LoadingSpinner = lazy(() =>
   })),
 );
 
+const About = lazy(() => import('@/pages/about/about'));
+
 //admin pages
 const AllAppointments = lazy(
   () =>
@@ -124,6 +126,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageLoader />}>
             <Appointments />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/about',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <About />
           </Suspense>
         ),
       },
