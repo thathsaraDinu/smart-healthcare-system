@@ -1,7 +1,7 @@
 const AboutUs = () => {
   return (
-    <div className="bg-gray-50 py-10 px-5">
-      <div className="max-w-7xl mx-auto text-center">
+    <div className="bg-gray-50 py-10 container mx-auto">
+      <div className="text-center">
         {/* Title */}
         <h1 className="text-4xl font-bold text-blue-600 mb-4">
           About Us
@@ -13,7 +13,7 @@ const AboutUs = () => {
           with trusted doctors and hospitals.
         </p>
 
-        {/* Section Cards */}
+        {/* Section Cards */} 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Mission */}
           <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">

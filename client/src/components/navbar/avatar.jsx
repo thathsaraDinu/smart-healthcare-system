@@ -35,7 +35,7 @@ export default function AvatarIcon() {
 
       {/* Not logged in */}
       {!isLoggedIn && (
-        <div>
+        <div className='flex flex-col gap-2 md:flex-row'>
           <Button
             onClick={() => navigate('/register')}
             variant="ghost"
@@ -46,7 +46,7 @@ export default function AvatarIcon() {
           <Button
             onClick={() => navigate('/login')}
             variant="primary"
-            className="ml-2 bg-blue-500 text-white hover:bg-blue-600"
+            className="bg-blue-500 text-white hover:bg-blue-600"
           >
             LOG IN
           </Button>

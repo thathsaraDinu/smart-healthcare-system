@@ -86,8 +86,9 @@ export default function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <AvatarIcon />
-
+          <div className="hidden md:block">
+            <AvatarIcon />
+          </div>
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -124,6 +125,7 @@ export default function Navbar() {
                     </Link>
                   ))}
               </div>
+              <AvatarIcon />
             </SheetContent>
           </Sheet>
         </div>
