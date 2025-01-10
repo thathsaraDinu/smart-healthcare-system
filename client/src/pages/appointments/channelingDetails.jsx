@@ -19,12 +19,12 @@ const ChannelingDetails = () => {
   return (
     <>
       {data && (
-        <section className="container">
-          <div className="mt-10 px-[120px]">
+        <section className="container px-2 md:px-10">
+          <div className="mt-10 xl:px-[120px]">
             <h2 className="text-xl font-bold mb-5">
               Channeling
             </h2>
-            <div className="flex">
+            <div className="flex flex-col items-center md:items-start lg:flex-row gap-5">
               <div className="max-w-[250px] max-h-[320px] bg-white border border-gray-200 rounded-lg shadow grow">
                 <img
                   className="rounded-full mx-auto mt-5 mb-2 w-[150px]"
@@ -42,7 +42,7 @@ const ChannelingDetails = () => {
                     {specialization}
                   </p>
                   <Link
-                    to="/channel"
+                    to={`/doctorprofile/${doctorId}`}
                     className="flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600"
                   >
                     View Profile

@@ -48,8 +48,6 @@ const AppointmentForm = () => {
     try {
       const response =
         await makeAppointment(appointmentData);
-
-      console.log(response);
       navigate('/payment', { state: response });
     } catch (error) {
       console.log(error);

@@ -9,7 +9,6 @@ const Appointment = () => {
   const { data, isLoading } = useDoctors();
   const [filteredDoctors, setFilteredDoctors] =
     useState(data);
-
   const [hospital, setHospital] = useState('');
   const [doctor, setDoctor] = useState('');
   const [specialization, setSpecialization] = useState('');
@@ -82,10 +81,24 @@ const Appointment = () => {
     setFilteredDoctors(results);
   };
 
+  const [showActive, setShowActive] = useState(false);
+
+  const toggleDoctors = () => {
+    if (showActive) {
+      setFilteredDoctors(data);
+    } else {
+      const activeDoctors = data.filter(
+        (doctor) => doctor.status === 'active',
+      );
+      setFilteredDoctors(activeDoctors);
+    }
+    setShowActive(!showActive);
+  };
+
   return (
     <>
       <section className="lg:container">
-        <div className="mt-10 lg:px-[120px] p-5 flex flex-col lg:flex-row  justify-between">
+        <div className="mt-10 xl:px-[120px] p-5 flex flex-col lg:flex-row justify-between gap-6">
           <div>
             <h2 className="mt-2 text-4xl font-bold leading-[50px]">
               <span className="text-blue-500">
@@ -101,68 +114,84 @@ const Appointment = () => {
               <br />
               But things on a small scale.
             </p>
-            <button
-              type="submit"
-              className="mt-[50px] h-9 text-blue-500 border border-blue-500 hover:text-white hover:bg-blue-500 w-[300px] rounded-lg hover:bg-blue-600 transition-all"
-            >
-              View Available Doctors
-            </button>
+            {filteredDoctors && (
+              <button
+                type="button"
+                className="mt-[50px] text-blue-500 border border-blue-500 hover:text-white px-10 py-2 rounded-lg hover:bg-blue-600 transition-all"
+                onClick={toggleDoctors}
+              >
+                {showActive
+                  ? 'View All Doctors'
+                  : 'View Active Doctors'}
+              </button>
+            )}
           </div>
           {data && (
-            <form
-              onSubmit={onSearch}
-              className="mx-0 lg:mx-10 max-w-[400px]"
-            >
-              <h3></h3>
-              <div className="mt-4">
-                <p className="text-sm font-light mb-1">
-                  Doctor name
-                </p>
-                <Combobox
-                  data={doctorNames}
-                  width="400px"
-                  placeholder="Doctor"
-                  value={doctor}
-                  setValue={setDoctor}
-                />
-              </div>
-              <div className="mt-4">
-                <p className="text-sm font-light mb-1">
-                  Hospital
-                </p>
-                <Combobox
-                  data={hospitalNames}
-                  width="400px"
-                  placeholder="Hospital"
-                  value={hospital}
-                  setValue={setHospital}
-                />
-              </div>
-              <div className="mt-4">
-                <p className="text-sm font-light mb-1">
-                  Specialization
-                </p>
-                <Combobox
-                  data={specializations}
-                  width="400px"
-                  placeholder="Specilization"
-                  value={specialization}
-                  setValue={setSpecialization}
-                />
-              </div>
-              <div className="mt-4">
-                <p className="text-sm font-light mb-1">
-                  Date
-                </p>
-                <DatePicker date={date} setDate={setDate} />
-              </div>
-              <button
-                type="submit"
-                className="mt-5 h-9 text-white bg-blue-500 w-full rounded-lg hover:bg-blue-600 transition-all"
+            <div className="flex w-full md:w-auto justify-center lg:justify-end">
+              <form
+                onSubmit={onSearch}
+                className="mx-4 lg:mx-10 md:w-[400px] w-full  space-y-4 "
               >
-                Search
-              </button>
-            </form>
+                <h3 className="text-lg font-semibold text-center lg:text-left">
+                  Search Form
+                </h3>
+
+                <div>
+                  <p className="text-sm font-light mb-1">
+                    Doctor name
+                  </p>
+                  <Combobox
+                    data={doctorNames}
+                    placeholder="Doctor"
+                    value={doctor}
+                    setValue={setDoctor}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm font-light mb-1">
+                    Hospital
+                  </p>
+                  <Combobox
+                    data={hospitalNames}
+                    placeholder="Hospital"
+                    value={hospital}
+                    setValue={setHospital}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm font-light mb-1">
+                    Specialization
+                  </p>
+                  <Combobox
+                    data={specializations}
+                    placeholder="Specialization"
+                    value={specialization}
+                    setValue={setSpecialization}
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm font-light mb-1">
+                    Date
+                  </p>
+                  <DatePicker
+                    date={date}
+                    setDate={setDate}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="mt-5 h-9 text-white bg-blue-500 md:w-[400px] w-full  rounded-lg hover:bg-blue-600 transition-all"
+                >
+                  Search
+                </button>
+              </form>
+            </div>
           )}
         </div>
       </section>
@@ -182,11 +211,9 @@ const Appointment = () => {
                 <DoctorCard key={item._id} data={item} />
               ))
             ) : (
-              <>
-                <div className="font-semibold mt-10">
-                  No Doctors Availabe
-                </div>
-              </>
+              <div className="font-semibold mt-10">
+                No Doctors Available
+              </div>
             )}
           </div>
         </div>

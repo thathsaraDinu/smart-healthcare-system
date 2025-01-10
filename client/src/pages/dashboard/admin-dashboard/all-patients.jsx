@@ -21,7 +21,6 @@ const AllPatients = () => {
     queryKey: ['patients'],
     queryFn: () => getUsers('user'),
   });
-  console.log(' patients: ', data);
 
   // Filter the data using search query
   const filteredPatients = data?.filter(
@@ -57,7 +56,6 @@ const AllPatients = () => {
         specificFieldsArray,
         'Registered Patients Report',
       );
-      console.log(' done');
     } catch (error) {
       console.error('Error downloading the report:', error);
     } finally {

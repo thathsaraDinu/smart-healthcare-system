@@ -57,6 +57,15 @@ const UserController = {
     }
   },
 
+  getDoctorById: async (req, res) => {
+    try {
+      const doctor = await userService.getDoctorById(req.params.id);
+      return res.status(200).json(doctor);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
   // Update user profile
   // Only authenticated users can access
   updateProfile: async (req, res) => {
