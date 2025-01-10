@@ -56,7 +56,7 @@ export default function HeroSection() {
           </p>
           <Button
             onClick={() => {
-              navigate('#');
+              navigate('/about');
             }}
             className="mt-6"
           >
