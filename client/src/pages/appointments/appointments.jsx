@@ -206,7 +206,6 @@ const Appointment = () => {
                       setHospital('');
                       setSpecialization('');
                       setDate('');
-                      setFilteredDoctors(data);
                     }}
                     className="py-2 px-1 text-primary border bg-gray-100 md:w-[400px] w-full  rounded-lg hover:bg-gray-200 transition-all"
                   >
