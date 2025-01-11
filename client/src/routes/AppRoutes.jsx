@@ -15,7 +15,7 @@ const LoadingSpinner = lazy(() =>
 
 const About = lazy(() => import('@/pages/about/about'));
 const DoctorProfile = lazy(
-  () => import('@/pages/appointments/doctorprofile'),
+  () => import('@/pages/user/doctorprofile'),
 );
 
 //admin pages

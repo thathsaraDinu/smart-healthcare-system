@@ -50,10 +50,10 @@ const DoctorProfile = () => {
   }, [id]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 mb-10">
       {/* Header */}
 
-      <div className="bg-blue-600 h-32 sm:h-48"></div>
+      <div className="bg-blue-600 h-32 sm:h-48 "></div>
       {isLoading ? (
         <div className="flex items-center justify-center h-64">
           <div className="w-8 h-8 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
@@ -87,21 +87,76 @@ const DoctorProfile = () => {
                       </span>
                     </div>
                     <div className="mt-2 flex items-center justify-center sm:justify-start text-gray-600">
-                      <div
-                        className={`w-2 h-2 rounded-full mr-2 ${
-                          doctorData.user.status ===
-                          'active'
-                            ? 'bg-green-500'
-                            : 'bg-red-500'
-                        }`}
-                      ></div>
+                      <div className="relative pl-1">
+                        <div
+                          className={`w-2 h-2 rounded-full mr-2 ${doctorData.user.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}
+                        ></div>
+                        {doctorData.user.status ===
+                          'active' && (
+                          <div className="absolute -top-1 bottom-0 right-0 left-0  w-4 h-4 border-2 border-green-500 rounded-full animate-ring"></div>
+                        )}
+                      </div>
+
                       <span className="capitalize">
                         {doctorData.user.status ||
                           'inactive'}
                       </span>
                     </div>
                     <div className="mt-2 flex items-center justify-center sm:justify-start text-gray-600">
-                      <User size={16} className="mr-2" />
+                      {doctorData.user.gender == 'male' ? (
+                        <svg
+                          className="w-4 h-4 mr-2"
+                          viewBox="0 0 24 24"
+                          fill="blue"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g
+                            id="SVGRepo_bgCarrier"
+                            strokeWidth="0"
+                          ></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            {' '}
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M15 3C15 2.44772 15.4477 2 16 2H20C21.1046 2 22 2.89543 22 4V8C22 8.55229 21.5523 9 21 9C20.4477 9 20 8.55228 20 8V5.41288L15.4671 9.94579C15.4171 9.99582 15.363 10.0394 15.3061 10.0767C16.3674 11.4342 17 13.1432 17 15C17 19.4183 13.4183 23 9 23C4.58172 23 1 19.4183 1 15C1 10.5817 4.58172 7 9 7C10.8559 7 12.5642 7.63197 13.9214 8.69246C13.9587 8.63539 14.0024 8.58128 14.0525 8.53118L18.5836 4H16C15.4477 4 15 3.55228 15 3ZM9 20.9963C5.68831 20.9963 3.00365 18.3117 3.00365 15C3.00365 11.6883 5.68831 9.00365 9 9.00365C12.3117 9.00365 14.9963 11.6883 14.9963 15C14.9963 18.3117 12.3117 20.9963 9 20.9963Z"
+                            ></path>{' '}
+                          </g>
+                        </svg>
+                      ) : doctorData.user.gender ==
+                        'female' ? (
+                        <svg
+                          className="w-4 h-4 mr-2"
+                          viewBox="0 0 24 24"
+                          fill="#AA336A"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g
+                            id="SVGRepo_bgCarrier"
+                            strokeWidth="0"
+                          ></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            {' '}
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M20 9C20 13.0803 16.9453 16.4471 12.9981 16.9383C12.9994 16.9587 13 16.9793 13 17V19H14C14.5523 19 15 19.4477 15 20C15 20.5523 14.5523 21 14 21H13V22C13 22.5523 12.5523 23 12 23C11.4477 23 11 22.5523 11 22V21H10C9.44772 21 9 20.5523 9 20C9 19.4477 9.44772 19 10 19H11V17C11 16.9793 11.0006 16.9587 11.0019 16.9383C7.05466 16.4471 4 13.0803 4 9C4 4.58172 7.58172 1 12 1C16.4183 1 20 4.58172 20 9ZM6.00365 9C6.00365 12.3117 8.68831 14.9963 12 14.9963C15.3117 14.9963 17.9963 12.3117 17.9963 9C17.9963 5.68831 15.3117 3.00365 12 3.00365C8.68831 3.00365 6.00365 5.68831 6.00365 9Z"
+                            ></path>{' '}
+                          </g>
+                        </svg>
+                      ) : (
+                        <></>
+                      )}
                       <span className="capitalize">
                         {doctorData.user.gender || 'N/A'}
                       </span>
@@ -124,7 +179,7 @@ const DoctorProfile = () => {
                 </div>
                 <div className="flex justify-center sm:block">
                   <Link
-                  to={`/channel/${doctorData.user._id}`}
+                    to={`/channel/${doctorData.user._id}`}
                     className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg font-medium transition-colors ${
                       doctorData.user.status === 'active'
                         ? 'bg-blue-600 hover:bg-blue-700 text-white'

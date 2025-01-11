@@ -36,7 +36,7 @@ export default function DoctorCard({ data }) {
       <svg
         className="w-4 h-4"
         viewBox="0 0 24 24"
-        fill="red"
+        fill="#AA336A"
         xmlns="http://www.w3.org/2000/svg"
       >
         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -66,6 +66,9 @@ export default function DoctorCard({ data }) {
       <div className="relative">
         {/* Profile link overlay on avatar */}
         <Link
+          onClick={() =>
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }
           to={`/doctorprofile/${data._id}`}
           className="absolute inset-0 z-10 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-t-xl"
         >
@@ -116,6 +119,12 @@ export default function DoctorCard({ data }) {
         {/* Buttons */}
         <div className="space-y-2">
           <Link
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+              })
+            }
             to={`/channel/${data._id}`}
             className="flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-semibold text-white  rounded-lg  transition-colors duration-300"
             style={{
@@ -144,11 +153,17 @@ export default function DoctorCard({ data }) {
           </Link>
 
           <Link
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+              })
+            }
             to={`/doctorprofile/${data._id}`}
             className="flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-300"
           >
             <User size={18} />
-            View Full Profile
+            View Profile
           </Link>
         </div>
       </div>

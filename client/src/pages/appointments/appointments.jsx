@@ -7,43 +7,68 @@ import { LoadingSpinner } from '@/components/ui/spinner';
 
 const Appointment = () => {
   const { data, isLoading } = useDoctors();
-  const [filteredDoctors, setFilteredDoctors] =
-    useState(data);
+  const [filteredDoctors, setFilteredDoctors] = useState(
+    [],
+  );
+  const [currentDoctors, setCurrentDoctors] = useState([]); // Active or all doctors, depending on toggle state
   const [hospital, setHospital] = useState('');
   const [doctor, setDoctor] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [date, setDate] = useState('');
+  const [isActiveDoctors, setIsActiveDoctors] =
+    useState(false);
 
   useEffect(() => {
     if (data) {
+      setCurrentDoctors(data); // Default to all doctors
       setFilteredDoctors(data);
     }
   }, [data]);
 
-  const doctorNames =
-    data?.map((item) => ({
-      value: item.fullName,
-      label: item.fullName,
-    })) || [];
-
+  // the hospital list
   const hospitalNames =
-    data?.flatMap((item) =>
-      item.hospitalDetails.map((hospital) => ({
-        value: hospital.hospital,
-        label: hospital.hospital,
-      })),
-    ) || [];
+    [
+      ...new Set(
+        data?.flatMap((item) =>
+          item.hospitalDetails.map(
+            (hospital) => hospital.hospital,
+          ),
+        ),
+      ),
+    ] // Remove duplicates
+      .map((hospital) => ({
+        value: hospital,
+        label: hospital,
+      })) || [];
 
+  // the specialization list
   const specializations =
-    data?.map((item) => ({
-      value: item.specialization,
-      label: item.specialization,
-    })) || [];
+    [...new Set(data?.map((item) => item.specialization))] // Remove duplicates
+      .map((specialization) => ({
+        value: specialization,
+        label: specialization,
+      })) || [];
 
-  const onSearch = async (e) => {
+  // Handle form search
+  const onSearch = (e) => {
     e.preventDefault();
+    const filtered = applyFilters(currentDoctors); // Filter from currentDoctors (active or all)
+    setFilteredDoctors(filtered);
+  };
 
-    const results = data.filter((item) => {
+  // Toggle active/all doctors
+  const toggleDoctors = () => {
+    setIsActiveDoctors((prev) => !prev);
+    const targetDoctors = isActiveDoctors
+      ? data // Show all doctors
+      : data.filter((doc) => doc.status === 'active'); // Show only active doctors
+    setCurrentDoctors(targetDoctors); // Update currentDoctors
+    setFilteredDoctors(applyFilters(targetDoctors)); // Apply current filters to the toggled list
+  };
+
+  // Filter based on the form inputs
+  const applyFilters = (doctors) => {
+    return doctors.filter((item) => {
       const hospitalMatch = hospital
         ? item.hospitalDetails.some((h) =>
             h.hospital
@@ -61,7 +86,6 @@ const Appointment = () => {
             .toLowerCase()
             .includes(specialization.toLowerCase())
         : true;
-
       const dateMatch = date
         ? item.hospitalDetails.some((h) =>
             h.arrivalTimes.some((a) =>
@@ -77,22 +101,6 @@ const Appointment = () => {
         dateMatch
       );
     });
-
-    setFilteredDoctors(results);
-  };
-
-  const [showActive, setShowActive] = useState(false);
-
-  const toggleDoctors = () => {
-    if (showActive) {
-      setFilteredDoctors(data);
-    } else {
-      const activeDoctors = data.filter(
-        (doctor) => doctor.status === 'active',
-      );
-      setFilteredDoctors(activeDoctors);
-    }
-    setShowActive(!showActive);
   };
 
   return (
@@ -117,10 +125,14 @@ const Appointment = () => {
             {filteredDoctors && (
               <button
                 type="button"
-                className="mt-[50px] text-blue-500 border border-blue-500 hover:text-white px-10 py-2 rounded-lg hover:bg-blue-600 transition-all"
+                className={`mt-[50px] px-10 py-2 rounded-lg transition-all border font-medium ${
+                  isActiveDoctors
+                    ? 'bg-blue-500 text-white border-blue-600 shadow-md' // Selected state
+                    : 'bg-white text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-md' // Unselected state
+                }`}
                 onClick={toggleDoctors}
               >
-                {showActive
+                {isActiveDoctors
                   ? 'View All Doctors'
                   : 'View Active Doctors'}
               </button>
@@ -138,14 +150,16 @@ const Appointment = () => {
 
                 <div>
                   <p className="text-sm font-light mb-1">
-                    Doctor name
+                    Doctor Name
                   </p>
-                  <Combobox
-                    data={doctorNames}
-                    placeholder="Doctor"
+                  <input
+                    type="text"
+                    placeholder="Doctor name"
                     value={doctor}
-                    setValue={setDoctor}
-                    className="w-full"
+                    onChange={(e) =>
+                      setDoctor(e.target.value)
+                    }
+                    className="w-full border border-gray-300 rounded-lg p-2 text-sm"
                   />
                 </div>
 
@@ -183,13 +197,27 @@ const Appointment = () => {
                     setDate={setDate}
                   />
                 </div>
-
-                <button
-                  type="submit"
-                  className="mt-5 h-9 text-white bg-blue-500 md:w-[400px] w-full  rounded-lg hover:bg-blue-600 transition-all"
-                >
-                  Search
-                </button>
+                <div className="flex  gap-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDoctor('');
+                      setHospital('');
+                      setSpecialization('');
+                      setDate('');
+                      setFilteredDoctors(data);
+                    }}
+                    className="py-2 text-primary border bg-white md:w-[400px] w-full  rounded-lg hover:bg-gray-100 transition-all"
+                  >
+                    Reset Filters
+                  </button>
+                  <button
+                    type="submit"
+                    className="py-2 text-white bg-blue-500 md:w-[400px] w-full  rounded-lg hover:bg-blue-600 transition-all"
+                  >
+                    Search Doctors
+                  </button>
+                </div>
               </form>
             </div>
           )}
@@ -198,9 +226,23 @@ const Appointment = () => {
       <section className="container my-10">
         <div className="lg:px-[120px]">
           <h2 className="font-bold text-2xl mb-5">
-            Available Doctors
+            {isActiveDoctors ? (
+              <>
+                Results from{' '}
+                <span className="text-blue-500">
+                  Active
+                </span>{' '}
+                Doctors
+              </>
+            ) : (
+              <>
+                Results from{' '}
+                <span className="text-blue-500">All</span>{' '}
+                Doctors
+              </>
+            )}
           </h2>
-          <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 place-items-strech gap-4">
+          <div className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 place-items-strech gap-4">
             {isLoading ? (
               <div className="col-span-5 h-36 flex items-center justify-center">
                 <LoadingSpinner />
