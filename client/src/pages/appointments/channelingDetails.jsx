@@ -7,7 +7,7 @@ import useSchedules from '@/hooks/useSchedules';
 
 const ChannelingDetails = () => {
   const { doctorId } = useParams();
-  const { data } = useSchedules(doctorId);
+  const { data, isLoading, error } = useSchedules(doctorId);
 
   const {
     fullName,
@@ -18,7 +18,11 @@ const ChannelingDetails = () => {
 
   return (
     <>
-      {data && (
+      {isLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
+        </div>
+      ) : data ? (
         <section className="container px-2 md:px-10">
           <div className="mt-10 xl:px-[120px]">
             <h2 className="text-xl font-bold mb-5">
@@ -68,6 +72,8 @@ const ChannelingDetails = () => {
             </div>
           </div>
         </section>
+      ) : (
+        error && <></>
       )}
     </>
   );

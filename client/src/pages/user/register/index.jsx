@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import UserRegisterForm from './user-register';
-import StaffRegisterForm from './staff-register';
+// import StaffRegisterForm from './staff-register';
 
 export default function Register() {
   const [formType, setFormType] = useState('user');
@@ -18,19 +18,21 @@ export default function Register() {
           >
             Patient Register
           </Button>
-          <div className="w-px bg-gray-300" />
+          {/* <div className="w-px bg-gray-300" />
           <Button
             className={`w-full rounded-none rounded-tr-xl h-full text-lg ${formType === 'staff' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-gray-600'} hover:bg-blue-500 hover:text-white`}
             onClick={() => setFormType('staff')}
           >
             Staff Register
-          </Button>
+          </Button> */}
         </div>
-        {formType === 'user' ? (
+        <UserRegisterForm />
+
+        {/* {formType === 'user' ? (
           <UserRegisterForm />
         ) : (
           <StaffRegisterForm />
-        )}
+        )} */}
       </Card>
     </div>
   );
