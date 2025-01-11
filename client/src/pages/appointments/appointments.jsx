@@ -118,11 +118,12 @@ const Appointment = () => {
               Appointment
             </h2>
             <p className="mt-5 text-lg">
-              We know how large objects will act,
+              Find the best healthcare providers near you.{' '}
               <br />
-              But things on a small scale.
+              Simple search, quick bookings, and expert
+              care.
             </p>
-            {filteredDoctors && (
+            {data && (
               <button
                 type="button"
                 className={`mt-[50px] px-10 py-2 rounded-lg transition-all border font-medium ${
@@ -197,7 +198,7 @@ const Appointment = () => {
                     setDate={setDate}
                   />
                 </div>
-                <div className="flex  gap-4">
+                <div className="flex text-sm md:text-base gap-4">
                   <button
                     type="button"
                     onClick={() => {
@@ -207,13 +208,13 @@ const Appointment = () => {
                       setDate('');
                       setFilteredDoctors(data);
                     }}
-                    className="py-2 text-primary border bg-white md:w-[400px] w-full  rounded-lg hover:bg-gray-100 transition-all"
+                    className="py-2 px-1 text-primary border bg-gray-100 md:w-[400px] w-full  rounded-lg hover:bg-gray-200 transition-all"
                   >
                     Reset Filters
                   </button>
                   <button
                     type="submit"
-                    className="py-2 text-white bg-blue-500 md:w-[400px] w-full  rounded-lg hover:bg-blue-600 transition-all"
+                    className="py-2 px-1 text-white bg-blue-500 md:w-[400px] w-full  rounded-lg hover:bg-blue-600 transition-all"
                   >
                     Search Doctors
                   </button>
