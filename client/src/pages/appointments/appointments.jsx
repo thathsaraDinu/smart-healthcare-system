@@ -244,7 +244,7 @@ const Appointment = () => {
           </h2>
           <div className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 place-items-strech gap-4">
             {isLoading ? (
-              <div className="col-span-5 h-36 flex items-center justify-center">
+              <div className="col-span-5 flex items-center justify-center">
                 <LoadingSpinner />
               </div>
             ) : filteredDoctors &&

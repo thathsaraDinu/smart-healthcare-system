@@ -35,7 +35,7 @@ const Layout = () => {
   if (profileLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner className="w-32 h-32" />
+        <LoadingSpinner className="w-20 h-20" />
       </div>
     );
   }

@@ -152,7 +152,7 @@ const ProfileLayout = () => {
       <div className="flex-1 p-4">
         {isLoadingProfile && (
           <div className="flex items-center justify-center">
-            <LoadingSpinner className="w-36 h-36 my-10" />
+            <LoadingSpinner  />
           </div>
         )}
         {isProfileError && (
