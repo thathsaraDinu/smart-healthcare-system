@@ -1,5 +1,5 @@
 import { makeAppointment } from '@/api/appointment.api';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const AppointmentForm = () => {
@@ -240,7 +240,7 @@ const AppointmentForm = () => {
                       Error!
                     </strong>{' '}
                     <span className="block sm:inline">
-                      Fields cann't be empty
+                      Fields can&apos;t be empty
                     </span>
                   </div>
                 )}
