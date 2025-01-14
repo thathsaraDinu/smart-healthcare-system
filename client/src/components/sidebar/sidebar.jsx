@@ -98,7 +98,7 @@ const SideBar = () => {
                 className="h-12 w-12 rounded-sm"
               />
               <div className="text-[#010F27] text-2xl font-bold">
-                HealthCare
+                SmartMedix
               </div>
             </Link>
           </div>

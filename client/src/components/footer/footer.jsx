@@ -17,10 +17,10 @@ export default function Footer() {
             >
               <div className="flex items-center gap-2">
                 <div className="text-blue-500 text-2xl font-extrabold">
-                  Health
+                  Smart
                 </div>
                 <div className="text-blue-900 text-2xl font-extrabold">
-                  Care
+                  Medix
                 </div>
               </div>
             </Link>
@@ -30,7 +30,7 @@ export default function Footer() {
               mental well-being. The term also includes the
               provision of services to maintain emotional
               well-being. We call people and organizations
-              that provide these services health-care
+              that provide these services SmartMedix
               providers.
             </div>
           </div>

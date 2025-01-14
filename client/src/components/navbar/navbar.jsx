@@ -30,10 +30,10 @@ export default function Navbar() {
         <Link to="/" className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             <div className="text-blue-500 text-2xl font-extrabold">
-              Health
+              Smart
             </div>
             <div className="text-blue-900 text-2xl font-extrabold">
-              Care
+              Medix
             </div>
           </div>
         </Link>
