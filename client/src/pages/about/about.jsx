@@ -1,7 +1,7 @@
 const AboutUs = () => {
   return (
     <div className="max-w-screen-xl mx-auto">
-      <div className="py-10 container mx-auto">
+      <div className="py-16 container mx-auto">
         <div className="text-center">
           {/* Title */}
           <h1 className="text-4xl font-bold text-blue-600 mb-5">

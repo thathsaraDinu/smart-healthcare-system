@@ -23,15 +23,10 @@ const nextDayOfTheWeek = (dayName) => {
   return format(date, 'EEEE, dd MMM yyyy');
 };
 
-const ChannelDetailsCard = ({
-  doctor,
-  data,
-  arrivalTime,
-}) => {
+const ChannelDetailsCard = ({ data, arrivalTime }) => {
   const nextDate = nextDayOfTheWeek(arrivalTime.dayOfWeek);
 
   const appointmentData = {
-    doctor,
     bookingFee: data.bookingFee,
     hospital: data.hospital,
     location: data.location,
@@ -45,8 +40,8 @@ const ChannelDetailsCard = ({
         {nextDate}
       </p>
 
-      <div className="justify-evenly w-full md:items-center py-5 px-3 gap:2 md:gap-10 flex flex-row shadow border border-gray-100  rounded-lg">
-        <div className="text-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-5 md:gap-20 w-1/2">
+      <div className="justify-evenly w-full md:items-center py-5 md:py-6 px-3 gap:2 md:gap-10 flex flex-row shadow border border-gray-100  rounded-lg">
+        <div className="text-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-5  w-1/2">
           <div className="">
             <p className="font-semibold text-blue-500 mb-3">
               {data.hospital}

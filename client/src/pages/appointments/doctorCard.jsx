@@ -8,7 +8,10 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-export default function DoctorCard({ data }) {
+export default function DoctorCard({
+  data,
+  isChannelingPage = false,
+}) {
   const genderIcon =
     data.gender.toLowerCase() === 'male' ? (
       <svg
@@ -118,40 +121,41 @@ export default function DoctorCard({ data }) {
 
         {/* Buttons */}
         <div className="space-y-2">
-          <Link
-            onClick={() =>
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth',
-              })
-            }
-            to={`/channel/${data._id}`}
-            className="flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-semibold text-white  rounded-lg  transition-colors duration-300"
-            style={{
-              pointerEvents:
-                data.status.toUpperCase() === 'INACTIVE'
-                  ? 'none'
-                  : 'auto',
-              backgroundColor:
-                data.status.toUpperCase() === 'INACTIVE'
-                  ? '#ccc'
-                  : '#3b82f6',
-              cursor:
-                data.status.toUpperCase() === 'INACTIVE'
-                  ? 'not-allowed'
-                  : 'pointer',
-              hover: {
+          {!isChannelingPage && (
+            <Link
+              onClick={() =>
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                })
+              }
+              to={`/channel/${data._id}`}
+              className="flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-semibold text-white  rounded-lg  transition-colors duration-300"
+              style={{
+                pointerEvents:
+                  data.status.toUpperCase() === 'INACTIVE'
+                    ? 'none'
+                    : 'auto',
                 backgroundColor:
                   data.status.toUpperCase() === 'INACTIVE'
                     ? '#ccc'
-                    : '#2563eb',
-              },
-            }}
-          >
-            <Calendar size={18} />
-            Channel Now
-          </Link>
-
+                    : '#3b82f6',
+                cursor:
+                  data.status.toUpperCase() === 'INACTIVE'
+                    ? 'not-allowed'
+                    : 'pointer',
+                hover: {
+                  backgroundColor:
+                    data.status.toUpperCase() === 'INACTIVE'
+                      ? '#ccc'
+                      : '#2563eb',
+                },
+              }}
+            >
+              <Calendar size={18} />
+              Channel Now
+            </Link>
+          )}
           <Link
             onClick={() =>
               window.scrollTo({
