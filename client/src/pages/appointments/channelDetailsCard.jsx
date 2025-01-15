@@ -23,10 +23,12 @@ const nextDayOfTheWeek = (dayName) => {
   return format(date, 'EEEE, dd MMM yyyy');
 };
 
-const ChannelDetailsCard = ({ data, arrivalTime }) => {
+const ChannelDetailsCard = ({ data, arrivalTime, doctor }) => {
   const nextDate = nextDayOfTheWeek(arrivalTime.dayOfWeek);
+  console.log(doctor)
 
   const appointmentData = {
+    doctor: doctor,
     bookingFee: data.bookingFee,
     hospital: data.hospital,
     location: data.location,

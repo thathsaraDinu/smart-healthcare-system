@@ -30,6 +30,12 @@ const ChannelingDetails = () => {
     }
   }, [data]);
 
+   const doctor = {
+     fullName: doctorData.fullName,
+     specialization: doctorData.specialization,
+     gender: doctorData.gender,
+   };
+
   return (
     <div className="py-16 lg:container mx-auto xl:px-[120px] ">
       {isLoading ? (
@@ -56,6 +62,7 @@ const ChannelingDetails = () => {
                     key={arrivalTime._id}
                     data={item}
                     arrivalTime={arrivalTime}
+                    doctor={doctor}
                   />
                 )),
               )}

@@ -16,6 +16,7 @@ import {
 import AvatarIcon from '@/components/navbar/avatar';
 import { useAuthStore } from '@/store/auth-store';
 import { MENU_ITEMS } from '@/constants';
+import { FaHeartbeat } from 'react-icons/fa';
 
 export default function Navbar() {
   // Check if user is authenticated
@@ -29,6 +30,8 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
         <Link to="/" className="flex items-center gap-2">
           <div className="flex items-center gap-2">
+            {' '}
+            <FaHeartbeat className="h-8 w-8 text-blue-600" />
             <div className="text-blue-500 text-2xl font-extrabold">
               Smart
             </div>

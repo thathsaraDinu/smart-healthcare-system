@@ -118,7 +118,7 @@ export default function Footer() {
               href="https://github.com/ShanelkaPramuditha/smart-healthcare-system"
               className="hover:underline"
             >
-              CSSE
+              Smart Medix
             </a>
             . All Rights Reserved.
           </span>

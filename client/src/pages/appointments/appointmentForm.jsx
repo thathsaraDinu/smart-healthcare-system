@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const AppointmentForm = () => {
   const navigate = useNavigate();
+  
   const loc = useLocation();
   const {
     doctor,
@@ -32,7 +33,7 @@ const AppointmentForm = () => {
       area,
       nic,
       schedule: {
-        doctor: {
+        doctor: { 
           fullName: doctor?.fullName,
           gender: doctor?.gender,
           specialization: doctor?.specialization,
