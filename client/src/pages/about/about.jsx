@@ -76,7 +76,7 @@ const About = () => {
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">
-                50k+
+                10+
               </div>
               <div className="text-blue-100">
                 Patients Served
@@ -84,7 +84,7 @@ const About = () => {
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">
-                100+
+                5+
               </div>
               <div className="text-blue-100">
                 Expert Doctors
