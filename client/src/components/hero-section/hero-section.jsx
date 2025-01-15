@@ -9,6 +9,10 @@ import {
 import { Link } from 'react-router-dom';
 
 export default function HeroSection({ fullName }) {
+    const firstName = fullName
+      ? fullName.split(' ')[0]
+      : '';
+
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center bg-gradient-to-br from-blue-50 to-white">
       <div className="absolute right-0 top-0 w-full md:w-1/2 h-full z-0">
@@ -31,9 +35,9 @@ export default function HeroSection({ fullName }) {
             {fullName ? (
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Welcome,{' '}
-                <div className="text-blue-600">
-                  {fullName}
-                </div>
+                <span className="text-blue-600">
+                  {firstName}
+                </span>
               </h1>
             ) : (
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
