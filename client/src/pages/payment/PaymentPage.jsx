@@ -110,7 +110,6 @@ const Paymentpage = () => {
           cardname: enteredCardName,
         };
 
-        console.log('Card Data:', cardData);
         const savedCardResponse = await saveCard(cardData);
         console.log(savedCardResponse);
       } catch (error) {

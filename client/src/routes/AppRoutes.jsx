@@ -13,6 +13,11 @@ const LoadingSpinner = lazy(() =>
   })),
 );
 
+const About = lazy(() => import('@/pages/about/about'));
+const DoctorProfile = lazy(
+  () => import('@/pages/user/doctorprofile'),
+);
+
 //admin pages
 const AllAppointments = lazy(
   () =>
@@ -99,7 +104,7 @@ const ProfileLayout = lazy(
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
-    <LoadingSpinner className="w-32 h-32" />
+    <LoadingSpinner className="w-20 h-20" />
   </div>
 );
 
@@ -128,10 +133,29 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: '/about',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <About />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/doctorprofile/:id',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <DoctorProfile />
+          </Suspense>
+        ),
+      },
+      {
         path: '/payment',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <Payment />
+            <ProtectedRoute
+              element={<Payment />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },
@@ -147,7 +171,10 @@ const router = createBrowserRouter([
         path: '/myappointments',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <MyAppointments />
+            <ProtectedRoute
+              element={<MyAppointments />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },
@@ -155,7 +182,10 @@ const router = createBrowserRouter([
         path: '/appointmentform',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <AppointmentForm />
+            <ProtectedRoute
+              element={<AppointmentForm />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },
@@ -163,7 +193,10 @@ const router = createBrowserRouter([
         path: '/appointmentupdate',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <AppointmentUpdateForm />
+            <ProtectedRoute
+              element={<AppointmentUpdateForm />}
+              roles={[USER_ROLES.USER]}
+            />
           </Suspense>
         ),
       },

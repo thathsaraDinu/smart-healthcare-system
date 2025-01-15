@@ -17,6 +17,18 @@ export const getProfileData = async () => {
   }
 };
 
+export const getDoctorById = async (doctorId) => {
+  try {
+    const response = await instance.get(
+      `/api/user/doctor/${doctorId}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching doctor data:', error);
+    throw error;
+  }
+}
+
 export const getProfileDataById = async (userId) => {
   try {
     const response = await instance.get(

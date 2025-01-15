@@ -1,9 +1,10 @@
 import { makeAppointment } from '@/api/appointment.api';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const AppointmentForm = () => {
   const navigate = useNavigate();
+  
   const loc = useLocation();
   const {
     doctor,
@@ -32,7 +33,7 @@ const AppointmentForm = () => {
       area,
       nic,
       schedule: {
-        doctor: {
+        doctor: { 
           fullName: doctor?.fullName,
           gender: doctor?.gender,
           specialization: doctor?.specialization,
@@ -48,8 +49,6 @@ const AppointmentForm = () => {
     try {
       const response =
         await makeAppointment(appointmentData);
-
-      console.log(response);
       navigate('/payment', { state: response });
     } catch (error) {
       console.log(error);
@@ -242,7 +241,7 @@ const AppointmentForm = () => {
                       Error!
                     </strong>{' '}
                     <span className="block sm:inline">
-                      Fields cann't be empty
+                      Fields can&apos;t be empty
                     </span>
                   </div>
                 )}

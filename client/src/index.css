@@ -97,3 +97,26 @@
   scrollbar-width: thin; /* Makes the scrollbar thinner */
   scrollbar-color: #888 #f1f1f1; /* Sets the color of the scrollbar thumb and track */
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes ringEffect {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ring {
+  animation: ringEffect 1.5s infinite;
+}

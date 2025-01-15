@@ -175,6 +175,39 @@ export const getDoctors = async () => {
   }
 };
 
+// Get doctor by ID
+export const getDoctorById = async (id) => {
+  try {
+    // Find the user by ID
+    const user = await userRepository.findUserById(id);
+
+    // If the user is not found, throw an error
+    if (!user) {
+      throw {
+        status: 404,
+        message: 'User not found'
+      };
+    }
+    // Check if the user is a doctor
+    if (user.role !== USER_ROLES.DOCTOR) {
+      throw {
+        status: 400,
+        message: 'User is not a doctor'
+      };
+    }
+
+    // Return all the necessary doctor details
+    return {
+      user
+    };
+  } catch (error) {
+    throw {
+      status: error.status || 500,
+      message: error.message
+    };
+  }
+};
+
 // Update user profile
 export const updateProfile = async (id, role, data) => {
   try {

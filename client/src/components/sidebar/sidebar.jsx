@@ -4,7 +4,6 @@ import { RiArrowDropUpLine } from 'react-icons/ri';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/utils/tailwind-merge';
 import { useAuthStore } from '@/store/auth-store';
-import Logo from '@/assets/logo/logo.png';
 import { USER_ROLES } from '@/constants';
 import {
   MdCalendarMonth,
@@ -17,6 +16,7 @@ import {
 } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { FaHeartbeat } from 'react-icons/fa';
 
 const sideBarItems = [
   {
@@ -92,13 +92,9 @@ const SideBar = () => {
               to="/"
               className="flex items-center justify-center mx-5 my-10 text-white gap-2"
             >
-              <img
-                src={Logo}
-                alt="logo"
-                className="h-12 w-12 rounded-sm"
-              />
+              <FaHeartbeat className="h-8 w-8 text-blue-600" />
               <div className="text-[#010F27] text-2xl font-bold">
-                HealthCare
+                SmartMedix
               </div>
             </Link>
           </div>

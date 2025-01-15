@@ -1,110 +1,88 @@
-import { useState, useEffect } from 'react';
-import HeroImg1 from '../../assets/hero/hero1.jpg';
-import HeroImg2 from '../../assets/hero/hero2.jpg';
-import HeroImg3 from '../../assets/hero/hero3.jpg';
-import { Button } from '../ui/button';
 import { useAuthStore } from '@/store/auth-store';
-import { useNavigate } from 'react-router-dom';
+import {
+  FaUserMd,
+  FaArrowRight,
+  FaStethoscope,
+  FaHospital,
+  FaAmbulance,
+} from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
-export default function HeroSection() {
-  const heroImages = [HeroImg1, HeroImg2, HeroImg3];
-  const [currentImageIndex, setCurrentImageIndex] =
-    useState(0);
-
-  const isLoggedIn = useAuthStore(
-    (state) => state.isLoggedIn,
-  );
-
-  const fullName = useAuthStore((state) => state.fullName);
-
-  const navigate = useNavigate();
-
-  // Automatically change the image every 5 seconds
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentImageIndex(
-        (prevIndex) => (prevIndex + 1) % heroImages.length,
-      );
-    }, 5000); // 5000ms = 5 seconds
-
-    return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [heroImages.length]);
+export default function HeroSection({fullName}) {
 
   return (
-    <div className="relative container py-11 lg:py-11">
-      {/* Grid */}
-      <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center">
-        <div className="lg:col-span-3">
-          {!isLoggedIn && (
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Welcome to HealthCare
-            </h1>
-          )}
-          {isLoggedIn && (
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Hi {fullName}, Welcome back!
-            </h1>
-          )}
-          <p className="mt-3 text-xl text-muted-foreground">
-            Get better experience with Us!
-          </p>
-          <p className="mt-6 text-lg text-muted-foreground">
-            We provide the best healthcare services for you.
-            Our services are designed to help you feel
-            better and live a healthier life. Click below to
-            learn more.
-          </p>
-          <Button
-            onClick={() => {
-              navigate('#');
-            }}
-            className="mt-6"
-          >
-            Click Here
-          </Button>
-        </div>
-        {/* End Col */}
-        <div className="lg:col-span-4 mt-10 lg:mt-0 relative">
-          {/* Image Container */}
-          <div className="relative overflow-hidden rounded-xl w-full h-48 sm:h-64 md:h-80 lg:h-96">
-            {/* Images with sliding effect */}
-            <div
-              className="flex transition-transform duration-1000 ease-in-out"
-              style={{
-                transform: `translateX(-${currentImageIndex * 100}%)`,
-              }}
-            >
-              {heroImages.map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  className="w-full h-full object-cover flex-shrink-0"
-                  alt={`Hero Image ${index + 1}`}
-                />
-              ))}
+    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center bg-gradient-to-br from-blue-50 to-white">
+      <div className="absolute right-0 top-0 w-full md:w-1/2 h-full z-0">
+        <img
+          src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&q=80"
+          alt="Medical facility"
+          className="w-full h-full object-cover md:rounded-l-[80px] shadow-2xl"
+        />
+        <div className="absolute inset-0 bg-blue-900/20 md:rounded-l-[80px]"></div>
+      </div>
+      <div className="relative z-10 w-full py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-xl md:max-w-2xl lg:max-w-3xl relative bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-6 md:p-0 rounded-2xl md:rounded-none">
+            <div className="flex items-cen  ter space-x-2 mb-6">
+              <FaStethoscope className="text-blue-600 text-xl md:text-2xl" />
+              <span className="text-blue-600 font-semibold text-sm md:text-base">
+                Leading Healthcare Provider in UK
+              </span>
             </div>
+            {fullName ? (
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                Welcome,{' '}
+                <span className="text-blue-600">
+                  {fullName}
+                </span>
+              </h1>
+            ) : (
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                Your Health, <br />
+                <span className="text-blue-600">
+                  Our Priority
+                </span>
+              </h1>
+            )}
 
-            {/* Image Changer Dots */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {heroImages.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-3 h-3 rounded-full cursor-pointer ${
-                    currentImageIndex === index
-                      ? 'bg-white'
-                      : 'bg-gray-400'
-                  }`}
-                  onClick={() =>
-                    setCurrentImageIndex(index)
-                  }
-                ></div>
-              ))}
+            <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
+              Experience world-class healthcare with Smart
+              Medix. Book appointments, track your health
+              records, and connect with expert doctors all
+              in one place.
+            </p>
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+              <Link
+                to={'/appointments'}
+                className="bg-blue-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-blue-700 flex items-center justify-center text-base md:text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+              >
+                Book Appointment{' '}
+                <FaArrowRight className="ml-2" />
+              </Link>
+            </div>
+            <div className="mt-8 md:mt-12 grid grid-cols-3 gap-4 md:gap-6">
+              <div className="flex items-center space-x-2">
+                <FaHospital className="text-blue-600 text-lg md:text-xl" />
+                <span className="text-gray-700 text-sm md:text-base">
+                  10+ Facilities
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <FaUserMd className="text-blue-600 text-lg md:text-xl" />
+                <span className="text-gray-700 text-sm md:text-base">
+                  100+ Doctors
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <FaAmbulance className="text-blue-600 text-lg md:text-xl" />
+                <span className="text-gray-700 text-sm md:text-base">
+                  24/7 Support
+                </span>
+              </div>
             </div>
           </div>
         </div>
-        {/* End Col */}
       </div>
-      {/* End Grid */}
-    </div>
+    </section>
   );
 }

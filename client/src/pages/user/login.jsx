@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const login = useAuthStore((state) => state.login);
@@ -31,12 +32,14 @@ export default function Login() {
   });
 
   const userData = useProfile(false);
+  const navigate = useNavigate();
 
   const loginUser = useMutation({
     mutationFn: userLogin,
     onSuccess: async (data) => {
       login(data.accessToken);
       toast.success('Logged in successfully');
+      navigate('/');
 
       // Fetch profile data after successful login
       try {

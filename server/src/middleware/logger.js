@@ -2,38 +2,36 @@ import pino from 'pino';
 import pinoHttp from 'pino-http';
 import { LOGGER_CONFIG } from '../constants/constants.js';
 
-// Create a transport for pino-pretty
-const transport = pino.transport({
-  targets: [
-    {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'SYS:standard',
-        ignore: 'pid,hostname',
-        levelFirst: true,
-        messageFormat: true,
-        crlf: false,
-        errorProps: '*',
-        colorizeObjects: true,
-        singleLine: true
-      }
-    },
-    {
-      target: 'pino-pretty',
-      options: {
-        destination: './logs/logs.log',
-        mkdir: true
-      }
-    }
-  ]
-});
+// Determine the environment
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+// Define the transport only for development
+const transport = isDevelopment
+  ? pino.transport({
+      targets: [
+        {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
+            levelFirst: true,
+            messageFormat: true,
+            crlf: false,
+            errorProps: '*',
+            colorizeObjects: true,
+            singleLine: true,
+          },
+        },
+      ],
+    })
+  : undefined; // No transport for production
 
 const logger = pino(
   {
-    level: LOGGER_CONFIG.level
+    level: LOGGER_CONFIG.level,
   },
-  transport
+  transport // Use transport only in development
 );
 
 const httpLogger = pinoHttp({
@@ -49,20 +47,17 @@ const httpLogger = pinoHttp({
   },
   serializers: {
     req: (req) => ({
-      // method: req.method,
-      url: req.url
-      // headers: { 'user-agent': req.headers['user-agent'] }
+      url: req.url,
     }),
     res: (res) => ({
-      statusCode: res.statusCode
-      // statusMessage: res.statusMessage
+      statusCode: res.statusCode,
     }),
     err: (err) => ({
       type: err.type,
       message: err.message,
-      stack: err.stack
-    })
-  }
+      stack: err.stack,
+    }),
+  },
 });
 
 export { httpLogger };

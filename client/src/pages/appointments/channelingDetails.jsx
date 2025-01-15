@@ -1,75 +1,78 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import avatar from '@/assets/avatar/default.png';
+import { useEffect, useState } from 'react';
 import ChannelDetailsCard from './channelDetailsCard';
 import { useParams } from 'react-router-dom';
-import useSchedules from '@/hooks/useSchedules';
+import { getDoctorById } from '@/api/user.api';
+import DoctorCard from './doctorCard';
+import { useQuery } from '@tanstack/react-query';
 
 const ChannelingDetails = () => {
   const { doctorId } = useParams();
-  const { data } = useSchedules(doctorId);
+  const [doctorData, setDoctorData] = useState({
+    fullName: '',
+    specialization: '',
+    status: 'inactive',
+    gender: '',
+    createdAt: '',
+    mobile: '',
+    email: '',
+    hospitalDetails: [],
+    education: [],
+    awards: [],
+  });
 
-  const {
-    fullName,
-    gender,
-    specialization,
-    hospitalDetails,
-  } = data || {};
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['doctorinfo', doctorId],
+    queryFn: () => getDoctorById(doctorId),
+  });
+  useEffect(() => {
+    if (data) {
+      setDoctorData(data.user);
+    }
+  }, [data]);
+
+   const doctor = {
+     fullName: doctorData.fullName,
+     specialization: doctorData.specialization,
+     gender: doctorData.gender,
+   };
 
   return (
-    <>
-      {data && (
-        <section className="container">
-          <div className="mt-10 px-[120px]">
-            <h2 className="text-xl font-bold mb-5">
-              Channeling
-            </h2>
-            <div className="flex">
-              <div className="max-w-[250px] max-h-[320px] bg-white border border-gray-200 rounded-lg shadow grow">
-                <img
-                  className="rounded-full mx-auto mt-5 mb-2 w-[150px]"
-                  src={avatar}
-                  alt={avatar}
-                />
-                <p className="text-xs text-center font-normal text-gray-700">
-                  {gender}
-                </p>
-                <div className="px-5 pb-5">
-                  <h5 className="mb-2 text-xl text-center font-bold tracking-tight text-gray-900">
-                    {fullName}
-                  </h5>
-                  <p className="mb-3 text-xs text-center font-normal text-gray-700">
-                    {specialization}
-                  </p>
-                  <Link
-                    to="/channel"
-                    className="flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-                  >
-                    View Profile
-                  </Link>
-                </div>
-              </div>
-              <div className="grow">
-                {hospitalDetails.map((item) =>
-                  item.arrivalTimes.map((arrivalTime) => (
-                    <ChannelDetailsCard
-                      key={arrivalTime._id}
-                      doctor={{
-                        fullName,
-                        gender,
-                        specialization,
-                      }}
-                      data={item}
-                      arrivalTime={arrivalTime}
-                    />
-                  )),
-                )}
-              </div>
+    <div className="py-16 lg:container mx-auto xl:px-[120px] ">
+      {isLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
+        </div>
+      ) : doctorData ? (
+        <div className=" flex flex-col gap-10">
+          <div className="text-xl text-center md:text-left font-bold px-4">
+            Channeling
+          </div>
+          <div className="flex flex-col md:flex-row gap-10 md:gap-0 lg:px-10">
+            <div className="px-4 mb-4">
+              <DoctorCard
+                key={doctorId}
+                data={doctorData}
+                isChannelingPage={true}
+              />
+            </div>
+            <div className="grow">
+              {doctorData.hospitalDetails.map((item) =>
+                item.arrivalTimes.map((arrivalTime) => (
+                  <ChannelDetailsCard
+                    key={arrivalTime._id}
+                    data={item}
+                    arrivalTime={arrivalTime}
+                    doctor={doctor}
+                  />
+                )),
+              )}
             </div>
           </div>
-        </section>
+        </div>
+      ) : (
+        error && <></>
       )}
-    </>
+    </div>
   );
 };
 

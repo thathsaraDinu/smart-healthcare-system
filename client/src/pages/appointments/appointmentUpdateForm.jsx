@@ -60,12 +60,11 @@ const AppointmentForm = () => {
     };
 
     try {
-      const response = await updateAppointment(
+      await updateAppointment(
         appointmentId,
         appointmentData,
       );
 
-      console.log(response);
       navigate('/myappointments');
     } catch (error) {
       console.log(error);

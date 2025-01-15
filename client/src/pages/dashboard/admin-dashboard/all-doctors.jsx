@@ -46,7 +46,6 @@ const AllDoctors = () => {
         specificFieldsArray,
         'Registered Doctors Report',
       );
-      console.log('Report generation done');
     } catch (error) {
       console.error('Error downloading the report:', error);
     } finally {

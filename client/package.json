@@ -39,6 +39,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
+    "lucide-react": "^0.471.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-big-calendar": "^1.15.0",

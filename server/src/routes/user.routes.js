@@ -11,6 +11,7 @@ const router = Router();
 // router.post('/', validateRequest('createUser'), UserController.register);
 router.post('/', UserController.register);
 router.get('/doctors', UserController.getDoctors);
+router.get('/doctor/:id', UserController.getDoctorById);
 
 // User only routes
 router.get(

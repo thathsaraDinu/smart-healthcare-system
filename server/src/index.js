@@ -9,8 +9,8 @@ import cookieParser from 'cookie-parser';
 const app = express();
 const PORT = SERVER_PORT;
 const corsOptions = {
-  origin: 'http://localhost:5173', // Specify your frontend URL
-  credentials: true // Allow cookies to be sent
+  origin: process.env.CORS_ORIGIN,
+  credentials: true
 };
 
 app.use(httpLogger);
