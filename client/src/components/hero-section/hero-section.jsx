@@ -31,9 +31,9 @@ export default function HeroSection({ fullName }) {
             {fullName ? (
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Welcome,{' '}
-                <span className="text-blue-600">
+                <div className="text-blue-600">
                   {fullName}
-                </span>
+                </div>
               </h1>
             ) : (
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
