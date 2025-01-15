@@ -72,7 +72,7 @@ const About = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">
-                15+
+                2+
               </div>
               <div className="text-blue-100">
                 Years Experience
