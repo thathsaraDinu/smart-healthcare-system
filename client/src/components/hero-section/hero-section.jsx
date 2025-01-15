@@ -25,7 +25,7 @@ export default function HeroSection({ fullName }) {
             <div className="flex items-cen  ter space-x-2 mb-6">
               <FaStethoscope className="text-blue-600 text-xl md:text-2xl" />
               <span className="text-blue-600 font-semibold text-sm md:text-base">
-                Leading Healthcare Provider in UK
+                Leading Healthcare Provider in Sri Lanka
               </span>
             </div>
             {fullName ? (
