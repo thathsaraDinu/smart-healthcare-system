@@ -7,9 +7,9 @@ import {
 
 const About = () => {
   return (
-    <div className="pt-16">
+    <div className="">
       {/* Hero Section */}
-      <section className="relative h-[400px] flex items-center">
+      <section className="relative h-[500px] md:h-[400px] flex items-center">
         <div className="absolute inset-0 z-0 ">
           <img
             src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80"
@@ -23,8 +23,12 @@ const About = () => {
             About Smart Medix
           </h1>
           <p className="text-xl text-gray-200 max-w-2xl">
-            Leading the way in modern healthcare with
-            innovation and compassion
+            At Smart Medix, we are revolutionizing
+            healthcare with cutting-edge technology and a
+            patient-centric approach. Our commitment to
+            innovation, excellence, and compassionate care
+            ensures that every individual receives the best
+            possible health solutions.
           </p>
         </div>
       </section>
@@ -68,7 +72,7 @@ const About = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">
-                15+
+                2+
               </div>
               <div className="text-blue-100">
                 Years Experience
@@ -76,7 +80,7 @@ const About = () => {
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">
-                50k+
+                10+
               </div>
               <div className="text-blue-100">
                 Patients Served
@@ -84,7 +88,7 @@ const About = () => {
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">
-                100+
+                5+
               </div>
               <div className="text-blue-100">
                 Expert Doctors

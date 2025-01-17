@@ -8,7 +8,10 @@ import {
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-export default function HeroSection({fullName}) {
+export default function HeroSection({ fullName }) {
+    const firstName = fullName
+      ? fullName.split(' ')[0]
+      : '';
 
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center bg-gradient-to-br from-blue-50 to-white">
@@ -20,20 +23,20 @@ export default function HeroSection({fullName}) {
         />
         <div className="absolute inset-0 bg-blue-900/20 md:rounded-l-[80px]"></div>
       </div>
-      <div className="relative z-10 w-full py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 container py-10">
+        <div className="max-w-2xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-xl md:max-w-2xl lg:max-w-3xl relative bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-6 md:p-0 rounded-2xl md:rounded-none">
             <div className="flex items-cen  ter space-x-2 mb-6">
               <FaStethoscope className="text-blue-600 text-xl md:text-2xl" />
               <span className="text-blue-600 font-semibold text-sm md:text-base">
-                Leading Healthcare Provider in UK
+                Leading Healthcare Provider in Sri Lanka
               </span>
             </div>
             {fullName ? (
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Welcome,{' '}
                 <span className="text-blue-600">
-                  {fullName}
+                  {firstName}
                 </span>
               </h1>
             ) : (
@@ -70,7 +73,7 @@ export default function HeroSection({fullName}) {
               <div className="flex items-center space-x-2">
                 <FaUserMd className="text-blue-600 text-lg md:text-xl" />
                 <span className="text-gray-700 text-sm md:text-base">
-                  100+ Doctors
+                  5+ Doctors
                 </span>
               </div>
               <div className="flex items-center space-x-2">
