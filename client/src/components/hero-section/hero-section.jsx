@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/store/auth-store';
 import {
   FaUserMd,
   FaArrowRight,
