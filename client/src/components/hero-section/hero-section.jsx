@@ -23,7 +23,7 @@ export default function HeroSection({ fullName }) {
         />
         <div className="absolute inset-0 bg-blue-900/20 md:rounded-l-[80px]"></div>
       </div>
-      <div className="relative z-10 container py-10">
+      <div className="relative z-10 md:container mx-auto py-10">
         <div className="max-w-2xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-xl md:max-w-2xl lg:max-w-3xl relative bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-6 md:p-0 rounded-2xl md:rounded-none">
             <div className="flex items-cen  ter space-x-2 mb-6">
