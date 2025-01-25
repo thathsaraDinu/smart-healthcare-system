@@ -37,7 +37,7 @@ const ChannelingDetails = () => {
    };
 
   return (
-    <div className="py-16 lg:container mx-auto xl:px-[120px] ">
+    <div className="py-12 lg:container mx-auto xl:px-[120px] ">
       {isLoading ? (
         <div className="flex items-center justify-center h-64">
           <div className="w-8 h-8 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
