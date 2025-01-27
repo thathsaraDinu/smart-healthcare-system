@@ -17,7 +17,34 @@ const Appointment = () => {
   const [date, setDate] = useState('');
   const [isActiveDoctors, setIsActiveDoctors] =
     useState(false);
+  const [dayOfWeek, setDayOfWeek] = useState('');
 
+  const handleDateChange = (event) => {
+    // Assuming event is a string like "January 30th, 2025"
+    const sanitizedDate = event
+      .toString()
+      .replace(/(\d+)(th|st|nd|rd)/, '$1'); // Sanitize the date string
+    const pickedDate = new Date(sanitizedDate); // Parse it into a Date object
+    const dayOfWeek = pickedDate.getDay(); // Get the numeric day of the week (0 = Sunday, 1 = Monday, etc.)
+
+    // Array of day names to map to
+    const dayNames = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+
+    const dayName = dayNames[dayOfWeek]; // Get the name of the day using dayOfWeek as the index
+
+    setDayOfWeek(dayName); // Update state with the day name (e.g., "Monday")
+    console.log(dayName); // Logs the name of the day (e.g., "Monday")
+  };
+
+  console.log(data);
   useEffect(() => {
     if (data) {
       setCurrentDoctors(data); // Default to all doctors
@@ -89,7 +116,7 @@ const Appointment = () => {
       const dateMatch = date
         ? item.hospitalDetails.some((h) =>
             h.arrivalTimes.some((a) =>
-              a.time.includes(date),
+              a.dayOfWeek.includes(dayOfWeek),
             ),
           )
         : true;
@@ -195,7 +222,10 @@ const Appointment = () => {
                   </p>
                   <DatePicker
                     date={date}
-                    setDate={setDate}
+                    setDate={(e) => {
+                      setDate(e);
+                      handleDateChange(e);
+                    }}
                   />
                 </div>
                 <div className="flex text-sm md:text-base gap-4">
