@@ -9,6 +9,7 @@ import DashboardNavbar from './components/navbar/dashboard-navbar';
 import { LoadingSpinner } from './components/ui/spinner';
 import { useEffect } from 'react';
 import { useProfile } from './hooks/use-users';
+import { Analytics } from '@vercel/analytics/react';
 
 const Layout = () => {
   const isLoggedIn = useAuthStore(
@@ -75,6 +76,7 @@ const Layout = () => {
           zIndex: 9999,
         }}
       />
+      <Analytics />
     </div>
   );
 };
